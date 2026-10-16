@@ -1,0 +1,2 @@
+PASS: title reached Holding, opacity 1; Timeline graph released; Animator/controller/presentation stopped; audio stopped; shader compiled.
+This is a desktop functional check, not a Quest FPS measurement.

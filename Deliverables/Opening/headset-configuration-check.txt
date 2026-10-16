@@ -1,0 +1,2 @@
+PASS: headset configuration and opening performance settings.
+No headset connected; device FPS and tracking behavior remain unmeasured.

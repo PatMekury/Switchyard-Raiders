@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!114 &-5329907853156351961
+--- !u!114 &-6644147798364957519
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_CorrespondingSourceObject: {fileID: 0}
@@ -9,13 +9,25 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 15c38f6fa1940124db1ab7f6fe7268d1, type: 3}
-  m_Name: Soft brass light sweep
-  m_EditorClassIdentifier: Unity.Timeline::UnityEngine.Timeline.SignalEmitter
-  m_Time: 1.35
-  m_Retroactive: 0
-  m_EmitOnce: 1
-  m_Asset: {fileID: 0}
+  m_Script: {fileID: 11500000, guid: 48fdc2f9da74cfe478f70f93973386df, type: 3}
+  m_Name: "Title ready \u2014 next-stage event"
+  m_EditorClassIdentifier: Assembly-CSharp::SwitchyardRaiders.Startup.LaunchCueMarker
+  m_Time: 4.5
+  label: "Title ready \u2014 next-stage event"
+--- !u!114 &-6509823058692591637
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 48fdc2f9da74cfe478f70f93973386df, type: 3}
+  m_Name: Coupler / musical signature
+  m_EditorClassIdentifier: Assembly-CSharp::SwitchyardRaiders.Startup.LaunchCueMarker
+  m_Time: 0.9
+  label: Coupler / musical signature
 --- !u!114 &-4725097676077192436
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -33,6 +45,20 @@ MonoBehaviour:
   m_bufferingTime: 0.1
   m_ClipProperties:
     volume: 1
+--- !u!114 &-3469752522006471729
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 48fdc2f9da74cfe478f70f93973386df, type: 3}
+  m_Name: Soft brass light sweep
+  m_EditorClassIdentifier: Assembly-CSharp::SwitchyardRaiders.Startup.LaunchCueMarker
+  m_Time: 1.35
+  label: Soft brass light sweep
 --- !u!114 &-3216417739676358181
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -216,7 +242,7 @@ MonoBehaviour:
     m_Recordable: 0
     m_PostExtrapolationMode: 1
     m_PreExtrapolationMode: 1
-    m_PostExtrapolationTime: 0
+    m_PostExtrapolationTime: Infinity
     m_PreExtrapolationTime: 0
     m_DisplayName: "Title reveal \u2192 light sweep \u2192 hold"
   m_Markers:
@@ -262,26 +288,10 @@ MonoBehaviour:
   m_Clips: []
   m_Markers:
     m_Objects:
-    - {fileID: 3008395244347774625}
-    - {fileID: 8934546957386053771}
-    - {fileID: -5329907853156351961}
-    - {fileID: -149074912879048165}
---- !u!114 &-149074912879048165
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 15c38f6fa1940124db1ab7f6fe7268d1, type: 3}
-  m_Name: "Title ready \u2014 next-stage event"
-  m_EditorClassIdentifier: Unity.Timeline::UnityEngine.Timeline.SignalEmitter
-  m_Time: 4.5
-  m_Retroactive: 0
-  m_EmitOnce: 1
-  m_Asset: {fileID: 0}
+    - {fileID: 4535208460970118972}
+    - {fileID: -6509823058692591637}
+    - {fileID: -3469752522006471729}
+    - {fileID: -6644147798364957519}
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -441,22 +451,6 @@ MonoBehaviour:
   m_Loop: 0
   m_Version: 1
   m_Rotation: {x: 0, y: 0, z: 0, w: 1}
---- !u!114 &3008395244347774625
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 15c38f6fa1940124db1ab7f6fe7268d1, type: 3}
-  m_Name: "Room visible first \u2014 title starts after 0.35 s"
-  m_EditorClassIdentifier: Unity.Timeline::UnityEngine.Timeline.SignalEmitter
-  m_Time: 0
-  m_Retroactive: 0
-  m_EmitOnce: 1
-  m_Asset: {fileID: 0}
 --- !u!114 &4212088162557007467
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -553,6 +547,20 @@ MonoBehaviour:
     volume: 1
     stereoPan: 0
     spatialBlend: 0
+--- !u!114 &4535208460970118972
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 48fdc2f9da74cfe478f70f93973386df, type: 3}
+  m_Name: "Room visible first \u2014 title starts after 0.35 s"
+  m_EditorClassIdentifier: Assembly-CSharp::SwitchyardRaiders.Startup.LaunchCueMarker
+  m_Time: 0
+  label: "Room visible first \u2014 title starts after 0.35 s"
 --- !u!114 &8876917511109424090
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -570,19 +578,3 @@ MonoBehaviour:
   m_bufferingTime: 0.1
   m_ClipProperties:
     volume: 1
---- !u!114 &8934546957386053771
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 15c38f6fa1940124db1ab7f6fe7268d1, type: 3}
-  m_Name: Coupler / musical signature
-  m_EditorClassIdentifier: Unity.Timeline::UnityEngine.Timeline.SignalEmitter
-  m_Time: 0.9
-  m_Retroactive: 0
-  m_EmitOnce: 1
-  m_Asset: {fileID: 0}

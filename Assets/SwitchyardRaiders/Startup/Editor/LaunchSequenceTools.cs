@@ -29,7 +29,7 @@ namespace SwitchyardRaiders.Editor
         [MenuItem("Switchyard Raiders/Opening/Select opening Timeline")]
         public static void SelectTimeline()
         {
-            var launch = UnityEngine.Object.FindFirstObjectByType<LaunchSequence>();
+            var launch = UnityEngine.Object.FindAnyObjectByType<LaunchSequence>();
             Selection.activeGameObject = launch != null ? launch.director.gameObject : null;
             EditorApplication.ExecuteMenuItem("Window/Sequencing/Timeline");
         }
@@ -164,11 +164,7 @@ namespace SwitchyardRaiders.Editor
             Marker(timeline, 1.35, "Soft brass light sweep");
             Marker(timeline, 4.5, "Title ready — next-stage event");
 
-            var config = OVRProjectConfig.CachedProjectConfig;
-            config.handTrackingSupport = OVRProjectConfig.HandTrackingSupport.HandsOnly;
-            config.insightPassthroughSupport = OVRProjectConfig.FeatureSupport.Required;
-            OVRProjectConfig.CommitProjectConfig(config);
-            OVRManifestPreprocessor.GenerateOrUpdateAndroidManifest(true);
+            ConfigureStartupSettings();
             PrefabUtility.SaveAsPrefabAsset(root, Root + "/Prefabs/SR_Launch.prefab");
             EditorSceneManager.SaveScene(scene, ScenePath);
             var scenes = EditorBuildSettings.scenes.Where(s => s.path != ScenePath).ToList();
@@ -177,6 +173,25 @@ namespace SwitchyardRaiders.Editor
             AssetDatabase.SaveAssets();
             Selection.activeGameObject = root;
             Debug.Log("Switchyard Raiders opening created. Desktop Play preview is enabled; disable it on LaunchSequence for Link/Simulator. Android always uses Meta passthrough.");
+        }
+
+        public static void ConfigureStartupSettings()
+        {
+            var config = OVRProjectConfig.CachedProjectConfig;
+            config.handTrackingSupport = OVRProjectConfig.HandTrackingSupport.HandsOnly;
+            config.insightPassthroughSupport = OVRProjectConfig.FeatureSupport.Required;
+            config.systemLoadingScreenBackground = OVRProjectConfig.SystemLoadingScreenBackground.ContextualPassthrough;
+            PlayerSettings.SplashScreen.show = false;
+            // Build profiles hold their own player settings. Persist the active profile too.
+            var activeProfile = UnityEditor.Build.Profile.BuildProfile.GetActiveBuildProfile();
+            if (activeProfile != null)
+            {
+                EditorUtility.SetDirty(activeProfile);
+                AssetDatabase.SaveAssetIfDirty(activeProfile);
+            }
+            OVRProjectConfig.CommitProjectConfig(config);
+            OVRManifestPreprocessor.GenerateOrUpdateAndroidManifest(true);
+            AssetDatabase.SaveAssets();
         }
 
         private static OVRHand AddHand(Transform parent, int side, string name)
@@ -245,9 +260,9 @@ namespace SwitchyardRaiders.Editor
 
         private static void Marker(TimelineAsset timeline, double time, string label)
         {
-            var marker = timeline.markerTrack.CreateMarker<SignalEmitter>(time);
+            var marker = timeline.markerTrack.CreateMarker<LaunchCueMarker>(time);
             marker.name = label;
-            marker.emitOnce = true;
+            marker.label = label;
             // Cue labels only. The controller owns completion to prevent duplicate signals on resume.
         }
     }
