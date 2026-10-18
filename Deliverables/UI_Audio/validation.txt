@@ -1,0 +1,11 @@
+UI hover audio -> SR_Startup / SFX
+UI click audio -> SR_Startup / SFX
+UI transition audio -> SR_Startup / SFX
+Your room destination -> hover: sfx_ui_over_menu; click: sfx_ui_clic_valid_menu; interactable=True
+Virtual room destination -> hover: sfx_ui_over_menu; click: sfx_ui_clic_valid_menu; interactable=True
+Find a match -> hover: sfx_ui_over_menu; click: sfx_ui_clic_begin; interactable=False
+Play with friends -> hover: sfx_ui_over_menu; click: sfx_ui_clic_begin; interactable=False
+Learn and practice -> hover: sfx_ui_over_menu; click: sfx_ui_clic_begin; interactable=False
+Change room -> hover: sfx_ui_over_menu; click: sfx_ui_clic_back_menu; interactable=True
+Room selection and main-menu Show() play sfx_transition_menu. Countdown imported, not connected: no game-start countdown exists yet.
+Static references/import/routing verified. No Play Mode, headset testing or player build.

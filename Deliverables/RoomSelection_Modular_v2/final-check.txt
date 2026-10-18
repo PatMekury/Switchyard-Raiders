@@ -1,0 +1,13 @@
+CHOOSE YOUR ROOM: required height 35 / available 46
+YOUR ROOM: required height 32 / available 40
+Play where you are: required height 19 / available 23
+VIRTUAL ROOM: required height 32 / available 40
+A quiet space to play: required height 19 / available 23
+Touch a button or point and pinch: required height 21 / available 38
+OculusHandPinchArrowBlended: (0.42500, 0.42500, 0.42500) preserved
+OculusCursor: (0.04250, 0.04250, 0.04250) preserved
+SelectionCircle: (0.00680, 0.00680, 0.42500) preserved
+OculusHandPinchArrowBlended: (0.42500, 0.42500, 0.42500) preserved
+OculusCursor: (0.04250, 0.04250, 0.04250) preserved
+SelectionCircle: (0.00680, 0.00680, 0.42500) preserved
+PASS scene and prefab references; typography fits; pointer scales preserved; shader compiles; editor remains out of Play Mode.

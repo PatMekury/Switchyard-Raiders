@@ -1,0 +1,25 @@
+SCENE Assets/SwitchyardRaiders/Startup/Scenes/SR_Launch.unity MENU SR_RoomChoice panelActive True
+follower (0.00, 1.05, 0.65) scale (0.00, 0.00, 0.00) size (660.00, 470.00)
+Room choice canvas [RectTransform,Canvas,CanvasGroup,GraphicRaycaster]
+Destination board [RectTransform,CanvasRenderer,Image]
+Inset heading [RectTransform,CanvasRenderer,Text]
+Your room destination [RectTransform,CanvasRenderer,Image,Button,RoomSelectorFeedback]
+Enamel destination face [RectTransform,CanvasRenderer,Image]
+Embedded label [RectTransform,CanvasRenderer,Text]
+Selection state [RectTransform,CanvasRenderer,Text]
+Virtual room destination [RectTransform,CanvasRenderer,Image,Button,RoomSelectorFeedback]
+Enamel destination face [RectTransform,CanvasRenderer,Image]
+Embedded label [RectTransform,CanvasRenderer,Text]
+Selection state [RectTransform,CanvasRenderer,Text]
+Inset instruction [RectTransform,CanvasRenderer,Text]
+ISDK_PokeCanvasInteraction [RectTransform,PokeInteractable,PointableCanvas,LayoutElement]
+Surface [RectTransform,PlaneSurface,ClippedPlaneSurface,BoundsClipper,RectTransformBoundsClipperDriver]
+ISDK_RayCanvasInteraction [RectTransform,RayInteractable,PointableCanvas,LayoutElement]
+Surface [RectTransform,PlaneSurface,ClippedPlaneSurface,BoundsClipper,RectTransformBoundsClipperDriver]
+real events 0 virtual events 0
+OculusHandPinchArrowBlended (0.43, 0.43, 0.43)
+OculusCursor (0.04, 0.04, 0.04)
+SelectionCircle (0.01, 0.01, 0.43)
+OculusHandPinchArrowBlended (0.43, 0.43, 0.43)
+OculusCursor (0.04, 0.04, 0.04)
+SelectionCircle (0.01, 0.01, 0.43)

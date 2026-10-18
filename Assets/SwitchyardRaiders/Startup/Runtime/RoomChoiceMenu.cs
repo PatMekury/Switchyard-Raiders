@@ -15,6 +15,10 @@ namespace SwitchyardRaiders.Startup
         public GameObject virtualRoom;
         public Text heading, status;
         public UnityEngine.UI.Button realButton, virtualButton;
+        public ModularRoomMenuMotion motion;
+        public GameObject selectionRoot;
+        public StationMainMenu mainMenu;
+        public MenuInteractionAudio menuAudio;
         public UnityEvent onRealRoomSelected = new();
         public UnityEvent onVirtualRoomSelected = new();
         public bool IsOpen { get; private set; }
@@ -38,10 +42,15 @@ namespace SwitchyardRaiders.Startup
         public void Show()
         {
             if (IsOpen) return;
+            if (menuAudio) menuAudio.MenuOpened();
+            if (mainMenu) mainMenu.Hide();
+            if (selectionRoot) selectionRoot.SetActive(true);
+            realButton.interactable = virtualButton.interactable = true;
             IsOpen = true;
             canvas.worldCamera = launch.headset.GetComponent<Camera>();
             follower.Snap(launch.headset);
             panelRoot.SetActive(true);
+            if (motion) motion.Reveal();
             transition = StartCoroutine(Reveal());
         }
 
@@ -49,10 +58,11 @@ namespace SwitchyardRaiders.Startup
         {
             // Crossfade the existing Timeline title into the first interactive screen.
             float elapsed = 0;
-            while (elapsed < .4f)
+            float duration = motion ? .65f : .4f;
+            while (elapsed < duration)
             {
                 elapsed += Time.unscaledDeltaTime;
-                float t = Mathf.SmoothStep(0, 1, elapsed / .4f);
+                float t = Mathf.SmoothStep(0, 1, elapsed / duration);
                 group.alpha = t;
                 launch.presentation.opacity = 1 - t;
                 launch.presentation.Apply();
@@ -77,7 +87,6 @@ namespace SwitchyardRaiders.Startup
                 status.text = "Room video unavailable. Choose Virtual Room.";
                 return;
             }
-            if (HasSelection && IsVirtual == useVirtual) return;
             transition = StartCoroutine(ChangeRoom(useVirtual));
         }
 
@@ -85,6 +94,9 @@ namespace SwitchyardRaiders.Startup
         {
             busy = true;
             realButton.interactable = virtualButton.interactable = false;
+            group.interactable = group.blocksRaycasts = false;
+            var feedback = (useVirtual ? virtualButton : realButton).GetComponent<RoomSelectorFeedback>();
+            if (feedback) feedback.Confirm();
             if (useVirtual && !roomPositioned)
             {
                 Vector3 position = launch.headset.position;
@@ -110,12 +122,32 @@ namespace SwitchyardRaiders.Startup
             virtualRoom.SetActive(useVirtual);
             IsVirtual = useVirtual;
             HasSelection = true;
-            heading.text = "CHOOSE YOUR ROOM";
-            status.text = useVirtual ? "Virtual room ready / Choose either room to switch" : "Your room ready / Choose either room to switch";
-            realButton.interactable = virtualButton.interactable = true;
+            yield return HidePieces();
             busy = false;
             transition = null;
+            if (mainMenu) mainMenu.Show();
             if (useVirtual) onVirtualRoomSelected.Invoke(); else onRealRoomSelected.Invoke();
+        }
+
+        public void Hide()
+        {
+            if (!IsOpen || busy) return;
+            if (transition != null) StopCoroutine(transition);
+            transition = StartCoroutine(HidePieces());
+        }
+
+        private IEnumerator HidePieces()
+        {
+            group.interactable = group.blocksRaycasts = false;
+            if (motion)
+            {
+                motion.Exit();
+                while (!motion.ExitComplete) yield return null;
+            }
+            group.alpha = 0;
+            panelRoot.SetActive(false);
+            IsOpen = false;
+            transition = null;
         }
     }
 }

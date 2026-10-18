@@ -1,0 +1,17 @@
+Sculpted railway ribbon vertices 4
+Enamel heading vertices 36
+Inset heading vertices 56
+Enamel destination face vertices 36
+Embedded label vertices 32
+Selection state vertices 60
+Ivory enamel icon backplate vertices 36
+Room icon - replace Source Image vertices 4
+Selection signal vertices 4
+Enamel destination face vertices 36
+Embedded label vertices 44
+Selection state vertices 68
+Ivory enamel icon backplate vertices 36
+Room icon - replace Source Image vertices 4
+Selection signal vertices 4
+Inset instruction vertices 108
+Static saved UI mesh layout, rendered with preview unlit materials. Not a headset/runtime test.

@@ -1,0 +1,7 @@
+Your room destination -> ChooseRealRoom; hit area (258.00, 74.00)
+Virtual room destination -> ChooseVirtualRoom; hit area (258.00, 74.00)
+PASS saved modular room-selection setup; 28 visible graphics.
+World space; original follower distance 0.65m, vertical offset -0.15m; original canvas scale (0.000850, 0.000850, 0.000850)
+2048x1024 room atlas + 1024x1024 sign/cap atlas; mipmaps; ASTC 6x6 Android. Two independent button hit targets.
+Static editor verification only. No Play Mode, headset test, restart or player build.
+Selection confirms briefly, exits, then shows StationMainMenu. Change room returns to selector. Gameplay routes disabled until connected.

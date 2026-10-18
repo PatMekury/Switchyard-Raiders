@@ -1,0 +1,6 @@
+Inset heading text=CHOOSE YOUR ROOM color=RGBA(0.970, 0.920, 0.780, 1.000) fontSize=27 preferred=35 available=46
+Embedded label text=YOUR ROOM color=RGBA(0.970, 0.920, 0.780, 1.000) fontSize=24 preferred=32 available=31
+Selection state text=Play where you are color=RGBA(0.970, 0.920, 0.780, 1.000) fontSize=14 preferred=19 available=23
+Embedded label text=VIRTUAL ROOM color=RGBA(0.970, 0.920, 0.780, 1.000) fontSize=24 preferred=32 available=31
+Selection state text=A quiet space to play color=RGBA(0.970, 0.920, 0.780, 1.000) fontSize=14 preferred=19 available=23
+Inset instruction text=Touch a button or point and pinch color=RGBA(0.970, 0.920, 0.780, 1.000) fontSize=16 preferred=21 available=38

@@ -1,0 +1,44 @@
+[
+  {
+    "name": "Rails",
+    "x": 8,
+    "y": 8,
+    "width": 1536,
+    "height": 660
+  },
+  {
+    "name": "EnamelButton",
+    "x": 8,
+    "y": 692,
+    "width": 1024,
+    "height": 240
+  },
+  {
+    "name": "IconBackplate",
+    "x": 1560,
+    "y": 8,
+    "width": 480,
+    "height": 232
+  },
+  {
+    "name": "YourRoomIcon",
+    "x": 1560,
+    "y": 264,
+    "width": 224,
+    "height": 180
+  },
+  {
+    "name": "VirtualRoomIcon",
+    "x": 1800,
+    "y": 264,
+    "width": 224,
+    "height": 180
+  },
+  {
+    "name": "SignalLens",
+    "x": 1560,
+    "y": 470,
+    "width": 64,
+    "height": 64
+  }
+]

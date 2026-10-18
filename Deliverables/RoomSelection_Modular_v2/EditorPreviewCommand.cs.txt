@@ -1,0 +1,33 @@
+using UnityEngine; using UnityEditor; using UnityEngine.UI; using System.IO; using System.Collections.Generic; using SwitchyardRaiders.Startup;
+internal class CommandScript:IRunCommand {public void Execute(ExecutionResult result){
+if(EditorApplication.isPlaying)throw new System.Exception("Edit mode only");
+var menu=Object.FindAnyObjectByType<RoomChoiceMenu>(FindObjectsInactive.Include);
+var preview=new PreviewRenderUtility();var meshes=new List<UnityEngine.Mesh>();var materials=new List<Material>();var fonts=new Dictionary<Texture,Texture2D>();var log=new System.Text.StringBuilder();
+try{
+Canvas.ForceUpdateCanvases();
+preview.camera.orthographic=true;preview.camera.orthographicSize=250;preview.camera.transform.position=new Vector3(0,0,-1000);preview.camera.transform.rotation=Quaternion.identity;preview.camera.nearClipPlane=.01f;preview.camera.farClipPlane=2000;preview.camera.backgroundColor=new Color(.12f,.16f,.14f);preview.camera.clearFlags=CameraClearFlags.SolidColor;
+preview.BeginStaticPreview(new Rect(0,0,1540,1100));int order=0;
+foreach(var g in menu.canvas.GetComponentsInChildren<Graphic>(false)){
+if(g.color.a==0)continue;g.canvasRenderer.cull=false;g.Rebuild(CanvasUpdate.PreRender);
+var sourceMesh=g.canvasRenderer.GetMesh();if(!sourceMesh)continue;
+var mesh=Object.Instantiate(sourceMesh);meshes.Add(mesh);log.AppendLine(g.name+" vertices "+mesh.vertexCount);if(mesh.vertexCount==0)continue;
+Texture texture=g.mainTexture;
+if(g is Text){
+if(!fonts.TryGetValue(texture,out var rgba)){
+var rt=RenderTexture.GetTemporary(texture.width,texture.height,0,RenderTextureFormat.ARGB32,RenderTextureReadWrite.Linear);
+var active=RenderTexture.active;
+try{
+Graphics.Blit(texture,rt);RenderTexture.active=rt;
+rgba=new Texture2D(texture.width,texture.height,TextureFormat.RGBA32,false,true);rgba.ReadPixels(new Rect(0,0,texture.width,texture.height),0,0);
+var colors=rgba.GetPixels32();for(int i=0;i<colors.Length;i++){colors[i].r=colors[i].g=colors[i].b=255;}rgba.SetPixels32(colors);rgba.Apply();fonts.Add(texture,rgba);
+}finally{RenderTexture.active=active;RenderTexture.ReleaseTemporary(rt);}
+}texture=rgba;
+}
+var mat=new Material(Shader.Find("Universal Render Pipeline/Unlit"));materials.Add(mat);mat.SetTexture("_BaseMap",texture);mat.SetColor("_BaseColor",g.color);mat.SetFloat("_Surface",1);mat.SetInt("_SrcBlend",5);mat.SetInt("_DstBlend",10);mat.SetInt("_ZWrite",0);mat.SetInt("_Cull",0);mat.EnableKeyword("_SURFACE_TYPE_TRANSPARENT");mat.renderQueue=3000;
+var relative=menu.canvas.transform.worldToLocalMatrix*g.transform.localToWorldMatrix;relative.m23=-order++*.05f;preview.DrawMesh(mesh,relative,mat,0);
+}
+preview.Render(true);var tex=preview.EndStaticPreview();File.WriteAllBytes("Deliverables/RoomSelection_Modular_v2/saved-editor-preview.png",tex.EncodeToPNG());Object.DestroyImmediate(tex);
+log.AppendLine("Static saved UI mesh layout, rendered with preview unlit materials. Not a headset/runtime test.");
+File.WriteAllText("Deliverables/RoomSelection_Modular_v2/preview-geometry.txt",log.ToString());result.Log(log.ToString());
+}finally{preview.Cleanup();foreach(var m in meshes)Object.DestroyImmediate(m);foreach(var m in materials)Object.DestroyImmediate(m);foreach(var f in fonts.Values)Object.DestroyImmediate(f);}
+}}

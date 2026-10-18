@@ -161,9 +161,11 @@ namespace SwitchyardRaiders.Editor
             menu.canvas.worldCamera=launch.headset.GetComponent<Camera>();
             menu.group=menu.canvas.GetComponent<CanvasGroup>();
             menu.panelRoot=menu.canvas.gameObject;
-            DestinationBoard.Apply(menu);
+            if (!menu.realButton || !menu.virtualButton) DestinationBoard.Apply(menu);
+            ModularRoomMenuSetup.ApplyVisuals(menu);
             var uiMaterial=XRMaterial("SR_WorldUI", "Switchyard Raiders/XR/World UI");
-            foreach(var graphic in menu.canvas.GetComponentsInChildren<Graphic>(true)) graphic.material=uiMaterial;
+            foreach(var graphic in menu.canvas.GetComponentsInChildren<Graphic>(true))
+                if (!graphic.material || graphic.material.shader.name != "Switchyard Raiders/XR/Room Menu Art") graphic.material=uiMaterial;
             if (!menu.canvas.GetComponentsInChildren<PointableCanvas>(true).Any(p=>p.GetComponent<PokeInteractable>()))
                 QuickActionsAPI.AddPokeCanvasInteraction(menu.canvas.gameObject);
             if (!menu.canvas.GetComponentsInChildren<PointableCanvas>(true).Any(p=>p.GetComponent<RayInteractable>()))
