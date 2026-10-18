@@ -1,0 +1,6 @@
+Live applied: 2026-10-18T00:21:30
+UI shader=Switchyard Raiders/XR/World UI scale=(0.00085, 0.00085, 0.00085) follow threshold=0.2
+OculusHandPinchArrowBlended shader=UI/Default
+l_handMeshNode shader=Switchyard Raiders/XR/Hand Outline
+OculusHandPinchArrowBlended shader=UI/Default
+r_handMeshNode shader=Switchyard Raiders/XR/Hand Outline

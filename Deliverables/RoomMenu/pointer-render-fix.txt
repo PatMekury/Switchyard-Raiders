@@ -1,0 +1,1 @@
+Saved 6 pointer renderer assignments. Poke cursor radial/press properties retained; pinch and selector textures/colors retained. Tracking transforms, fingertip offsets, hands and menu unchanged. No Play test performed.

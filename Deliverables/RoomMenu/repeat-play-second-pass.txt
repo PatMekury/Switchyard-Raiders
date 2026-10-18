@@ -1,0 +1,3 @@
+PASS: fresh Play reset, Timeline completion and graph disposal, .65 m menu placement; text fits its artwork parent before and after a head turn; Poke/Ray surfaces forward to their PointableCanvas; synthetic Meta PointableCanvas Hover/Select/Unselect events reached both buttons; real -> virtual -> real transition, final buttons enabled; panel holds steady during interaction and follows after a large head turn.
+This verifies SDK event routing in desktop Play, not physical hand tracking or headset FPS.
+Time: 2026-10-18T00:04:17

@@ -1,0 +1,29 @@
+[
+  {
+    "file": "SR_Button_Primary_Concept.png",
+    "width": 2073,
+    "height": 758,
+    "mode": "RGBA",
+    "alpha_extrema": [
+      0,
+      255
+    ]
+  },
+  {
+    "file": "SR_Panel_Concept.png",
+    "width": 1122,
+    "height": 1402,
+    "mode": "RGBA",
+    "alpha_extrema": [
+      0,
+      255
+    ]
+  },
+  {
+    "file": "SR_MainMenu_Concept.png",
+    "width": 1672,
+    "height": 941,
+    "mode": "RGB",
+    "alpha_extrema": null
+  }
+]

@@ -1,0 +1,8 @@
+Head local=(-0.0461, 1.5201, -0.1867) node=(-0.0461, 1.5201, -0.1867)
+OculusHandPinchArrowBlended active=True enabled=True root=none scale=(1.1365, 1.1365, 1.1365)
+LeftHand active=True enabled=True root=(-0.0936, 1.0492, 0.0376) scale=(1.1365, 1.1365, 1.1365)
+l_handMeshNode active=False enabled=True root=(0.0000, 0.0000, 0.0000) scale=(1.0000, 1.0000, 1.0000)
+OculusHandPinchArrowBlended active=True enabled=True root=none scale=(1.1160, 1.1160, 1.1160)
+RightHand active=True enabled=True root=(0.1535, 1.0590, 0.0529) scale=(1.1160, 1.1160, 1.1160)
+r_handMeshNode active=False enabled=True root=(0.0000, 0.0000, 0.0000) scale=(1.0000, 1.0000, 1.0000)
+XR running=True passes=1

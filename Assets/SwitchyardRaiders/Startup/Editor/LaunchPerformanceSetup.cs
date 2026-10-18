@@ -27,9 +27,10 @@ namespace SwitchyardRaiders.Editor
             if (launch == null) throw new InvalidOperationException("Open SR_Launch first.");
             Undo.RecordObject(launch, "Set opening preview mode");
             launch.desktopPreviewInEditor = preview;
-            // A new OpenXR session and fresh scene objects are required on each Play.
-            EditorSettings.enterPlayModeOptions = EnterPlayModeOptions.None;
-            EditorSettings.enterPlayModeOptionsEnabled = false;
+            // UI preview can skip package/editor domain initialization. Keep scene reload.
+            // Link keeps a fresh domain until repeated physical passthrough is validated.
+            EditorSettings.enterPlayModeOptionsEnabled = true;
+            EditorSettings.enterPlayModeOptions = preview ? EnterPlayModeOptions.DisableDomainReload : EnterPlayModeOptions.None;
             // Editor Play uses Standalone XR settings even when Android is the build target.
             // Flat preview must not attempt to initialize a missing Link headset.
             var editorXR = XRGeneralSettingsPerBuildTarget.XRGeneralSettingsForBuildTarget(BuildTargetGroup.Standalone);
@@ -46,7 +47,7 @@ namespace SwitchyardRaiders.Editor
             EditorUtility.SetDirty(launch);
             EditorSceneManager.MarkSceneDirty(launch.gameObject.scene);
             EditorSceneManager.SaveScene(launch.gameObject.scene);
-            Debug.Log(preview ? "Desktop preview selected; editor XR initialization disabled. Press Play." : "Headset mode selected with fresh scene/domain reload. Start Quest Link before pressing Play.");
+            Debug.Log((preview ? "Fast desktop preview: scene reload only, editor XR initialization disabled. Press Play." : "Headset mode selected with fresh scene/domain reload. Start Quest Link before pressing Play.") + " Reload options: " + EditorSettings.enterPlayModeOptions);
         }
 
         [MenuItem("Switchyard Raiders/Opening/Apply opening performance settings")]

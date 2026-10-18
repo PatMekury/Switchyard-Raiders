@@ -22,8 +22,9 @@ namespace SwitchyardRaiders.Startup
         public bool desktopPreviewInEditor;
         [Tooltip("Standalone Quest only. Requested once if the runtime advertises support; otherwise its default is kept.")]
         public float preferredRefreshRate = 90f;
-        [Min(0.5f)] public float titleDistance = 1.5f;
-        [Range(0f, 20f)] public float titleDownAngle = 8f;
+        [Min(0.5f)] public float titleDistance = .65f;
+        [Range(0f, 20f)] public float titleDownAngle = 12.995f;
+        public SeatedPanelFollow titleFollow;
         [Tooltip("Connect table setup / the next screen here. Fires once after the opening finishes or is skipped.")]
         public UnityEvent onTitleReady = new();
         public LaunchGate.Phase Phase => gate.Current;
@@ -87,7 +88,10 @@ namespace SwitchyardRaiders.Startup
                     reportedTimeout = true;
                     Debug.LogWarning("Switchyard Raiders opening paused: " + WaitingReason, this);
                 }
-                bool ready = roomReady && (preview || (OVRManager.isHmdPresent && OVRManager.tracker != null && OVRManager.tracker.isPositionTracked));
+                bool tracked = preview || (OVRManager.isHmdPresent && OVRManager.tracker != null && OVRManager.tracker.isPositionTracked);
+                // An active tracked XR session can still offer the virtual room if Link passthrough fails.
+                // Missing XR/tracking is never bypassed; the room menu reports unavailable real-room video.
+                bool ready = tracked && (roomReady || waitingTime > 8f);
                 if (gate.AdvanceRoom(ready, focused, Time.unscaledDeltaTime)) BeginTitle();
                 return;
             }
@@ -150,6 +154,7 @@ namespace SwitchyardRaiders.Startup
             Vector3 position = headset.position + forward * titleDistance;
             position.y -= Mathf.Tan(titleDownAngle * Mathf.Deg2Rad) * titleDistance;
             titleAnchor.SetPositionAndRotation(position, Quaternion.LookRotation(position - headset.position, Vector3.up));
+            if (titleFollow) titleFollow.Snap(headset);
             director.time = 0;
             director.Play();
         }

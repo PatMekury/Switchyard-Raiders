@@ -1,0 +1,6 @@
+OculusHandPinchArrowBlended |  | shader=UI/Default
+LeftHand | Packages/com.meta.xr.sdk.interaction/Runtime/Materials/OculusHand.mat | shader=Interaction/OculusHand
+l_handMeshNode | Packages/com.meta.xr.sdk.interaction/Runtime/Materials/OculusHand.mat | shader=Interaction/OculusHand
+OculusHandPinchArrowBlended |  | shader=UI/Default
+RightHand | Packages/com.meta.xr.sdk.interaction/Runtime/Materials/OculusHand.mat | shader=Interaction/OculusHand
+r_handMeshNode | Packages/com.meta.xr.sdk.interaction/Runtime/Materials/OculusHand.mat | shader=Interaction/OculusHand

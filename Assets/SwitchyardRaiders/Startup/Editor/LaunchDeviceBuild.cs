@@ -74,12 +74,14 @@ namespace SwitchyardRaiders.Editor
             Require(!launch.enabled && !launch.presentation.enabled && !launch.presentation.GetComponent<Animator>().enabled,
                 "Settled title must stop its controller, animation and presentation updates.");
             Require(!launch.director.playableGraph.IsValid(), "Timeline graph must be released on completion.");
-            Require(Mathf.Approximately(launch.presentation.opacity, 1f), "Final title must remain visible.");
+            var roomMenu = UnityEngine.Object.FindAnyObjectByType<RoomChoiceMenu>();
+            Require(roomMenu != null ? roomMenu.IsOpen && roomMenu.group.alpha > .99f : Mathf.Approximately(launch.presentation.opacity, 1f),
+                "Opening must hand off to the room menu, or hold its title when no menu is installed.");
             Require(launch.GetComponentsInChildren<AudioSource>(true).All(s => !s.isPlaying), "Audio must finish with the opening.");
             Require(!ShaderUtil.ShaderHasError(launch.presentation.titleRenderer.sharedMaterial.shader), "Title shader failed.");
             Directory.CreateDirectory("Deliverables/Opening");
             File.WriteAllText("Deliverables/Opening/desktop-playback-check.txt",
-                "PASS: title reached Holding, opacity 1; Timeline graph released; Animator/controller/presentation stopped; audio stopped; shader compiled.\nThis is a desktop functional check, not a Quest FPS measurement.\n");
+                "PASS: title reached Holding and handed off to the room menu; Timeline graph released; Animator/controller/presentation stopped; audio stopped; shader compiled.\nThis is a desktop functional check, not a Quest FPS measurement.\n");
             Debug.Log("PASS — optimized desktop playback completed and released its animation/audio work.");
         }
 

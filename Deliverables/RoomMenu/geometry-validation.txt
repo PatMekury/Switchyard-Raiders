@@ -1,0 +1,1 @@
+SUPERSEDED: the previous 2,960-triangle procedural selectors are no longer used. Current destination-board layout uses a shared sprite atlas on a world-space Canvas. See README.md and the timestamped playback-check.txt.

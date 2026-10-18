@@ -1,0 +1,2 @@
+OculusHandPinchArrowBlended rootBone=none bones=0
+OculusHandPinchArrowBlended rootBone=none bones=0

@@ -1,0 +1,12 @@
+Live hand alignment snapshot 2026-10-18T00:10:32
+Tracking origin: FloorLevel; tracking scale: (1.0000, 1.0000, 1.0000)
+Head world: (0.1679, 1.4890, -0.0370)
+OVRLeftHandVisual tracked pose valid: True
+  SDK wrist: (-0.0327, 1.0520, 0.1523); rendered root: (-0.0327, 1.0520, 0.1523); separation mm: 0.00
+  Raw tracking wrist transformed to world: (-0.0327, 1.0520, 0.1523); SDK separation mm: 0.00
+OVRRightHandVisual tracked pose valid: True
+  SDK wrist: (0.2563, 1.0587, 0.2134); rendered root: (0.2563, 1.0587, 0.2134); separation mm: 0.00
+  Raw tracking wrist transformed to world: (0.2563, 1.0587, 0.2134); SDK separation mm: 0.00
+HandPokeInteractor point: (0.0068, 1.1023, 0.2870); tracked joint: HandIndex3; configured fingertip offset: (0.0000, 0.0000, 0.0170)
+HandPokeInteractor point: (0.2047, 1.0862, 0.3711); tracked joint: HandIndex3; configured fingertip offset: (0.0000, 0.0000, 0.0170)
+World-space agreement does not alone establish alignment with the passthrough image. Confirm both stationary hands in the headset.

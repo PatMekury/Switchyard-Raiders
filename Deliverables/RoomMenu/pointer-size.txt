@@ -1,0 +1,7 @@
+OculusHandPinchArrowBlended: (0.85000, 0.85000, 0.85000) -> (0.42500, 0.42500, 0.42500)
+OculusCursor: (0.08500, 0.08500, 0.08500) -> (0.04250, 0.04250, 0.04250)
+SelectionCircle: (0.01360, 0.01360, 0.85000) -> (0.00680, 0.00680, 0.42500)
+OculusHandPinchArrowBlended: (0.85000, 0.85000, 0.85000) -> (0.42500, 0.42500, 0.42500)
+OculusCursor: (0.08500, 0.08500, 0.08500) -> (0.04250, 0.04250, 0.04250)
+SelectionCircle: (0.01360, 0.01360, 0.85000) -> (0.00680, 0.00680, 0.42500)
+Scene and prefab saved; all six prefab scales verified. Visuals are half their previous size. Play Mode was not entered.

@@ -1,0 +1,7 @@
+Phase=Holding room=True activeXR=True
+Canvas=WorldSpace scale=(0.00100, 0.00100, 0.00100) shader=UI/Default threshold=0.6
+OculusHandPinchArrowBlended shader=UI/Default
+LeftHand shader=Interaction/OculusHand
+OculusHandPinchArrowBlended shader=UI/Default
+RightHand shader=Interaction/OculusHand
+Hand shader errors=False UI shader errors=False

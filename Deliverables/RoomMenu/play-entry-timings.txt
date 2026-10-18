@@ -1,0 +1,26 @@
+Discarded initial sample: reload setting was changed after the Play request; its profile label is unreliable.
+2026-10-17T23:24:02 | DisableDomainReload | Enter Play: 13.641 seconds
+2026-10-17T23:25:27 | None | Enter Play: 9.101 seconds
+2026-10-17T23:26:02 | DisableDomainReload | Enter Play: 0.310 seconds
+2026-10-17T23:26:26 | DisableDomainReload | Enter Play: 0.325 seconds
+2026-10-17T23:31:43 | None | Enter Play: 22.153 seconds
+2026-10-17T23:33:17 | None | Enter Play: 10.832 seconds
+2026-10-17T23:34:04 | None | Enter Play: 10.345 seconds
+2026-10-17T23:52:23 | None | Enter Play: 29.031 seconds
+2026-10-17T23:56:54 | DisableDomainReload | Enter Play: 1.344 seconds
+2026-10-17T23:58:56 | DisableDomainReload | Enter Play: 2.016 seconds
+2026-10-17T23:59:41 | DisableDomainReload | Enter Play: 0.791 seconds
+2026-10-18T00:00:47 | DisableDomainReload | Enter Play: 0.461 seconds
+2026-10-18T00:01:42 | DisableDomainReload | Enter Play: 0.547 seconds
+2026-10-18T00:03:29 | DisableDomainReload | Enter Play: 1.683 seconds
+2026-10-18T00:04:02 | DisableDomainReload | Enter Play: 0.357 seconds
+2026-10-18T00:06:24 | None | Enter Play: 10.991 seconds
+2026-10-18T00:09:10 | None | Enter Play: 11.136 seconds
+2026-10-18T00:13:14 | None | Enter Play: 11.729 seconds
+2026-10-18T00:17:24 | None | Enter Play: 12.032 seconds
+2026-10-18T00:19:39 | None | Enter Play: 16.551 seconds
+2026-10-18T00:29:53 | None | Enter Play: 10.157 seconds
+2026-10-18T00:39:15 | None | Enter Play: 10.181 seconds
+2026-10-18T00:42:31 | None | Enter Play: 10.129 seconds
+2026-10-18T00:49:51 | None | Enter Play: 10.483 seconds
+2026-10-18T00:54:23 | None | Enter Play: 11.329 seconds

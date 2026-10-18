@@ -1,0 +1,10 @@
+OculusHandPinchArrowBlended | SkinnedMeshRenderer | UI/Default
+OculusCursor | MeshRenderer | Hidden/Interaction/Deprecated/OculusHandCursor
+SelectionCircle | SpriteRenderer | Sprites/Default
+LeftHand | SkinnedMeshRenderer | Interaction/OculusHand
+l_handMeshNode | SkinnedMeshRenderer | Interaction/OculusHand
+OculusHandPinchArrowBlended | SkinnedMeshRenderer | UI/Default
+OculusCursor | MeshRenderer | Hidden/Interaction/Deprecated/OculusHandCursor
+SelectionCircle | SpriteRenderer | Sprites/Default
+RightHand | SkinnedMeshRenderer | Interaction/OculusHand
+r_handMeshNode | SkinnedMeshRenderer | Interaction/OculusHand
