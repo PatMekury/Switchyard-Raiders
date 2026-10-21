@@ -1,0 +1,30 @@
+Project: C:/Users/patmekury/Documents/Unity/Switchyard Raiders/Assets
+Edit Mode only; no runtime, headset, service connection or player build verification.
+Action 1 -> RaidersMenuAction.Invoke; live text; audio connected
+Action 2 -> RaidersMenuAction.Invoke; live text; audio connected
+Action 3 -> RaidersMenuAction.Invoke; live text; audio connected
+Action 4 -> RaidersMenuAction.Invoke; live text; audio connected
+Action 5 -> RaidersMenuAction.Invoke; live text; audio connected
+Action 6 -> RaidersMenuAction.Invoke; live text; audio connected
+Code key 0 -> RaidersMenuAction.Invoke; live text; audio connected
+Code key 1 -> RaidersMenuAction.Invoke; live text; audio connected
+Code key 2 -> RaidersMenuAction.Invoke; live text; audio connected
+Code key 3 -> RaidersMenuAction.Invoke; live text; audio connected
+Code key 4 -> RaidersMenuAction.Invoke; live text; audio connected
+Code key 5 -> RaidersMenuAction.Invoke; live text; audio connected
+Code key 6 -> RaidersMenuAction.Invoke; live text; audio connected
+Code key 7 -> RaidersMenuAction.Invoke; live text; audio connected
+Code key 8 -> RaidersMenuAction.Invoke; live text; audio connected
+Code key 9 -> RaidersMenuAction.Invoke; live text; audio connected
+Code key A -> RaidersMenuAction.Invoke; live text; audio connected
+Code key B -> RaidersMenuAction.Invoke; live text; audio connected
+Code key C -> RaidersMenuAction.Invoke; live text; audio connected
+Code key D -> RaidersMenuAction.Invoke; live text; audio connected
+Code key E -> RaidersMenuAction.Invoke; live text; audio connected
+Code key F -> RaidersMenuAction.Invoke; live text; audio connected
+Erase code -> RaidersMenuAction.Invoke; live text; audio connected
+Existing room-selector text, transform and follower preserved during setup.
+Editor checkbox: RoomChoiceMenu object / RaidersSession / Solo 1v1 Test — Control Both Players.
+Network: Fusion 2.1.3 Host/Client; custom 1v1 lobby; ready gate; server validates sender slot; cancellation and timeout; no authority bypass.
+Avatar SDK: 40.0.1; authenticated user and entitlement; invisible local tracked entity; remote pose streaming; explicit fallback marker.
+Fusion App ID configured: True

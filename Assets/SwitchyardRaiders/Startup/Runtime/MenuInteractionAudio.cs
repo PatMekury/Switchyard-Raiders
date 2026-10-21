@@ -7,9 +7,10 @@ namespace SwitchyardRaiders.Startup
     {
         public AudioSource hoverSource, clickSource, transitionSource;
         public AudioClip hoverClip, confirmClip, backClip, beginClip, menuTransitionClip;
-        [Tooltip("Imported for the future game countdown; not played by room selection.")]
+        [Tooltip("Played once when both players are ready for the three-second departure countdown.")]
         public AudioClip countdownClip;
         private float nextHover, nextClick, nextTransition;
+        public void PlayCountdown() => Play(transitionSource, countdownClip);
 
         public void Hover()
         {

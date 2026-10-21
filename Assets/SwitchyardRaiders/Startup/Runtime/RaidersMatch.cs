@@ -15,6 +15,8 @@ namespace SwitchyardRaiders.Startup
         public float distance, speed;
         // -2 company train, -1 loose, 0/1 player, -3 delivered.
         public int owner = -2;
+        public int order, leader = -1;
+        public float chainOffset;
     }
     [Serializable] public sealed class RaidersDevice
     {
@@ -39,7 +41,7 @@ namespace SwitchyardRaiders.Startup
         {
             practice = solo; winner = -1; elapsed = 0; companyDistance = 8; revision++;
             for (int i = 0; i < 2; i++) players[i] = new RaidersTrain { distance = Home(i) };
-            for (int i = 0; i < CargoCount; i++) cargo[i] = new RaidersCargo { distance = Wrap(8 - (i + 1) * Spacing) };
+            for (int i = 0; i < CargoCount; i++) cargo[i] = new RaidersCargo { distance = Wrap(8 - (i + 1) * Spacing), order = i + 1 };
             for (int i = 0; i < SiteCount; i++) devices[i] = new RaidersDevice();
         }
         public static float Wrap(float d) => Mathf.Repeat(d, Length);
@@ -90,7 +92,14 @@ namespace SwitchyardRaiders.Startup
                         float error = Mathf.Abs(Delta(c.distance + Spacing * .5f, Site(index) + devices[index].aim));
                         if (error < best) { best = error; hit = i; }
                     }
-                    if (hit >= 0) { cargo[hit].owner = -1; } else reason = "Shot missed. Device spent.";
+                    if (hit >= 0)
+                    {
+                        int previousOwner=cargo[hit].owner, firstOrder=cargo[hit].order;
+                        // Cutting a coupling releases the complete chain behind it.
+                        for(int i=0;i<cargo.Length;i++)if(cargo[i].owner==previousOwner && cargo[i].order>=firstOrder)
+                        {cargo[i].chainOffset=(cargo[i].order-firstOrder)*Spacing;cargo[i].leader=hit;cargo[i].owner=-1;}
+                    }
+                    else reason = "Shot missed. Device spent.";
                     break;
                 default: reason = "Unknown action."; return false;
             }
@@ -105,7 +114,6 @@ namespace SwitchyardRaiders.Startup
                 var t = players[p]; t.speed = Mathf.MoveTowards(t.speed, t.throttle * 1.5f, dt * 1.5f);
                 t.distance = Wrap(t.distance + t.speed * dt);
             }
-            int[] chain = { 0, 0 };
             for (int i = 0; i < cargo.Length; i++)
             {
                 var c = cargo[i];
@@ -114,10 +122,11 @@ namespace SwitchyardRaiders.Startup
                 else if (c.owner >= 0)
                 {
                     var t = players[c.owner]; c.speed = t.speed;
-                    c.distance = Wrap(t.distance - (++chain[c.owner]) * Spacing);
+                    c.distance = Wrap(t.distance - c.order * Spacing);
                 }
                 else
                 {
+                    if(c.leader!=i)continue;
                     float slope = .18f * Mathf.PI / 8 * Mathf.Sin(c.distance * Mathf.PI / 8);
                     c.speed = Mathf.Clamp(c.speed - slope * dt * 3, -1, 1);
                     c.speed = Mathf.MoveTowards(c.speed, 0, .035f * dt);
@@ -127,16 +136,25 @@ namespace SwitchyardRaiders.Startup
                         int count = 0; for (int j = 0; j < cargo.Length; j++) if (cargo[j].owner == p) count++;
                         float rear = Wrap(players[p].distance - (count + 1) * Spacing);
                         if (Mathf.Abs(Delta(c.distance, rear)) < .12f && Mathf.Abs(c.speed - players[p].speed) < .45f)
-                        { c.owner = p; revision++; break; }
+                        {
+                            for(int j=0;j<cargo.Length;j++)if(cargo[j].owner==-1 && cargo[j].leader==i)
+                            {cargo[j].owner=p;cargo[j].order=count+1+Mathf.RoundToInt(cargo[j].chainOffset/Spacing);cargo[j].leader=-1;}
+                            revision++; break;
+                        }
                     }
                 }
+            }
+            for(int i=0;i<cargo.Length;i++)
+            {
+                var c=cargo[i];
+                if(c.owner==-1 && c.leader>=0 && c.leader!=i){c.distance=Wrap(cargo[c.leader].distance-c.chainOffset);c.speed=cargo[c.leader].speed;}
             }
             for (int p = 0; p < (practice ? 1 : 2); p++)
             {
                 bool full = true; int count = 0;
                 for (int i = 0; i < cargo.Length; i++) if (cargo[i].owner == p)
-                { count++; if (Mathf.Abs(Delta(cargo[i].distance, Home(p))) > 1.6f) full = false; }
-                if (count == 0 || !full || Mathf.Abs(Delta(players[p].distance, Home(p))) > 1.6f) continue;
+                { count++; if (Mathf.Abs(Delta(cargo[i].distance, Home(p))) > 2.4f) full = false; }
+                if (count == 0 || !full || Mathf.Abs(Delta(players[p].distance, Home(p))) > 2.4f) continue;
                 for (int i = 0; i < cargo.Length; i++) if (cargo[i].owner == p) cargo[i].owner = -3;
                 players[p].score += count; revision++;
                 if (players[p].score >= DeliveryTarget) { winner = p; players[0].throttle = players[1].throttle = 0; }
