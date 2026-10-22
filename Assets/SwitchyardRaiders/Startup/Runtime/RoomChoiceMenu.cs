@@ -8,6 +8,9 @@ namespace SwitchyardRaiders.Startup
     public sealed class RoomChoiceMenu : MonoBehaviour
     {
         public LaunchSequence launch;
+        public RaidersRoom roomUnderstanding;
+        private int roomRequest;
+        private bool requestingRoom;
         public SeatedPanelFollow follower;
         public Canvas canvas;
         public CanvasGroup group;
@@ -76,8 +79,35 @@ namespace SwitchyardRaiders.Startup
             transition = null;
         }
 
-        public void ChooseRealRoom() => Choose(false);
-        public void ChooseVirtualRoom() => Choose(true);
+        public async void ChooseRealRoom()
+        {
+            if (!IsOpen || busy || requestingRoom || group.alpha < .99f) return;
+            int request = ++roomRequest; requestingRoom = true; realButton.interactable = false;
+            try
+            {
+                if (!roomUnderstanding) { status.text = "Room service missing. Choose Virtual Room."; return; }
+                bool loaded = await roomUnderstanding.Load();
+                if (!this || request != roomRequest || !IsOpen) return;
+                status.text = roomUnderstanding.Status;
+                if (loaded && roomUnderstanding.TryPlace(launch.headset, out _)) Choose(false);
+                else status.text = roomUnderstanding.Status;
+            }
+            finally
+            {
+                if (this && request == roomRequest) { requestingRoom = false; realButton.interactable = !busy; }
+            }
+        }
+        private void Update()
+        {
+            if (requestingRoom && IsOpen && roomUnderstanding) status.text = roomUnderstanding.Status;
+        }
+        public void ChooseVirtualRoom()
+        {
+            if (!IsOpen || busy || group.alpha < .99f) return;
+            ++roomRequest; requestingRoom = false;
+            if (roomUnderstanding) roomUnderstanding.CancelSelection();
+            Choose(true);
+        }
 
         private void Choose(bool useVirtual)
         {

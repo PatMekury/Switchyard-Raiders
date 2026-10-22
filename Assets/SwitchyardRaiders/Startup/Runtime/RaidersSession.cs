@@ -29,6 +29,7 @@ namespace SwitchyardRaiders.Startup
         public event Action Changed;
         public event Action<int, ulong, byte[]> AvatarPacket;
         public RaidersAvatars avatars;
+        public RaidersVoice voice;
         public bool EditorTestEnabled
         {
             get
@@ -116,8 +117,14 @@ namespace SwitchyardRaiders.Startup
                     throw new OperationCanceledException();
                 await identityTask;
                 if(ticket!=generation)return;
-                var go = new GameObject("Raiders session runner"); go.transform.SetParent(transform);
-                var active = go.AddComponent<NetworkRunner>(); runner = active; active.AddCallbacks(this);
+                var proof = await RaidersAuthentication.FreshProof(connecting.Token);
+                if(ticket!=generation)return;
+                var auth = new Photon.Realtime.AuthenticationValues(avatars.UserId.ToString(System.Globalization.CultureInfo.InvariantCulture))
+                { AuthType = Photon.Realtime.CustomAuthenticationType.Oculus };
+                auth.AddAuthParameter("userid", auth.UserId);
+                auth.AddAuthParameter("nonce", proof);
+                if (!voice) throw new InvalidOperationException("Photon Voice service is not configured.");
+                var active = voice.CreateRunner(transform); runner = active; active.AddCallbacks(this);
                 var result = await active.StartGame(new StartGameArgs
                 {
                     GameMode = route == "public" ? GameMode.AutoHostOrClient : route == "host" ? GameMode.Host : GameMode.Client,
@@ -126,10 +133,12 @@ namespace SwitchyardRaiders.Startup
                     PlayerCount = 2, IsVisible = route == "public", IsOpen = true,
                     EnableClientSessionCreation = route != "join",
                     SessionProperties = new Dictionary<string, SessionProperty> { { "sr_rules", 1 }, { "sr_players", 2 } },
-                    StartGameCancellationToken = connecting.Token
+                    StartGameCancellationToken = connecting.Token,
+                    AuthValues = auth
                 });
                 if (ticket != generation) return;
                 if (!result.Ok) throw new InvalidOperationException("Connection failed: " + result.ShutdownReason);
+                voice.Joined(avatars.UserId);
                 RoomCode = route == "public" ? "Public 1v1" : code;
                 lastPacket = Time.unscaledTime;
                 if (active.IsServer)
@@ -249,6 +258,7 @@ namespace SwitchyardRaiders.Startup
         }
         private async Task StopRunner()
         {
+            if (voice) voice.Stop();
             var previous=runner;runner=null;
             if(!previous)return;
             previous.RemoveCallbacks(this);
@@ -260,7 +270,7 @@ namespace SwitchyardRaiders.Startup
             Match=null;IsLocal=false;RoomCode="";ControlledSlot=0;Countdown=0;
             for(int i=0;i<2;i++){occupied[i]=0;ready[i]=false;owners[i]=PlayerRef.None;nextCommand[i]=nextAvatar[i]=0;}
         }
-        private void OnDestroy(){++generation;connecting?.Cancel();connecting?.Dispose();if(runner){runner.RemoveCallbacks(this);_ = runner.Shutdown();}}
+        private void OnDestroy(){if(voice)voice.Stop();++generation;connecting?.Cancel();connecting?.Dispose();if(runner){runner.RemoveCallbacks(this);_ = runner.Shutdown();}}
         private void Send(Packet p){if(runner && runner.IsRunning)runner.SendReliableDataToServer(ReliableKey.FromInts(1,++packetSequence,0,0),Encoding.UTF8.GetBytes(JsonUtility.ToJson(p)));}
         private void SendTo(PlayerRef player,Packet p){if(runner && runner.IsRunning)runner.SendReliableDataToPlayer(player,ReliableKey.FromInts(1,++packetSequence,0,0),Encoding.UTF8.GetBytes(JsonUtility.ToJson(p)));}
         private void Broadcast()

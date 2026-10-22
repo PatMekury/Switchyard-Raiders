@@ -5,6 +5,8 @@ namespace SwitchyardRaiders.Startup
     public sealed class RaidersTable : MonoBehaviour
     {
         public RaidersSession session;
+        public RoomChoiceMenu roomMenu;
+        public RaidersRoom roomUnderstanding;
         public LaunchSequence launch;
         public Transform headset, root, company;
         public Transform[] locomotives, wagons, devices;
@@ -12,16 +14,26 @@ namespace SwitchyardRaiders.Startup
         public Renderer[] wagonMarkers, deviceMarkers;
         public Material neutral, playerOne, playerTwo, spent;
         private bool positioned;
-        public void Show()
+        public bool Show()
         {
             if(!positioned)
             {
                 if(launch && launch.headset)headset=launch.headset;
                 var forward=Vector3.ProjectOnPlane(headset.forward,Vector3.up).normalized;
-                root.position=headset.position+forward*1.2f+Vector3.down*.5f;
-                root.rotation=Quaternion.LookRotation(forward,Vector3.up);positioned=true;
+                if (roomMenu && !roomMenu.IsVirtual)
+                {
+                    if (!roomUnderstanding || !roomUnderstanding.TryPlace(headset, out var pose)) return false;
+                    root.SetPositionAndRotation(pose.position, pose.rotation);
+                }
+                else
+                {
+                    root.position=headset.position+forward*1.2f+Vector3.down*.5f;
+                    root.rotation=Quaternion.LookRotation(forward,Vector3.up);
+                }
+                positioned=true;
             }
             root.gameObject.SetActive(true);
+            return true;
         }
         public void Hide(){root.gameObject.SetActive(false);positioned=false;}
         private static void Place(Transform model,float distance)

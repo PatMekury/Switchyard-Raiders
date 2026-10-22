@@ -30,3 +30,4 @@ Discarded initial sample: reload setting was changed after the Play request; its
 2026-10-18T10:17:43 | None | Enter Play: 10.929 seconds
 2026-10-18T10:32:25 | None | Enter Play: 11.810 seconds
 2026-10-21T05:16:49 | None | Enter Play: 19.025 seconds
+2026-10-21T18:03:13 | None | Enter Play: 23.169 seconds

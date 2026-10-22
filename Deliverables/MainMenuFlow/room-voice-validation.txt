@@ -1,0 +1,2 @@
+PASS: scene and prefab room/voice references, one MRUK, manual permission ownership, inactive runner, recorder permission gate, remote playback, active Fusion/Voice IDs and scanned-room yard placement.
+No Play Mode, APK build, microphone capture or headset test was performed.

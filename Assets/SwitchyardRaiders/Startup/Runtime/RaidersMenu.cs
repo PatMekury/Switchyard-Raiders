@@ -43,7 +43,7 @@ namespace SwitchyardRaiders.Startup
         public void OpenSettings()
         {
             Show("settings","SETTINGS");message.text="Menu sounds use the SR_Startup mixer.";
-            Set(0,AudioListener.volume>.01f?"Sound: on":"Sound: muted","sound");Set(1,"Change room","room");Back();
+            Set(0,AudioListener.volume>.01f?"Sound: on":"Sound: muted","sound");Set(1,"Change room","room");VoiceButtons();Back();
         }
         private void Show(string next,string title)
         {
@@ -77,6 +77,9 @@ namespace SwitchyardRaiders.Startup
                 case "practice":session.StartPractice();break;
                 case "test":session.StartEditorTest();break;
                 case "ready":session.ToggleReady();break;
+                case "mute":session.voice.ToggleMute();VoiceButtons();break;
+                case "voice_retry":session.voice.Retry();break;
+                case "reposition":table.Hide();OpenYard();break;
                 case "leave":session.Leave();break;
                 case "retry":session.Retry();break;
                 case "rematch":session.Rematch();break;
@@ -97,7 +100,7 @@ namespace SwitchyardRaiders.Startup
                 case "fire":session.Command(RaidersAction.Fire,site);break;
                 case "controls":ShowControls();break;
                 case "devices":ShowDevices();break;
-                case "pause":Show("pause","MATCH MENU");message.text="The shared yard continues running.";Set(0,"Return to controls","controls");Set(1,"Leave match","leave");break;
+                case "pause":Show("pause","MATCH MENU");message.text="The shared yard continues running.";Set(0,"Return to controls","controls");Set(1,"Leave match","leave");Set(2,"Reposition yard","reposition");VoiceButtons();break;
                 default:
                     if(command=="erase"){if(joinCode.Length>0)joinCode=joinCode.Substring(0,joinCode.Length-1);UpdateCode();}
                     else if(command.StartsWith("key:") && joinCode.Length<6){joinCode+=command.Substring(4);UpdateCode();}
@@ -112,12 +115,13 @@ namespace SwitchyardRaiders.Startup
             if(phase==RaidersSessionPhase.Idle){table.Hide();GoHome();}
             else if(phase==RaidersSessionPhase.Playing)
             {
-                if(previousPhase!=phase){table.Show();site=0;aim=0;ShowControls();}
+                if(previousPhase!=phase){site=0;aim=0;OpenYard();}
             }
             else
             {
                 Show("session",phase==RaidersSessionPhase.Finished?"DELIVERIES COMPLETE":"DEPARTURE BOARD");
                 message.text=session.Status;detail.text=session.RoomCode;
+                if (!session.IsLocal && phase != RaidersSessionPhase.Leaving) VoiceButtons();
                 if(phase==RaidersSessionPhase.Ready || phase==RaidersSessionPhase.Waiting)Set(0,session.LocalReady?"Not ready":"Ready","ready");
                 if(phase==RaidersSessionPhase.Failed)Set(0,"Retry connection","retry");
                 if(phase==RaidersSessionPhase.Finished)Set(0,"Rematch","rematch");
@@ -126,6 +130,19 @@ namespace SwitchyardRaiders.Startup
                 if(phase==RaidersSessionPhase.Failed || phase==RaidersSessionPhase.Leaving)table.Hide();
             }
             previousPhase=phase;
+        }
+        private void VoiceButtons()
+        {
+            if (!session.voice) return;
+            Set(3,session.voice.Muted ? "Unmute microphone" : "Mute microphone","mute");
+            if (session.voice.Active) Set(4,"Retry voice / microphone","voice_retry");
+        }
+        private void OpenYard()
+        {
+            if (table.Show()) { ShowControls(); return; }
+            Show("placement","YARD PLACEMENT");
+            message.text=table.roomUnderstanding ? table.roomUnderstanding.Status : "Room placement unavailable.";
+            Set(0,"Retry placement","reposition");Set(5,"Leave yard","leave");
         }
         private void ShowControls()
         {
@@ -139,9 +156,14 @@ namespace SwitchyardRaiders.Startup
         {
             if(!screen.activeSelf || Time.unscaledTime<nextDisplay)return;nextDisplay=Time.unscaledTime+.1f;
             if(session.Phase==RaidersSessionPhase.Countdown)message.text="Departing in "+Mathf.CeilToInt(session.Countdown)+"…";
+            if (session.voice && (page=="settings" || page=="session" || page=="pause"))
+            {
+                detail.text=(page=="session" ? session.RoomCode+"   " : "")+session.voice.Status;
+                VoiceButtons();
+            }
             if(session.Phase!=RaidersSessionPhase.Playing || session.Match==null)return;
             var m=session.Match;int p=session.ControlledSlot;
-            detail.text="CONTROLLING PLAYER "+(p+1)+"     P1 "+m.players[0].score+" / 3     P2 "+m.players[1].score+" / 3";
+            if(page!="pause")detail.text="CONTROLLING PLAYER "+(p+1)+"     P1 "+m.players[0].score+" / 3     P2 "+m.players[1].score+" / 3";
             if(page=="devices")
             {
                 message.text="Emplacement "+(site+1)+"   •   "+m.players[p].devices+" devices left\nFiring window: "+Mathf.RoundToInt(m.Window(site)*100)+"%   Aim: "+aim.ToString("0.0");

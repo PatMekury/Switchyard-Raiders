@@ -22,7 +22,20 @@ namespace SwitchyardRaiders.Editor
         {
             var manifest = Path.Combine(path, "src/main/AndroidManifest.xml");
             NormalizeSupportedDevices(manifest);
+            ValidatePermissions(manifest);
             Debug.Log("Switchyard Raiders build supportedDevices: " + ReadDevices(manifest));
+        }
+
+        private static void ValidatePermissions(string path)
+        {
+            var document = new XmlDocument(); document.Load(path);
+            var ns = new XmlNamespaceManager(document.NameTable); ns.AddNamespace("android", AndroidNamespace);
+            foreach (var permission in new[] { "com.oculus.permission.USE_SCENE", "android.permission.RECORD_AUDIO" })
+                if (document.SelectSingleNode("/manifest/uses-permission[@android:name='" + permission + "']", ns) == null)
+                    throw new BuildFailedException("Missing required runtime permission in generated manifest: " + permission);
+            var manual = document.SelectSingleNode("/manifest/application/meta-data[@android:name='unityplayer.SkipPermissionsDialog']", ns) as XmlElement;
+            if (manual == null || manual.GetAttribute("value", AndroidNamespace) != "true")
+                throw new BuildFailedException("Unity automatic permission prompts must be disabled; RaidersPermissions owns the dialogs.");
         }
 
         private static XmlElement DevicesElement(XmlDocument document)

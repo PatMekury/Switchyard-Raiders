@@ -1,0 +1,18 @@
+Captured on Quest 3, package com.Lumever.SwitchyardRaiders, 2026-10-21.
+Repeated device failure:
+NullReferenceException in UnityEngine.Rendering.Universal.UniversalRenderPipeline..ctor
+ -> UniversalRenderPipelineAsset.CreatePipeline
+ -> RenderPipelineAsset.InternalCreatePipeline
+ -> RenderPipelineManager.TryPrepareRenderPipeline
+
+Read-only inspection of the last build's data.unity3d:
+GraphicsSettings.m_CustomRenderPipeline: null
+GraphicsSettings.m_CurrentRenderPipelineGlobalSettings: null
+QualitySettings: Mobile, with a non-null customRenderPipeline reference.
+
+Correction: assign the existing Mobile_RPAsset to GraphicsSettings.defaultRenderPipeline.
+Editor validation: URP runtime shaders (including both core blit shaders), textures,
+and default volume settings resolve. Added an Android build preflight for these settings.
+
+Pending: rebuild, inspect the new player data's active global-settings reference,
+and verify rendering/passthrough on the headset. No new APK built or installed by this fix.

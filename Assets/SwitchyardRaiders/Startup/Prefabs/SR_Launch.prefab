@@ -6129,6 +6129,8 @@ GameObject:
   - component: {fileID: 5125611831050852355}
   - component: {fileID: 3337748426051272232}
   - component: {fileID: 3290312550844882723}
+  - component: {fileID: 6498626196289150156}
+  - component: {fileID: 5581015463009161351}
   m_Layer: 0
   m_Name: SR_RoomChoice
   m_TagString: Untagged
@@ -6169,6 +6171,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SwitchyardRaiders.Startup.RoomChoiceMenu
   launch: {fileID: 1256796305401658958}
+  roomUnderstanding: {fileID: 5581015463009161351}
   follower: {fileID: 8138790503299873059}
   canvas: {fileID: 5579259782680030234}
   group: {fileID: 4420092832718983967}
@@ -6283,6 +6286,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::SwitchyardRaiders.Startup.RaidersSession
   solo1v1TestControlBothPlayers: 0
   avatars: {fileID: 3290312550844882723}
+  voice: {fileID: 6498626196289150156}
 --- !u!114 &5125611831050852355
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6341,6 +6345,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SwitchyardRaiders.Startup.RaidersTable
   session: {fileID: 1954955885887251492}
+  roomMenu: {fileID: 4682652772996043878}
+  roomUnderstanding: {fileID: 5581015463009161351}
   launch: {fileID: 1256796305401658958}
   headset: {fileID: 5430914065386897684}
   root: {fileID: 2441834943010330663}
@@ -6410,6 +6416,32 @@ MonoBehaviour:
   trackingSpace: {fileID: 5430914065386838096}
   remoteSeat: {fileID: 7788148919212605852}
   remoteFallback: {fileID: 2827318653401963845}
+--- !u!114 &6498626196289150156
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1808312691014780476}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 56643aa65929662458eb15bfeb3048b9, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Assembly-CSharp::SwitchyardRaiders.Startup.RaidersVoice
+  runnerPrefab: {fileID: 2662425050856248619, guid: 8abb4f301d5b0724a97317e412a95a4a, type: 3}
+--- !u!114 &5581015463009161351
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1808312691014780476}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a267fefca1462d44da033d83c4385fb2, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Assembly-CSharp::SwitchyardRaiders.Startup.RaidersRoom
+  mruk: {fileID: 3769820823375271851}
 --- !u!1 &1865631528737226186
 GameObject:
   m_ObjectHideFlags: 0
@@ -9202,6 +9234,7 @@ Transform:
   - {fileID: 2240335197795532915}
   - {fileID: 5281445219198698323}
   - {fileID: 2441834943010330663}
+  - {fileID: 5269774448675276283}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1256796305401658958
@@ -21931,6 +21964,99 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6511795877467597992}
   m_CullTransparentMesh: 1
+--- !u!1 &6522516618805587822
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5269774448675276283}
+  - component: {fileID: 3769820823375271851}
+  m_Layer: 0
+  m_Name: Room understanding
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5269774448675276283
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6522516618805587822}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1879302554566374038}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &3769820823375271851
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6522516618805587822}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: de27d7f2f20024e18898941292d6c164, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: meta.xr.mrutilitykit::Meta.XR.MRUtilityKit.MRUK
+  <SceneLoadedEvent>k__BackingField:
+    m_PersistentCalls:
+      m_Calls: []
+  <RoomCreatedEvent>k__BackingField:
+    m_PersistentCalls:
+      m_Calls: []
+  <RoomUpdatedEvent>k__BackingField:
+    m_PersistentCalls:
+      m_Calls: []
+  <RoomRemovedEvent>k__BackingField:
+    m_PersistentCalls:
+      m_Calls: []
+  EnableWorldLock: 1
+  TrackingSpaceOffset:
+    e00: 1
+    e01: 0
+    e02: 0
+    e03: 0
+    e10: 0
+    e11: 1
+    e12: 0
+    e13: 0
+    e20: 0
+    e21: 0
+    e22: 1
+    e23: 0
+    e30: 0
+    e31: 0
+    e32: 0
+    e33: 1
+  SceneSettings:
+    <TrackerConfiguration>k__BackingField:
+      <KeyboardTrackingEnabled>k__BackingField: 0
+      <QRCodeTrackingEnabled>k__BackingField: 0
+    <TrackableAdded>k__BackingField:
+      m_PersistentCalls:
+        m_Calls: []
+    <TrackableRemoved>k__BackingField:
+      m_PersistentCalls:
+        m_Calls: []
+    DataSource: 0
+    RoomIndex: -1
+    RoomPrefabs: []
+    SceneJsons: []
+    LoadSceneOnStartup: 0
+    EnableHighFidelityScene: 0
+    SeatWidth: 0.6
+    SceneJson:
+  _immersiveSceneDebuggerPrefab: {fileID: 0}
 --- !u!1 &6548505471008599165
 GameObject:
   m_ObjectHideFlags: 0
