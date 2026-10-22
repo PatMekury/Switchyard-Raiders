@@ -16,7 +16,8 @@ namespace SwitchyardRaiders.Startup
         public string Status { get; private set; }="Avatars not initialized";
         private RaidersAvatarEntity localAvatar, remoteAvatar;
         private GameObject manager;
-        private byte[] buffer;
+        // The SDK reads Length before resizing, so even the first snapshot needs a non-null buffer.
+        private byte[] buffer = Array.Empty<byte>();
         private float nextSend;
         private Task identity;
         private bool destroyed;
@@ -83,7 +84,7 @@ namespace SwitchyardRaiders.Startup
         private void Clear()
         {
             if(localAvatar)Destroy(localAvatar.gameObject);if(remoteAvatar)Destroy(remoteAvatar.gameObject);if(manager)Destroy(manager);
-            localAvatar=remoteAvatar=null;manager=null;buffer=null;
+            localAvatar=remoteAvatar=null;manager=null;buffer=Array.Empty<byte>();
             if(remoteFallback)remoteFallback.SetActive(false);
         }
         private void OnDestroy(){destroyed=true;session.Changed-=SessionChanged;session.AvatarPacket-=Receive;Clear();}

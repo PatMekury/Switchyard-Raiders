@@ -1,0 +1,69 @@
+Device inspection: 2026-10-21 (headset local timestamps)
+Package: com.Lumever.SwitchyardRaiders
+Installed version: 0.1.0, code 3; last updated 22:21:22.
+Observed running PID: 12377.
+
+Permissions: dumpsys package reports com.oculus.permission.USE_SCENE,
+horizonos.permission.USE_SCENE, and android.permission.RECORD_AUDIO granted.
+The flags do not establish that a runtime permission dialog appeared in this
+session. Both permissions were already granted when inspected. No permissions
+were granted, revoked, or reset during this inspection.
+
+Room access: runtime anchor logs confirm 17 / 17 anchors located for this
+package (for example 22:25:00.397). This proves room anchor access, but not
+successful board placement. MRUK/application state query could not finish
+after the application paused.
+
+Microphone: cmd appops get reports RECORD_AUDIO allow, with a recent
+12.066-second access duration. This confirms microphone access occurred,
+not that audible speech was transmitted or received through Photon Voice.
+
+Photon: no retained successful authentication/room-join evidence was found
+in the available app log window. Realtime fallback warnings at 22:25:31
+report SendOutgoingCommands not called for >5 seconds and warn of a
+disconnect after 60 seconds in background. End-to-end voice and current
+Fusion/Voice room states remain unverified.
+
+Runtime error: repeated NullReferenceException in
+Oculus.Avatar2.OvrAvatarEntity.RecordStreamData_AutoBuffer, called by
+SwitchyardRaiders.Startup.RaidersAvatars.Update, approximately every 0.1s.
+This is a separate confirmed avatar-streaming defect; no fix applied in
+this inspection.
+
+Tools: official Meta MCP/CLI device, package, appops and ADB log inspection.
+Although xroperator status reported no desktop proxy, xroperator detect
+successfully connected to the on-device AgenticXR server and exposed Unity
+inspection tools. openxr_get_instance_info identified Switchyard Raiders.
+The app paused for headset sleep at 22:25:25 and XR entered IDLE.
+unity_diagnose and unity_get_scene_hierarchy then timed out waiting for the
+Unity main thread. Requested that the user wear the headset and foreground
+the app's online lobby to finish live verification.
+
+No build, installation, restart, permission change, or runtime mutation
+was performed.
+
+FOLLOW-UP: user returned to the app and spoke (approximately 22:29-22:31).
+Meta XR Operator confirmed XR_SESSION_STATE_FOCUSED and successfully read
+live Unity component state in SR_Launch.
+
+Room: RaidersRoom.Status = "Room scan loaded. Placing the yard inside your
+room." Loading=False. The live hierarchy contains two loaded rooms with
+floors, walls, tables, other semantic anchors, and GLOBAL_MESH objects.
+Permission prompt appearance remains unproven; room data loading is confirmed.
+
+Fusion: NetworkRunner.IsRunning=True, IsCloudReady=True, IsServer=True.
+SessionInfo valid, region us, private room SR1_400B20, PlayerCount=1,
+MaxPlayers=2. IsClient=False and IsConnectedToServer=False are recorded
+alongside its host/server role, not interpreted as a failed cloud connection.
+
+Voice: FusionVoiceClient.ClientState=Joined. RaidersVoice.Active=True,
+Muted=False, Status="Voice connected • microphone on".
+Recorder.RecordingEnabled=True, TransmitEnabled=True, LevelMeter present.
+VoiceDetection=True, threshold 0.01. Sequential live samples of
+Recorder.IsCurrentlyTransmitting returned True, False, False while the user
+was speaking. This confirms local capture and active voice transmission
+occurred. Android appops also reported RECORD_AUDIO allow (running).
+
+No second player was connected; remote receipt, playback, and two-way audio
+quality have not been verified. The previously identified avatar exception
+remains a separate unresolved defect.

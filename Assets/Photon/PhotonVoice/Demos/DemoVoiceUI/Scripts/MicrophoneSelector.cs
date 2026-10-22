@@ -33,6 +33,7 @@
 
     public class MicrophoneSelector : VoiceComponent
     {
+        [System.Serializable]
         public class MicrophoneSelectorEvent: UnityEvent<MicType, DeviceInfo>
         {}
 

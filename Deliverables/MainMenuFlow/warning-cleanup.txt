@@ -1,0 +1,12 @@
+Warning cleanup — 2026-10-21
+
+FIXED: Photon DemoVoiceUI.MicrophoneSelectorEvent now has [System.Serializable], matching Unity 6.6 serialization requirements.
+FIXED: Unity AssetDatabase.ForceReserializeAssets with ReserializeMetadata upgraded libopus_egpv.so.meta and libwebrtc-audio.so.meta from PluginImporter version 1 to 3.
+VERIFIED: Both plugin GUIDs preserved; Android ARMv7 enabled; Editor and Any Platform disabled. Quest player architecture remains ARM64. Forced reimport emitted no legacy importer warnings. Target editor reports scriptCompilationFailed=False.
+
+REMAINING EDITOR CONFIGURATION:
+- Meta XR AI Tools Bridge firewall rule is absent. Windows reports the current network as Public. The official Meta > AI Tools > Windows Firewall > Configure workflow requests Windows elevation and creates an inbound TCP rule for bridge ports. The installed SDK's default rule uses profile=any. No firewall or network-profile changes were made. LAN headset-to-editor AI tools need this access; local desktop MCP does not.
+- Unity AI account API requires network availability, signed-in status, and a cloud project connection. The editor reports network reachability but no CloudProjectSettings.projectId. Link this project to the intended Unity Cloud project through Unity's Services/account UI, with the correct signed-in Unity organization. No cloud project was invented or linked, and no package warning was suppressed.
+
+No Play Mode, build, headset test, Unity restart, package upgrade, or changes to the user's launch-scene edits.
+Photon SDK updates may replace the local Serializable compatibility fix and importer metadata; retain these changes in version control.
