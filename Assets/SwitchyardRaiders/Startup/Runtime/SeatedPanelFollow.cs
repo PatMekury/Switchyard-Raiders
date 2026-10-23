@@ -8,7 +8,7 @@ namespace SwitchyardRaiders.Startup
     {
         public Transform head;
         public float distance = .65f;
-        public float heightOffset = -.15f;
+        public float heightOffset = -.08f;
         public float repositionThreshold = .6f;
         public float followSpeed = 3f;
         private readonly HashSet<Object> interactionOwners = new();
@@ -26,7 +26,7 @@ namespace SwitchyardRaiders.Startup
             head = target;
             if (!head) return;
             forward = FlatForward();
-            transform.SetPositionAndRotation(head.position + forward * distance + head.up * heightOffset,
+            transform.SetPositionAndRotation(head.position + forward * distance + Vector3.up * heightOffset,
                 Quaternion.LookRotation(forward, Vector3.up));
             initialized = true;
             moving = false;
@@ -43,11 +43,11 @@ namespace SwitchyardRaiders.Startup
             if (!head || InteractionHeld) return;
             if (!initialized) { Snap(head); return; }
             // Match Spirit Sling CanvasFollowPlayer: smoothed flat heading,
-            // head-relative vertical offset, and world-space movement hysteresis.
+            // gravity-aligned vertical offset, and world-space movement hysteresis.
             float t = Mathf.Clamp01(followSpeed * Time.deltaTime);
             var flat = Vector3.ProjectOnPlane(head.forward, Vector3.up);
             forward = Vector3.Lerp(forward, flat, t).normalized;
-            Vector3 wanted = head.position + forward * distance + head.up * heightOffset;
+            Vector3 wanted = head.position + forward * distance + Vector3.up * heightOffset;
             float delta = Vector3.Distance(wanted, transform.position);
             if (delta < .02f) moving = false;
             else if (delta > repositionThreshold) moving = true;

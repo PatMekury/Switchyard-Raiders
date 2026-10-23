@@ -9,6 +9,9 @@ namespace SwitchyardRaiders.Startup
     {
         public LaunchSequence launch;
         public RaidersRoom roomUnderstanding;
+        public RaidersTable table;
+        public GameObject cancelModeButton;
+        public bool Transitioning => busy || requestingRoom;
         private int roomRequest;
         private bool requestingRoom;
         public SeatedPanelFollow follower;
@@ -17,6 +20,8 @@ namespace SwitchyardRaiders.Startup
         public GameObject panelRoot;
         public GameObject virtualRoom;
         public Text heading, status;
+        public GameObject roomUnavailablePopup;
+        public Text roomUnavailableHeading, roomUnavailableMessage;
         public UnityEngine.UI.Button realButton, virtualButton;
         public ModularRoomMenuMotion motion;
         public GameObject selectionRoot;
@@ -30,11 +35,17 @@ namespace SwitchyardRaiders.Startup
         private bool busy;
         private bool roomPositioned;
         private Coroutine transition;
+        private Vector3 menuScale;
+        private float menuHeight;
+        private bool gameplayView;
 
         private void Awake()
         {
+            menuScale = canvas.transform.localScale;
+            menuHeight = follower.heightOffset;
             panelRoot.SetActive(false);
             virtualRoom.SetActive(false);
+            if (roomUnavailablePopup) roomUnavailablePopup.SetActive(false);
             group.alpha = 0;
             group.interactable = group.blocksRaycasts = false;
             launch.onTitleReady.AddListener(Show);
@@ -42,12 +53,24 @@ namespace SwitchyardRaiders.Startup
 
         private void OnDestroy() => launch.onTitleReady.RemoveListener(Show);
 
+        private IEnumerator Start()
+        {
+            if (launch.IsDesktopPreview) yield break;
+            // Wait for tracked startup; this check never prompts or blocks the VR option.
+            while (launch.Phase == LaunchGate.Phase.WaitingForRoom) yield return null;
+            if (roomUnderstanding) roomUnderstanding.CheckOnStartup(launch.headset);
+        }
+
         public void Show()
         {
             if (IsOpen) return;
+            SetGameplayView(false);
+            if(table)table.PrepareModeChange();
+            if(cancelModeButton)cancelModeButton.SetActive(HasSelection);
             if (menuAudio) menuAudio.MenuOpened();
             if (mainMenu) mainMenu.Hide();
             if (selectionRoot) selectionRoot.SetActive(true);
+            if (roomUnavailablePopup) roomUnavailablePopup.SetActive(false);
             realButton.interactable = virtualButton.interactable = true;
             IsOpen = true;
             canvas.worldCamera = launch.headset.GetComponent<Camera>();
@@ -75,27 +98,57 @@ namespace SwitchyardRaiders.Startup
             if (launch.titleFollow) launch.titleFollow.enabled = false;
             group.alpha = 1;
             group.interactable = group.blocksRaycasts = true;
-            status.text = launch.IsDesktopPreview || launch.HasRoomFrame ? "Touch a destination, or point and pinch" : "Room video unavailable. Choose Virtual Room.";
+            status.text = "Play in VR anywhere, or use your saved room.";
             transition = null;
         }
 
         public async void ChooseRealRoom()
         {
             if (!IsOpen || busy || requestingRoom || group.alpha < .99f) return;
+            if(roomUnderstanding && roomUnderstanding.HasPreview)
+            {
+                if(roomUnderstanding.Confirm(launch.headset))Choose(false);
+                else {if(table)table.CancelPreview();ShowRoomUnavailable("Placement changed",roomUnderstanding.Status);}
+                return;
+            }
             int request = ++roomRequest; requestingRoom = true; realButton.interactable = false;
             try
             {
-                if (!roomUnderstanding) { status.text = "Room service missing. Choose Virtual Room."; return; }
-                bool loaded = await roomUnderstanding.Load();
+                if (!roomUnderstanding) { ShowRoomUnavailable("Room unavailable", "Play in VR instead."); return; }
+                bool loaded = await roomUnderstanding.Load(launch.headset);
                 if (!this || request != roomRequest || !IsOpen) return;
                 status.text = roomUnderstanding.Status;
-                if (loaded && roomUnderstanding.TryPlace(launch.headset, out _)) Choose(false);
-                else status.text = roomUnderstanding.Status;
+                if (loaded && roomUnderstanding.TryPlace(launch.headset, out var pose))
+                {if(table)table.Preview(pose,roomUnderstanding.PreviewScale);status.text=roomUnderstanding.Status;}
+                else ShowRoomUnavailable(roomUnderstanding.Availability == RaidersRoom.RoomAvailability.NotFound ? "Room not found" : "Room unavailable", roomUnderstanding.Status);
             }
             finally
             {
                 if (this && request == roomRequest) { requestingRoom = false; realButton.interactable = !busy; }
             }
+        }
+        public void SetGameplayView(bool gameplay)
+        {
+            if (gameplayView == gameplay) return;
+            gameplayView = gameplay;
+            // Keep the controls above the yard instead of occluding the playfield.
+            canvas.transform.localScale = menuScale * (gameplay ? .76f : 1f);
+            follower.heightOffset = gameplay ? .11f : menuHeight;
+            follower.Snap(launch.headset);
+        }
+        private void ShowRoomUnavailable(string title, string explanation)
+        {
+            status.text = explanation;
+            if (!roomUnavailablePopup) return;
+            roomUnavailableHeading.text = title;
+            roomUnavailableMessage.text = explanation;
+            selectionRoot.SetActive(false);
+            roomUnavailablePopup.SetActive(true);
+        }
+        public void DismissRoomUnavailable()
+        {
+            if (roomUnavailablePopup) roomUnavailablePopup.SetActive(false);
+            if (IsOpen) selectionRoot.SetActive(true);
         }
         private void Update()
         {
@@ -105,7 +158,9 @@ namespace SwitchyardRaiders.Startup
         {
             if (!IsOpen || busy || group.alpha < .99f) return;
             ++roomRequest; requestingRoom = false;
-            if (roomUnderstanding) roomUnderstanding.CancelSelection();
+            if (roomUnderstanding) {roomUnderstanding.CancelSelection();roomUnderstanding.CancelPreview();}
+            if(table)table.CancelPreview();
+            DismissRoomUnavailable();
             Choose(true);
         }
 
@@ -114,7 +169,7 @@ namespace SwitchyardRaiders.Startup
             if (!IsOpen || busy || group.alpha < .99f) return;
             if (!useVirtual && !launch.IsDesktopPreview && !launch.HasRoomFrame)
             {
-                status.text = "Room video unavailable. Choose Virtual Room.";
+                ShowRoomUnavailable("Room video unavailable", "Play in VR instead.");
                 return;
             }
             transition = StartCoroutine(ChangeRoom(useVirtual));
@@ -155,10 +210,34 @@ namespace SwitchyardRaiders.Startup
             yield return HidePieces();
             busy = false;
             transition = null;
-            if (mainMenu) mainMenu.Show();
+            if(table)table.ModeChosen();
+            if(mainMenu && mainMenu.navigation && mainMenu.navigation.session.Phase!=RaidersSessionPhase.Idle)mainMenu.navigation.ResumeSessionView();
+            else if(mainMenu)mainMenu.Show();
             if (useVirtual) onVirtualRoomSelected.Invoke(); else onRealRoomSelected.Invoke();
         }
 
+        public void AbortPendingSelection()
+        {
+            if(!IsOpen && !busy && !requestingRoom)return;
+            ++roomRequest;requestingRoom=false;
+            if(transition!=null)StopCoroutine(transition);transition=null;busy=false;IsOpen=false;
+            if(roomUnderstanding){roomUnderstanding.CancelSelection();roomUnderstanding.CancelPreview();}
+            if(table)table.CancelPreview();
+            if(roomUnavailablePopup)roomUnavailablePopup.SetActive(false);
+            if(cancelModeButton)cancelModeButton.SetActive(false);
+            selectionRoot.SetActive(false);virtualRoom.SetActive(HasSelection && IsVirtual);
+            if(launch.passthrough){launch.passthrough.hidden=HasSelection && IsVirtual;launch.passthrough.textureOpacity=HasSelection && IsVirtual?0:1;}
+            group.alpha=1;group.interactable=group.blocksRaycasts=true;
+        }
+        public void CancelModeChange()
+        {
+            if(!HasSelection || busy)return;
+            ++roomRequest;requestingRoom=false;
+            if(roomUnderstanding){roomUnderstanding.CancelSelection();roomUnderstanding.CancelPreview();}
+            if(table)table.CancelPreview();
+            IsOpen=false;panelRoot.SetActive(false);
+            if(mainMenu.navigation.session.Phase!=RaidersSessionPhase.Idle)mainMenu.navigation.ResumeSessionView();else mainMenu.Show();
+        }
         public void Hide()
         {
             if (!IsOpen || busy) return;

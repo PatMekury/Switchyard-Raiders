@@ -89,7 +89,7 @@ namespace SwitchyardRaiders.Editor
             motion.realChoice = Group(real); motion.virtualChoice = Group(vr);
             motion.realRoomImage = menu.realButton.GetComponent<RoomSelectorFeedback>().replaceableIcon;
             motion.virtualRoomImage = menu.virtualButton.GetComponent<RoomSelectorFeedback>().replaceableIcon;
-            motion.pieces = new[] { Piece(title.rectTransform,0), Piece(rail.rectTransform,.05f), Piece(real,.10f), Piece(vr,.17f), Piece(menu.status.rectTransform,.22f) };
+            motion.pieces = new[] { Piece(title.rectTransform,0), Piece(rail.rectTransform,.05f), Piece(vr,.10f), Piece(real,.17f), Piece(menu.status.rectTransform,.22f) };
             motion.enabled = false; menu.motion = motion;
             menu.selectionRoot = root.gameObject;
             MainMenu(menu);
@@ -107,7 +107,7 @@ namespace SwitchyardRaiders.Editor
         {
             var button = virtualChoice ? menu.virtualButton : menu.realButton;
             var group = Rect(virtualChoice ? "Virtual room pieces" : "Your room pieces",parent,
-                new Vector2(virtualChoice ? 145 : -145, -36),new Vector2(278,240));
+                new Vector2(virtualChoice ? -145 : 145, -36),new Vector2(278,240));
             Undo.RecordObject(button.transform,"Position room button");
             button.transform.SetParent(group,false);
             Place((RectTransform)button.transform,new Vector2(0,-78),new Vector2(258,74));

@@ -326,3 +326,7 @@ Examples of understandable reversals include:
 - You reveal a track connection that makes your planned interception route obvious, giving the opponent time to respond.
 
 These moments depend on visible causes: location, slope, route, timing, aim, and train position. Players should be able to explain what happened and make their next decision immediately.
+
+## Tabletop integration decisions (2026-10-22)
+
+The user has now specified a six-delivery team target for 2v2. Wagons should appear gradually, and freight should continue replenishing until a team delivers six. This supersedes the previously undecided four-player target and finite freight supply. The current integration uses one incoming wagon every 20 seconds with six active cargo slots recycled after delivery; that interval is provisional rather than a finalized balancing rule. See TABLETOP_INTEGRATION.md for the implemented flow and validation limits.

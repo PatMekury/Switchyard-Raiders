@@ -11,6 +11,7 @@ namespace SwitchyardRaiders.Startup
         public RaidersAvatarInput tracking;
         public GameObject fallback;
         private bool initialized;
+        public bool AvatarLoaded { get; private set; }
         protected override void Awake() { } // Configure before native entity creation.
         private IEnumerator Start()
         {
@@ -34,7 +35,7 @@ namespace SwitchyardRaiders.Startup
             // An explicit player marker stays visible if identity/avatar loading is unavailable.
         }
         protected override void OnUserAvatarLoaded()
-        {base.OnUserAvatarLoaded();if(fallback)fallback.SetActive(false);}
+        {base.OnUserAvatarLoaded();AvatarLoaded=true;if(fallback)fallback.SetActive(false);}
         public void Receive(byte[] data)
         {if(initialized && !local && HasJoints)ApplyStreamData(data);}
     }

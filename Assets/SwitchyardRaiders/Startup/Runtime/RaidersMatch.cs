@@ -35,13 +35,22 @@ namespace SwitchyardRaiders.Startup
         public float companyDistance = 8, elapsed;
         public int winner = -1, revision;
         public bool practice;
+        public int playerCount=2;
+        public int[] teamScores = new int[2];
+        public float nextFreight;
+        // Provisional integration cadence; freight never appears all at once.
+        public const float FreightInterval=20;
+        public int Target => playerCount==4 ? 6 : DeliveryTarget;
+        public int Team(int slot) => playerCount==4 ? slot%2 : slot;
+        public float HomeFor(int slot) => Home(Team(slot));
 
         public RaidersMatch() { Reset(false); }
-        public void Reset(bool solo)
+        public void Reset(bool solo, int count=2)
         {
+            playerCount=count==4?4:2; players=new RaidersTrain[playerCount]; teamScores=new int[2]; nextFreight=0;
             practice = solo; winner = -1; elapsed = 0; companyDistance = 8; revision++;
-            for (int i = 0; i < 2; i++) players[i] = new RaidersTrain { distance = Home(i) };
-            for (int i = 0; i < CargoCount; i++) cargo[i] = new RaidersCargo { distance = Wrap(8 - (i + 1) * Spacing), order = i + 1 };
+            for (int i = 0; i < playerCount; i++) players[i] = new RaidersTrain { distance = Wrap(HomeFor(i)+(i/2)*2.2f) };
+            for (int i = 0; i < CargoCount; i++) cargo[i] = new RaidersCargo { owner=-4, distance = Wrap(8 - (i + 1) * Spacing), order = i + 1 };
             for (int i = 0; i < SiteCount; i++) devices[i] = new RaidersDevice();
         }
         public static float Wrap(float d) => Mathf.Repeat(d, Length);
@@ -66,7 +75,7 @@ namespace SwitchyardRaiders.Startup
         public bool Apply(int slot, RaidersAction action, int index, float value, out string reason)
         {
             reason = "";
-            if (slot < 0 || slot > 1 || (practice && slot != 0) || winner >= 0) { reason = "This player cannot act."; return false; }
+            if (slot < 0 || slot >= playerCount || (practice && slot != 0) || winner >= 0) { reason = "This player cannot act."; return false; }
             if (float.IsNaN(value) || float.IsInfinity(value)) { reason = "Invalid control value."; return false; }
             var train = players[slot];
             switch (action)
@@ -88,7 +97,7 @@ namespace SwitchyardRaiders.Startup
                     for (int i = 0; i < cargo.Length; i++)
                     {
                         var c = cargo[i];
-                        if (c.owner == -1 || c.owner == -3) continue;
+                        if (c.owner == -1 || c.owner <= -3) continue;
                         float error = Mathf.Abs(Delta(c.distance + Spacing * .5f, Site(index) + devices[index].aim));
                         if (error < best) { best = error; hit = i; }
                     }
@@ -108,8 +117,16 @@ namespace SwitchyardRaiders.Startup
         public void Step(float dt)
         {
             if (winner >= 0 || dt <= 0 || dt > .1f) return;
-            elapsed += dt; companyDistance = Wrap(companyDistance + .65f * dt);
-            for (int p = 0; p < (practice ? 1 : 2); p++)
+            elapsed += dt;
+            if(elapsed>=nextFreight)
+            {
+                int order=0;for(int i=0;i<cargo.Length;i++)if(cargo[i].owner==-2)order=Mathf.Max(order,cargo[i].order);
+                for(int i=0;i<cargo.Length;i++)if(cargo[i].owner<=-3)
+                {cargo[i]=new RaidersCargo{owner=-2,order=order+1,distance=Wrap(companyDistance-(order+1)*Spacing),speed=.65f};revision++;break;}
+                nextFreight=elapsed+FreightInterval;
+            }
+            companyDistance = Wrap(companyDistance + .65f * dt);
+            for (int p = 0; p < (practice ? 1 : playerCount); p++)
             {
                 var t = players[p]; t.speed = Mathf.MoveTowards(t.speed, t.throttle * 1.5f, dt * 1.5f);
                 t.distance = Wrap(t.distance + t.speed * dt);
@@ -117,8 +134,8 @@ namespace SwitchyardRaiders.Startup
             for (int i = 0; i < cargo.Length; i++)
             {
                 var c = cargo[i];
-                if (c.owner == -3) continue;
-                if (c.owner == -2) { c.distance = Wrap(companyDistance - (i + 1) * Spacing); c.speed = .65f; }
+                if (c.owner <= -3) continue;
+                if (c.owner == -2) { c.distance = Wrap(companyDistance - c.order * Spacing); c.speed = .65f; }
                 else if (c.owner >= 0)
                 {
                     var t = players[c.owner]; c.speed = t.speed;
@@ -131,7 +148,7 @@ namespace SwitchyardRaiders.Startup
                     c.speed = Mathf.Clamp(c.speed - slope * dt * 3, -1, 1);
                     c.speed = Mathf.MoveTowards(c.speed, 0, .035f * dt);
                     c.distance = Wrap(c.distance + c.speed * dt);
-                    for (int p = 0; p < (practice ? 1 : 2); p++)
+                    for (int p = 0; p < (practice ? 1 : playerCount); p++)
                     {
                         int count = 0; for (int j = 0; j < cargo.Length; j++) if (cargo[j].owner == p) count++;
                         float rear = Wrap(players[p].distance - (count + 1) * Spacing);
@@ -149,15 +166,15 @@ namespace SwitchyardRaiders.Startup
                 var c=cargo[i];
                 if(c.owner==-1 && c.leader>=0 && c.leader!=i){c.distance=Wrap(cargo[c.leader].distance-c.chainOffset);c.speed=cargo[c.leader].speed;}
             }
-            for (int p = 0; p < (practice ? 1 : 2); p++)
+            for (int p = 0; p < (practice ? 1 : playerCount); p++)
             {
                 bool full = true; int count = 0;
                 for (int i = 0; i < cargo.Length; i++) if (cargo[i].owner == p)
-                { count++; if (Mathf.Abs(Delta(cargo[i].distance, Home(p))) > 2.4f) full = false; }
-                if (count == 0 || !full || Mathf.Abs(Delta(players[p].distance, Home(p))) > 2.4f) continue;
+                { count++; if (Mathf.Abs(Delta(cargo[i].distance, HomeFor(p))) > 2.4f) full = false; }
+                if (count == 0 || !full || Mathf.Abs(Delta(players[p].distance, HomeFor(p))) > 2.4f) continue;
                 for (int i = 0; i < cargo.Length; i++) if (cargo[i].owner == p) cargo[i].owner = -3;
-                players[p].score += count; revision++;
-                if (players[p].score >= DeliveryTarget) { winner = p; players[0].throttle = players[1].throttle = 0; }
+                players[p].score += count; teamScores[Team(p)] += count; revision++;
+                if (teamScores[Team(p)] >= Target) { winner = Team(p); foreach(var train in players)train.throttle=0; }
             }
         }
     }

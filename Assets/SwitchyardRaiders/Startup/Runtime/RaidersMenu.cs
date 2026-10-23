@@ -28,16 +28,17 @@ namespace SwitchyardRaiders.Startup
         };
         private void Awake(){AudioListener.volume=PlayerPrefs.GetFloat("SR.Volume",1);screen.SetActive(false);session.Changed+=Refresh;}
         private void OnDestroy(){session.Changed-=Refresh;}
-        public void OpenPublic(){Show("public","FIND A MATCH");message.text="Two raiders. Three deliveries. One winner.";Set(0,"1v1 — Find a match","find");Back();}
-        public void OpenFriends(){Show("friends","PLAY WITH FRIENDS");message.text="Host a private yard or enter a friend's code.";Set(0,"Host private 1v1","host");Set(1,"Join with code","code");Back();}
+        public void OpenPublic()
+        {
+            Show("public","FIND A MATCH");message.text=session.Capacity==4?"2v2 - shared home. Six team deliveries.":"1v1 - three deliveries.";
+            Set(0,"Find "+session.Capacity+"-player match","find");Set(1,"Players: "+session.Capacity+" (change)","players");Back();
+        }
+        public void OpenFriends(){Show("friends","PLAY WITH FRIENDS");message.text="Host a private yard or enter a friend's code.";Set(0,"Host private "+session.Capacity+" players","host");Set(1,"Join with code","code");Set(2,"Players: "+session.Capacity+" (change)","players");Back();}
         public void OpenPractice()
         {
             Show("learn","LEARN & PRACTICE");message.text="Learn to intercept, collect and deliver freight.";
             Set(0,"Learn the controls","lesson");Set(1,"Practice yard","practice");
-#if UNITY_EDITOR
-            // The checkbox is inspected only here; online routes never consult it.
-            if(session.EditorTestEnabled)Set(2,"Solo 1v1 — control both players","test");
-#endif
+            if(session.DeveloperTestingEnabled)Set(2,"Developer solo test","testmenu");
             Back();
         }
         public void OpenSettings()
@@ -47,6 +48,7 @@ namespace SwitchyardRaiders.Startup
         }
         private void Show(string next,string title)
         {
+            main.roomMenu.SetGameplayView(session.Phase == RaidersSessionPhase.Playing);
             if(page!=next && main.roomMenu.menuAudio)main.roomMenu.menuAudio.MenuOpened();
             main.Hide();screen.SetActive(true);page=next;heading.text=title;message.text="";detail.text="";
             foreach(var a in actions)a.gameObject.SetActive(false);
@@ -65,11 +67,15 @@ namespace SwitchyardRaiders.Startup
         {var a=actions[index];a.command=command;a.label.text=label;a.gameObject.SetActive(true);a.GetComponent<Button>().interactable=true;}
         private void Back()=>Set(5,"Back","back");
         private void GoHome()
-        {screen.SetActive(false);page="";main.Show();}
+        {screen.SetActive(false);page="";main.roomMenu.SetGameplayView(false);main.Show();}
         public void Invoke(string command)
         {
             switch(command)
             {
+                case "players":session.SelectPlayerCount(session.Capacity==2?4:2);if(page=="public")OpenPublic();else OpenFriends();break;
+                case "testmenu":Show("test","SIMULATED PLAYERS");message.text="Local simulation only. No extra Meta accounts or network clients.";Set(0,"Two simulated slots","test2");Set(1,"Four simulated slots (2v2)","test4");Back();break;
+                case "test2":session.SelectPlayerCount(2);session.StartEditorTest();break;
+                case "test4":session.SelectPlayerCount(4);session.StartEditorTest();break;
                 case "find": session.FindMatch();break;
                 case "host": session.HostPrivate();break;
                 case "code": Show("code","JOIN A PRIVATE YARD");joinCode="";foreach(var a in keypad)a.gameObject.SetActive(true);Set(4,"Join room","join");Back();UpdateCode();break;
@@ -79,7 +85,11 @@ namespace SwitchyardRaiders.Startup
                 case "ready":session.ToggleReady();break;
                 case "mute":session.voice.ToggleMute();VoiceButtons();break;
                 case "voice_retry":session.voice.Retry();break;
-                case "reposition":table.Hide();OpenYard();break;
+                case "reposition":table.ResetView();OpenYard();break;
+                case "view":ShowView();break;
+                case "resetview":table.ResetView();ShowView();break;
+                case "explore":table.ToggleExploration();ShowView();break;
+                case "comfort":table.manipulation.comfort=Mathf.Repeat(table.manipulation.comfort+.25f,1.25f);ShowView();break;
                 case "leave":session.Leave();break;
                 case "retry":session.Retry();break;
                 case "rematch":session.Rematch();break;
@@ -98,9 +108,9 @@ namespace SwitchyardRaiders.Startup
                 case "aimleft":aim=Mathf.Clamp(aim-.2f,-1,1);session.Command(RaidersAction.Aim,site,aim);break;
                 case "aimright":aim=Mathf.Clamp(aim+.2f,-1,1);session.Command(RaidersAction.Aim,site,aim);break;
                 case "fire":session.Command(RaidersAction.Fire,site);break;
-                case "controls":ShowControls();break;
+                case "controls":if(table.manipulation)table.manipulation.Suspend();ShowControls();break;
                 case "devices":ShowDevices();break;
-                case "pause":Show("pause","MATCH MENU");message.text="The shared yard continues running.";Set(0,"Return to controls","controls");Set(1,"Leave match","leave");Set(2,"Reposition yard","reposition");VoiceButtons();break;
+                case "pause":ShowPause();break;
                 default:
                     if(command=="erase"){if(joinCode.Length>0)joinCode=joinCode.Substring(0,joinCode.Length-1);UpdateCode();}
                     else if(command.StartsWith("key:") && joinCode.Length<6){joinCode+=command.Substring(4);UpdateCode();}
@@ -109,9 +119,30 @@ namespace SwitchyardRaiders.Startup
         }
         private void UpdateCode(){message.text=joinCode.PadRight(6,'–');actions[4].GetComponent<Button>().interactable=joinCode.Length==6;}
         private void ShowLesson(){Show("lesson","LEARN THE YARD");message.text=lessons[tutorialStep];detail.text=(tutorialStep+1)+" / "+lessons.Length;Set(0,tutorialStep==lessons.Length-1?"Enter practice yard":"Next","next");Back();}
+        public void ResumeSessionView()
+        {
+            main.roomMenu.panelRoot.SetActive(true);main.roomMenu.group.alpha=1;main.roomMenu.group.interactable=main.roomMenu.group.blocksRaycasts=true;
+            if(session.Phase==RaidersSessionPhase.Playing)OpenYard();else Refresh();
+        }
+        private void ShowPause()
+        {
+            if(table.manipulation)table.manipulation.Suspend();
+            Show("pause","MATCH MENU");message.text="The shared yard keeps running.";
+            Set(0,"Train controls","controls");Set(1,"Table view / comfort","view");Set(2,"Switch VR / MR","room");VoiceButtons();
+            if(session.CanSwitchPlayers)Set(4,"Next simulated slot","switch");Set(5,"Leave match","leave");
+        }
+        private void ShowView()
+        {
+            Show("view","PERSONAL TABLE VIEW");message.text="Touch the table rim with both hands and close both hands to grab. Move, turn, or spread your hands to resize. Open either hand to stop.";
+            Set(0,table.roomMenu.IsVirtual?"Recenter table in front":"Return to scanned table","resetview");
+            Set(2,table.Exploration?"Return to tabletop":"Explore beyond table","explore");
+            Set(3,"Comfort: "+Mathf.RoundToInt(table.manipulation.comfort*100)+"%","comfort");Set(4,"Match menu","pause");Set(5,"Train controls","controls");
+        }
         private void Refresh()
         {
             var phase=session.Phase;
+            if(phase==RaidersSessionPhase.Idle || phase==RaidersSessionPhase.Failed || phase==RaidersSessionPhase.Leaving)main.roomMenu.AbortPendingSelection();
+            if(main.roomMenu.IsOpen && phase!=RaidersSessionPhase.Idle && phase!=RaidersSessionPhase.Failed && phase!=RaidersSessionPhase.Leaving){previousPhase=phase;return;}
             if(phase==RaidersSessionPhase.Idle){table.Hide();GoHome();}
             else if(phase==RaidersSessionPhase.Playing)
             {
@@ -119,10 +150,13 @@ namespace SwitchyardRaiders.Startup
             }
             else
             {
+                if(phase==RaidersSessionPhase.Ready || phase==RaidersSessionPhase.Waiting)table.Hide();
                 Show("session",phase==RaidersSessionPhase.Finished?"DELIVERIES COMPLETE":"DEPARTURE BOARD");
                 message.text=session.Status;detail.text=session.RoomCode;
                 if (!session.IsLocal && phase != RaidersSessionPhase.Leaving) VoiceButtons();
-                if(phase==RaidersSessionPhase.Ready || phase==RaidersSessionPhase.Waiting)Set(0,session.LocalReady?"Not ready":"Ready","ready");
+                if(phase==RaidersSessionPhase.Ready || phase==RaidersSessionPhase.Waiting)
+                {Set(0,session.LocalReady?"Not ready":session.CanSwitchPlayers?"Ready all simulated slots":"Ready","ready");
+                message.text=session.Status+"\n";for(int i=0;i<session.Capacity;i++)message.text+=session.SlotLabel(i)+(i%2==0?"   ":"\n");}
                 if(phase==RaidersSessionPhase.Failed)Set(0,"Retry connection","retry");
                 if(phase==RaidersSessionPhase.Finished)Set(0,"Rematch","rematch");
                 if(phase!=RaidersSessionPhase.Leaving)Set(5,phase==RaidersSessionPhase.Failed?"Main menu":"Cancel / leave","leave");
@@ -135,14 +169,15 @@ namespace SwitchyardRaiders.Startup
         {
             if (!session.voice) return;
             Set(3,session.voice.Muted ? "Unmute microphone" : "Mute microphone","mute");
-            if (session.voice.Active) Set(4,"Retry voice / microphone","voice_retry");
+            if (session.voice.Active && !(page=="pause" && session.CanSwitchPlayers)) Set(4,"Retry voice / microphone","voice_retry");
         }
+        public void PlacementLost(){if(page!="placement") {Show("placement","TABLETOP UNAVAILABLE");message.text=table.roomUnderstanding.Status;Set(0,"Retry / switch VR","room");Set(5,"Leave match","leave");}}
         private void OpenYard()
         {
             if (table.Show()) { ShowControls(); return; }
             Show("placement","YARD PLACEMENT");
             message.text=table.roomUnderstanding ? table.roomUnderstanding.Status : "Room placement unavailable.";
-            Set(0,"Retry placement","reposition");Set(5,"Leave yard","leave");
+            Set(0,"Retry / change room","room");Set(5,"Leave yard","leave");
         }
         private void ShowControls()
         {
@@ -163,14 +198,15 @@ namespace SwitchyardRaiders.Startup
             }
             if(session.Phase!=RaidersSessionPhase.Playing || session.Match==null)return;
             var m=session.Match;int p=session.ControlledSlot;
-            if(page!="pause")detail.text="CONTROLLING PLAYER "+(p+1)+"     P1 "+m.players[0].score+" / 3     P2 "+m.players[1].score+" / 3";
+            detail.text=(session.CanSwitchPlayers?"SIMULATED ":"")+"P"+(p+1)+"   TEAM 1 "+m.teamScores[0]+"/"+m.Target+"   TEAM 2 "+m.teamScores[1]+"/"+m.Target;
             if(page=="devices")
             {
                 message.text="Emplacement "+(site+1)+"   •   "+m.players[p].devices+" devices left\nFiring window: "+Mathf.RoundToInt(m.Window(site)*100)+"%   Aim: "+aim.ToString("0.0");
                 actions[4].GetComponent<Button>().interactable=m.devices[site].owner==p && !m.devices[site].spent && m.Window(site)>=.99f;
             }
-            else if(page=="drive")message.text="Speed "+m.players[p].speed.ToString("0.0")+"   •   "+session.Status;
-            if(page=="pause" && session.CanSwitchPlayers)Set(2,"Switch controlled player","switch");
+            else if(page=="drive")message.text="Speed "+m.players[p].speed.ToString("0.0")+"   •   "+session.Status+"\n"+(table.manipulation.Dragging?"Both hands grabbed - move, turn, or spread to resize.":table.manipulation.GrabCount==1?"One hand grabbed - grab the rim with your other hand.":"Touch the rim and close BOTH hands to move / resize.");
+            if(page=="pause" && session.voice)detail.text+="\n"+session.voice.Status;
+            if(page=="pause" && session.CanSwitchPlayers)Set(4,"Next simulated slot","switch");
         }
     }
 }

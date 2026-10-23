@@ -25,6 +25,7 @@ namespace SwitchyardRaiders.Editor
             Check(m.players[0].devices==5 && m.players[1].devices==6,"Inventory crossed player ownership");
             Check(!m.Apply(1,RaidersAction.Aim,0,.5f,out _),"Opponent aimed owned device");
             Check(!m.Apply(1,RaidersAction.Fire,0,0,out _),"Opponent fired owned device");
+            for(int i=0;i<m.cargo.Length;i++)m.cargo[i].owner=-2;
             m.cargo[2].distance=RaidersMatch.Site(0)-RaidersMatch.Spacing*.5f;
             Check(m.Apply(0,RaidersAction.Fire,0,0,out _),"Full-window fire rejected");
             Check(m.devices[0].spent && m.cargo[2].owner==-1 && m.cargo[5].owner==-1 && m.cargo[1].owner==-2,"Cut must release the downstream chain");
@@ -35,7 +36,7 @@ namespace SwitchyardRaiders.Editor
             Check(m.winner==1 && m.players[1].score==3 && m.players[0].score==0,"Complete home delivery did not resolve P2 victory");
             Check(!m.Apply(0,RaidersAction.Throttle,0,1,out _),"Input accepted after match completion");
             m.Reset(false);
-            Check(m.winner==-1 && m.players[0].score==0 && m.players[1].score==0 && m.players[0].devices==6 && m.cargo[0].owner==-2,"Rematch retained stale state");
+            Check(m.winner==-1 && m.players[0].score==0 && m.players[1].score==0 && m.players[0].devices==6 && m.cargo[0].owner==-4,"Rematch retained stale state");
             m.Reset(true);Check(!m.Apply(1,RaidersAction.Throttle,0,1,out _),"Practice opponent accepted input");
             Directory.CreateDirectory("Deliverables/MainMenuFlow");
             File.WriteAllText("Deliverables/MainMenuFlow/rules-checks.txt",passed+" Edit Mode assertions passed. Production RaidersMatch model only; no Play Mode, network, UI or headset execution.\n");
