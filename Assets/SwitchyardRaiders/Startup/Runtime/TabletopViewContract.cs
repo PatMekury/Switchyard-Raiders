@@ -16,6 +16,14 @@ namespace SwitchyardRaiders.Startup
         public const float CupLipHeight = .168f;
         public const float TrayBottom = -.035f;
         public const float NormalScale = 1f;
+        // Calculated pre-redesign MR land (no observed session). Double BOTH axes first,
+        // then preserve their area in the new square instead of stretching finished meshes.
+        public const float PreviousMRLandWidth = 1.50f, PreviousMRLandDepth = 1.05f;
+        public const float MRLinearEnlargement = 2f;
+        public const float MinimumMRRimBelowEyes = .25f;
+        public static float MRBaselineScale(float previousScale) => MRLinearEnlargement *
+            Mathf.Sqrt(PreviousMRLandWidth*PreviousMRLandDepth) / UsableLandSize *
+            (float.IsNaN(previousScale)||float.IsInfinity(previousScale)?1f:Mathf.Clamp(previousScale,.35f,1f));
         public const float NearEdgeDistance = .30f;
         public const float RimBelowEyes = .50f;
         public const float GameplayScale = 1f;

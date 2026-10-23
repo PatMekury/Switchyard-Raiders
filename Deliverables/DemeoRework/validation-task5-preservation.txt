@@ -1,0 +1,15 @@
+Task 5 audit versus Task5Baseline; initial HEAD c0a9e67. Existing modified play-entry-timings.txt preserved.
+Changed existing Startup files: Prefabs/SR_Launch.prefab, Runtime/RaidersMenu.cs, Runtime/RaidersRoom.cs, Runtime/RaidersTable.cs, Runtime/TabletopViewContract.cs, Runtime/TabletopViewMath.cs, Scenes/SR_Launch.unity
+PASS all other existing Startup files byte-identical: simulation/session/auth transport, voice, avatars, two-hand classifier/state machine, room selection/permissions, railway and train adapters.
+PASS Prefabs/SR_Launch.prefab: all 1851 object IDs preserved; zero additions/deletions; only RaidersRoom calibration field added (block 5581015463009161351).
+PASS Scenes/SR_Launch.unity: all 1856 object IDs preserved; zero additions/deletions; only RaidersRoom calibration field added (block 1019508386).
+SHA256 Runtime/RaidersSession.cs 070cc6b451f10878043c41cdfa0dd1ecc92f093bee64c3f29351c062f821a813
+SHA256 Runtime/RaidersVoice.cs 570bd252468040f172330d085085f4e471e3ecf2eadacb2e6c26a7ac41a52f67
+SHA256 Runtime/RaidersAvatars.cs 9e75d081462a9225d95c2a860799ea1bb940f2c78bd9fc172598d8b43e813d21
+SHA256 Runtime/RaidersTableManipulation.cs 10521bda7409748fedc5385ce51f002730e4b8f5c5427732586646926d6939b4
+SHA256 Runtime/RoomChoiceMenu.cs a8a3b525b091dcebd9550715241014ef336c2470e98e0f66fac6f363089942b4
+SHA256 Runtime/RaidersPermissions.cs a2597a8549443c653c3037c24c2fdc179a879de4c4dedc2303a4722610ce11f2
+No production mesh, material, animation, LOD, package or XR rig asset edits. Temporary evidence imports removed; no scene dirtied by rendering.
+
+Final connected editor: Switchyard Raiders, Unity 6000.6.0b5, Android, SR_Launch clean, Playing=False, Compiling=False, CompilationFailed=False.
+PASS git diff --check after handoff/contract updates. No temporary evidence Assets remain.

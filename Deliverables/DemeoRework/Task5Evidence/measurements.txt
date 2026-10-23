@@ -1,0 +1,8 @@
+Synthetic Edit Mode MR comparison, not passthrough/native scene or observed headset evidence. Actual retained pre-Task1 and current production meshes. LOD0 forced for consistent detail; no performance claim.
+Before terrain mesh bounds=(1.500000, 0.150000, 1.050000); company authored=(3.780006, 4.358881, 14.800010); effective scale=(0.0036800, 0.0036800, 0.0036800)
+After tray displayed bounds=(3.107594, 0.485263, 3.107594); company authored=(3.780007, 4.358884, 14.800000); effective scale=(0.0239046, 0.0239046, 0.0239046)
+Seated fixed camera=(0.0000, 1.3000, 0.0000) euler=(30.7695, 352.2899, 0.0000) verticalFOV=65. Before illustrative 75cm support, centre=1m; after reachable free MR home=(0.000000, 0.405575, 1.853797)
+relativeZoom=1 presentationScale=2.3904570 outer=3.107594 land=2.509980 company length=0.353788m screen envelope=(17.22, 15.40) percent; terrain pivot=(-0.10948, 0.76414, 0.80864)
+relativeZoom=3 presentationScale=7.1713710 outer=9.322783 land=7.529940 company length=1.061363m screen envelope=(66.59, 47.69) percent; terrain pivot=(-0.10948, 0.76414, 0.80864)
+relativeZoom=6 presentationScale=14.3427400 outer=18.645570 land=15.059880 company length=2.122727m screen envelope=(316.26, 162.05) percent; terrain pivot=(-0.10948, 0.76414, 0.80864)
+Whole board scales together about a terrain pivot under the selected engine. At maximum the train may exceed the frame: this is immersive cab/mechanical inspection. No inverse train scaling or FOV change.

@@ -51,7 +51,12 @@ namespace SwitchyardRaiders.Startup
             presentation.SetPositionAndRotation(position,rotation);
             presentation.localScale=Vector3.one*TabletopViewMath.ClampScale(scale,NormalViewScale);
         }
+        private Pose mrLocalPose;
+        private float mrZoom=1;
+        private int mrVersion;
+        private bool mrSaved;
         private float vrScale=1, homeScale=1;
+        public string PlacementStatus=>roomMenu.IsVirtual?"":(Exploration?"Free MR - not attached to furniture.":"Surface-constrained MR - full tray footprint fits.");
         private bool vrSaved, positioned, matchShown;
         private float nextRoomCheck;
         private Transform[] wagonFront, wagonRear, engineRear;
@@ -92,6 +97,12 @@ namespace SwitchyardRaiders.Startup
         {
             if(manipulation)manipulation.Suspend();
             if(positioned && roomMenu.IsVirtual){vrPose=new Pose(presentation.position,presentation.rotation);vrScale=TabletopViewMath.ClampScale(presentation.localScale.x,1);vrSaved=true;}
+            else if(positioned && roomUnderstanding && roomUnderstanding.TryConfirmed(headset,out var home,out float normal))
+            {
+                mrLocalPose=new Pose(Quaternion.Inverse(home.rotation)*(presentation.position-home.position),Quaternion.Inverse(home.rotation)*presentation.rotation);
+                mrZoom=TabletopViewMath.ClampScale(presentation.localScale.x,normal)/normal;
+                mrVersion=roomUnderstanding.ConfirmationVersion;mrSaved=true;
+            }
         }
         public void ModeChosen()
         {
@@ -113,8 +124,15 @@ namespace SwitchyardRaiders.Startup
                 if(!roomUnderstanding.TryConfirmed(headset,out homePose,out homeScale))return;
             }
             var restored=roomMenu.IsVirtual?vrPose:homePose;
-            presentation.SetPositionAndRotation(restored.position,restored.rotation);presentation.localScale=Vector3.one*TabletopViewMath.ClampScale(roomMenu.IsVirtual?vrScale:homeScale,NormalViewScale);
-            positioned=true;Exploration=false;presentation.gameObject.SetActive(true);
+            float restoredScale=roomMenu.IsVirtual?vrScale:homeScale;
+            if(!roomMenu.IsVirtual && mrSaved && mrVersion==roomUnderstanding.ConfirmationVersion)
+            {
+                var saved=new Pose(homePose.position+homePose.rotation*mrLocalPose.position,homePose.rotation*mrLocalPose.rotation);
+                float savedScale=TabletopViewMath.ClampScale(homeScale*mrZoom,homeScale);
+                if(roomUnderstanding.IsFree || (RaidersRoom.SurfaceClearance(headset,saved.position,savedScale) && roomUnderstanding.FitsConfirmed(saved.position,saved.rotation,savedScale))){restored=saved;restoredScale=savedScale;}
+            }
+            presentation.SetPositionAndRotation(restored.position,restored.rotation);presentation.localScale=Vector3.one*TabletopViewMath.ClampScale(restoredScale,NormalViewScale);
+            positioned=true;Exploration=!roomMenu.IsVirtual && roomUnderstanding.IsFree;presentation.gameObject.SetActive(true);
             UpdateTableVisibility();
             bool playing=session.Phase==RaidersSessionPhase.Playing || session.Phase==RaidersSessionPhase.Finished;
             terrainAssembly.SetActive(playing);root.gameObject.SetActive(playing);
@@ -155,17 +173,38 @@ namespace SwitchyardRaiders.Startup
                 homePose=vrHomePose=vrPose=next;
                 homeScale=vrScale=1;vrSaved=true;
             }
-            if(!roomMenu.IsVirtual && roomUnderstanding.TryConfirmed(headset,out var pose,out float scale)){homePose=pose;homeScale=scale;}
+            if(!roomMenu.IsVirtual)
+            {
+                roomUnderstanding.CancelPreview();CancelPreview();
+                if(roomUnderstanding.IsFree && !roomUnderstanding.RecenterFree(headset))return;
+                if(!roomUnderstanding.TryConfirmed(headset,out var pose,out float scale))return;
+                homePose=pose;homeScale=scale;mrSaved=false;
+            }
             presentation.SetPositionAndRotation(homePose.position,homePose.rotation);presentation.localScale=Vector3.one*homeScale;
-            Exploration=false;UpdateTableVisibility();
+            Exploration=!roomMenu.IsVirtual && roomUnderstanding.IsFree;UpdateTableVisibility();
         }
-        public void ToggleExploration(){if(manipulation)manipulation.Suspend();Exploration=!Exploration;if(!Exploration)ResetView();}
+        public void ToggleExploration()
+        {
+            if(manipulation)manipulation.Suspend();
+            if(roomMenu.IsVirtual){Exploration=!Exploration;if(!Exploration)ResetView();return;}
+            if(!Exploration)
+            {
+                // Detach without changing the accepted pose/zoom; only its constraint changes.
+                if(roomUnderstanding.UseFreePlacement(headset,homePose))Exploration=true;
+            }
+            else if(roomUnderstanding.HasPreview)
+            {
+                if(roomUnderstanding.Confirm(headset)){mrSaved=false;ModeChosen();}
+                else CancelPreview();
+            }
+            else if(roomUnderstanding.TryPlace(headset,out var pose,surfaceOnly:true))Preview(pose,roomUnderstanding.PreviewScale);
+        }
         public bool AcceptView(Vector3 position,Quaternion rotation,float scale)
         {
             if(!TabletopViewMath.Finite(position) || !TabletopViewMath.Finite(rotation*Vector3.forward))return false;
             if(float.IsNaN(scale)||float.IsInfinity(scale)||scale<NormalViewScale||scale>MaximumViewScale)return false;
             if(roomMenu.IsVirtual || Exploration)return true;
-            return roomUnderstanding.FitsConfirmed(position,rotation,scale);
+            return RaidersRoom.SurfaceClearance(headset,position,scale) && roomUnderstanding.FitsConfirmed(position,rotation,scale);
         }
         public void Preview(Pose pose,float scale)
         {
@@ -187,11 +226,14 @@ namespace SwitchyardRaiders.Startup
             // Human avatars follow the normal seating origin, never the inspection-scale branch.
             if(humanPresentation){humanPresentation.SetPositionAndRotation(homePose.position,homePose.rotation);humanPresentation.localScale=Vector3.one;humanPresentation.gameObject.SetActive(presentation.gameObject.activeSelf);}
             if(seats==null)return;
+            float floor=0;bool hasFloor=!roomMenu.IsVirtual && roomUnderstanding && roomUnderstanding.TryFloorHeight(out floor);
             for(int i=0;i<seats.Length;i++)
             {
                 var seat=seats[i];if(!seat)continue;
                 int relative=session.IsLocal?i:(i-session.ControlledSlot+session.Capacity)%session.Capacity;
-                seat.localPosition=TabletopViewMath.SeatPosition(relative,session.Capacity);
+                seat.localPosition=TabletopViewMath.SeatPosition(relative,session.Capacity,NormalViewScale);
+                if(hasFloor)
+                {var p=seat.localPosition;p.y=floor-homePose.position.y;seat.localPosition=p;}
                 var inward=-seat.localPosition;inward.y=0;seat.localRotation=Quaternion.LookRotation(inward);
                 seat.gameObject.SetActive(session.IsOccupied(i) && (session.IsLocal || i!=session.ControlledSlot));
             }

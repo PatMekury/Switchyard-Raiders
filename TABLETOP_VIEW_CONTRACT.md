@@ -1,8 +1,8 @@
-# Tabletop view contract — Tasks 1 and 2
+# Tabletop view contract — Tasks 1–5
 
 Implemented 2026-10-22 in Switchyard Raiders. This supersedes the old rectangular dimensions in TABLETOP_INTEGRATION.md. These are adopted design dimensions, not user-approved measurements or dimensions inferred from Demeo. Subsequent tasks must update this contract and its implementation together.
 
-The executable dimension source is `Assets/SwitchyardRaiders/Startup/Runtime/TabletopViewContract.cs`. All values below are metres at normal personal-view scale. The Blender authoring script reads this file; regenerate and validate assets when changing dimensions. Manufactured profiles, joints and clearance details live in the editable source and must remain consistent with it.
+The executable dimension source is `Assets/SwitchyardRaiders/Startup/Runtime/TabletopViewContract.cs`. Geometry values below are unscaled metres (normal VR); MR multiplies them by the single baseline B defined below. The Blender authoring script reads this file; regenerate and validate assets when changing dimensions. Manufactured profiles, joints and clearance details live in the editable source and must remain consistent with it.
 
 | Contract | Final value |
 |---|---|
@@ -19,23 +19,23 @@ The executable dimension source is `Assets/SwitchyardRaiders/Startup/Runtime/Tab
 | Authored wood rim top / cup lip | y=1.050 / 1.053 |
 | Virtual table local origin | (0,-0.885,0) in personal presentation |
 | Normal VR scale / minimum zoom | 1.0 / 1.0 |
-| Normal MR scale / minimum zoom | Confirmed placement scale / same confirmed scale; existing 0.35–1.0 placement search retained pending Task 5 |
+| Normal MR scale / minimum relative zoom | **B=2.390457** at calculated previous scale 1 / **1.0**; no fit-to-table shrinking |
 | Near edge horizontal clearance | 0.300 forward of current head yaw |
-| Normal centre distance | outer half-depth 0.650 + clearance 0.300 = **0.950** |
-| Wood rim below eyes | 0.500; presentation origin is 0.665 below eyes |
+| Normal centre distance | VR **0.950**; free MR **1.853797** at default B (displayed half-depth + 0.300) |
+| Free normal wood rim below eyes | 0.500; origin below eyes by 0.500 + 0.165*normal scale, subject to MR floor clearance |
 | Gameplay root | y=0.154, unit scale; the personal presentation owns all view scaling |
 | Miniature asset scale | **0.010000 (1:100)** for every authored locomotive; no parent compensation |
 | Relative inspection zoom | **1.0 minimum, 6.0 maximum**, continuous; 3.0 is the comparison midpoint |
 
 The 1.30 m choice keeps the existing rolled cup profiles inside 125 mm rails and makes the frame square, reducing outside area from 2.66 to 1.69 m² (about 36%). It retains the oak, brushed steel, dark metal and brass direction. The structural floor and continuous deep well replace the former tabletop slab arrangement. There is no floating skirt. The land uses a new closed quad-grid source; future hills, buildings, bridges, trees and raised track may extend freely above y=.150. No final town is included.
 
-`TabletopViewMath.ReachablePose` uses current horizontal head direction and the new half-depth. Four human-scale seats are at the same 0.95 m radial offset; two seats remain opposite. Their separate sibling root follows the normal home pose and never the inspection scale. TownFootprint corner anchors bound the usable opening; TerrainDatum is available on the land prefab. Personal presentation remains separate from authoritative `RaidersMatch` values and the tracked rig.
+`TabletopViewMath.ReachablePose` uses current horizontal head direction and the new half-depth. Four human-scale seats use normal displayed half-depth plus 0.30 m radial offset (VR 0.95 m, default MR 1.853797 m); two seats remain opposite. Their separate sibling root follows the normal home pose and never the inspection scale. TownFootprint corner anchors bound the usable opening; TerrainDatum is available on the land prefab. Personal presentation remains separate from authoritative `RaidersMatch` values and the tracked rig.
 
-VR and MR use the same tray/land meshes. `RaidersTable.UpdateTableVisibility` hides only `Supports` in MR and at the existing VR support-hide threshold (1.6×). The structural tray stays visible. MR placement validates the whole outer frame with 15 mm physical edge clearance, not only the green land. The presentation origin is set to physical tabletop height + 0.006 - TrayBottom*scale, so the tray underside is 6 mm above that plane. Anchored resizing corrects origin height to keep that underside on the plane. The preview outline also follows the underside plane.
+VR and MR use the same tray/land meshes. `RaidersTable.UpdateTableVisibility` hides only `Supports` in MR and at the existing VR support-hide threshold (1.6×). The structural tray stays visible. Surface-constrained MR validates the whole outer frame with 15 mm physical edge clearance, not only the land. Free MR is explicitly not attached to furniture and is available when no suitable surface fits. The presentation origin is set to physical tabletop height + 0.006 - TrayBottom*scale, so the tray underside is 6 mm above that plane. Anchored resizing corrects origin height to keep that underside on the plane. The preview outline also follows the underside plane.
 
 Task 2 replaces the temporary fit scale and the provisional 12x cap. `TabletopRailway` adapts the unchanged 32-unit simulation to the calibrated miniature railway. Task 3 replaces contact-only input with two tracked palm grabs anywhere and rigid VR room motion. The attached effects, land, tray, railway and vehicles share one uniform personal-view branch. Human seats, the room, tracked rig, hands and head are outside it.
 
-Task 5 must use `Deliverables/DemeoRework/BASELINE_BEFORE_REWORK.md`. There was no live MR session. The old configured full-scale land was 1.50 x 1.05 m; old confirmed scales could range .35–1.0. Do not mistake the new 1.05 m square land for the user's pre-rework MR baseline or stretch this square frame to satisfy a rectangular target.
+Task 5 uses `Deliverables/DemeoRework/BASELINE_BEFORE_REWORK.md`. There was no live MR session. The old configured full-scale land was 1.50 x 1.05 m; old confirmed scales could range .35–1.0. Do not mistake the new 1.05 m square land for the user's pre-rework MR baseline or stretch this square frame to satisfy a rectangular target.
 
 Assets retain their existing public prefab paths and GUIDs: `PlayTable/Prefabs/SR_PlayTable.prefab`, `TerrainBase/Prefabs/SR_TerrainBase.prefab`, and `Startup/Prefabs/SR_TabletopPresentation.prefab`, beneath `Assets/SwitchyardRaiders/`. New imported geometry is under `RecessedTable/Art` and `RecessedTable/Meshes`. Editable Blender sources and the regeneration script are under `Deliverables/DemeoRework/`. See `01-handoff.md` for validation, recovery and runtime follow-up.
 
@@ -62,7 +62,7 @@ A locomotive center is **+.531543 simulation units** ahead of its existing simul
 
 ## Scale ownership and lifecycle
 
-`RaidersTable.presentation` is the only changing scale owner. `terrainMount`, land and gameplay root have unit local scale; locomotives convert authored metres once with .01. Normal VR is 1; normal MR is its confirmed placement scale `s`. The relative zoom is `presentation.scale / normal`, clamped to **[1,6]**. Thus confirmed MR s=.6 permits physical scale [.6,3.6], subject to surface-fit rejection while anchored; entering exploration allows inspection above the surface-fit limit. Task 5 may change normal MR sizing, but must preserve this relative rule.
+`RaidersTable.presentation` is the only changing scale owner. `terrainMount`, land and gameplay root have unit local scale; locomotives convert authored metres once with .01. Normal VR is 1; normal MR is confirmed baseline `B=MRBaselineScale(previousMRReferenceScale)`. Relative zoom is `presentation.scale / normal`, clamped to **[1,6]**. Default MR permits absolute scales [2.390457,14.342742], subject to footprint and rim-clearance rejection while surface-constrained. Free MR permits the full inspection range. The old .35–1.0 fit search is removed; that range now describes only the previous-board calibration input.
 
 `RaidersTableManipulation` rebases hand samples to the accepted transform after every update, including clamp overshoot and rejected anchored movement. Closing and reopening cannot accumulate a long reverse dead zone. The existing 8 cm separation guard avoids unstable division when hands nearly meet. Regrab begins at the accepted view; reset is exactly normal. Save/restore, mode return, external scale sanitization and `AcceptView` enforce both bounds. No camera FOV manipulation or inverse train scale exists. Rotation remains yaw-only. The existing vignette and input eligibility remain intact.
 
@@ -109,7 +109,7 @@ For accepted scale ratio k, yaw Y, common translation T and world terrain pivot 
 
 `environmentMotion` references the existing unit-scale `SR_VirtualRoom` sibling; no wrapper rig, manager or runner is added. `RoomChoiceMenu` positions that room only on initial VR selection; `RaidersTable` then owns its personal motion/reset. The hidden VR room pose is retained across MR, and reset restores the captured room home consistently with the recentered table home. Human seats still follow normal home at unit scale as Task 2 defined; Task 4 must preserve tracking ownership when adding the local avatar.
 
-Normal-relative zoom remains **[1,6]**, continuous. Every moving sample rebases to the accepted view and latest hand pair, even after clamp overshoot or rejected physical-table fit. Immediate reverse does not consume accumulated overshoot. Both lifecycle and gesture paths clamp. MR physical-fit constraints are intentionally unchanged pending Task 5; exploration permits zoom beyond the physical surface. Task 5 must retain the original pre-rework MR baseline and must not scale the room or rig.
+Normal-relative zoom remains **[1,6]**, continuous. Every moving sample rebases to the accepted view and latest hand pair, even after clamp overshoot or rejected physical-table fit. Immediate reverse does not consume accumulated overshoot. Both lifecycle and gesture paths clamp. Task 5 retains strict footprint validation in surface mode and provides explicit free MR when the enlarged board cannot fit. Its pre-rework baseline and separate multiplier are defined below; room and rig never scale.
 
 **Arbitration:** the pending two-palm candidate, active move and 0.25 s release guard block gameplay and Raiders menu commands. The command boundary rechecks current palm classification to avoid relying only on LateUpdate ordering. Gesture epochs cancel UI clicks begun before a gesture/release even if their click arrives after the guard. Ordinary one-hand menu pointing/pinching remains available; the menu follower is held only while the pair is acquiring/moving. No global UI-intercepting collider or permanently disabled interactor is used. Programmatic room/lifecycle recovery remains callable.
 
@@ -120,7 +120,7 @@ Validation: 59 new synthetic Edit Mode assertions, 58 scale/train-fit assertions
 
 `RaidersAvatars` owns local gameplay presentation independently of Photon. Entering `Playing` (developer solo, practice, or online) requests the existing legitimate Meta Platform initialization -> entitlement -> logged-in user -> access-token path. Solo creates no runner and fabricates no identities. Simulated board slots remain explicitly labeled SIMULATED; their markers are not authenticated avatars. Online transport still obtains its own fresh proof and verifies remote identity at the existing session boundary.
 
-The local `RaidersAvatarEntity` is a unit-scale child of the existing physical `trackingSpace`, outside both `presentation` and `environmentMotion`. It uses SDK `FirstPerson` load/view flags, Half manifestation and Body|Outfit submeshes; head, face, eyes, hair and head accessories are excluded before native creation. SDK default-model loading is disabled, so an account failure cannot become an unlabeled preset. Human body proportions are never multiplied by the 1:100 miniature conversion or 1�6 inspection zoom.
+The local `RaidersAvatarEntity` is a unit-scale child of the existing physical `trackingSpace`, outside both `presentation` and `environmentMotion`. It uses SDK `FirstPerson` load/view flags, Half manifestation and Body|Outfit submeshes; head, face, eyes, hair and head accessories are excluded before native creation. SDK default-model loading is disabled, so an account failure cannot become an unlabeled preset. Human body proportions are never multiplied by the 1:100 miniature conversion or 1-6 inspection zoom.
 
 `RaidersAvatarInput` registers the SDK 40 delegated input/hand providers and reads the existing ISDK `IHand`/`IHmd` sources. Installed ISDK 207 exposes OpenXR hand joints; the bridge uses Meta's official OpenXR 17-avatar-joint mapping and per-hand wrist/bone coordinate conversions. World poses enter physical tracking-local space once, including a rotated/recentered rig. This bridge does not write any input transform or disable any hand data, palm classifier, HandVisual or UI interactor.
 
@@ -129,3 +129,36 @@ States are Menu -> Identity -> Loading -> Ready, with TrackingPaused and explici
 Remote entities remain ThirdPerson/Full under the existing unit-scale human seats at normal home, with sender origin/yaw normalization and no local input driver. Seat changes, vacated slots and match exit dispose the appropriate remote entities. Streaming retains a non-null `Array.Empty<byte>()` buffer; solo skips native snapshot/transport work. One existing avatar-manager prefab is instantiated on demand, or an existing manager is reused; the owned service stays warm between matches/retries and only owned resources are destroyed with the service. Late asynchronous completion cannot recreate an avatar after exit.
 
 Task 4 validation: 61 synthetic Edit Mode assertions; prior 59 manipulation, 58 scale, 64 integration and 17 rule assertions rerun, plus flow configuration validation. No authenticated native avatar was loaded or rendered in this session. Live first-person appearance, alignment, hand-input coexistence, VR/MR/recenter transitions and remote pose fidelity require an authorized account/runtime test. See `Deliverables/DemeoRework/04-handoff.md`. Task 5 must leave both human-avatar branches at physical scale.
+
+
+## Task 5 MR baseline, placement and evidence (2026-10-23)
+
+The request is interpreted as approximately **2x the previous displayed linear width and depth**, hence **4x footprint area**, not 2x area. No previous MR device measurement or confirmed scale was available. The recorded calculated baseline is old visible land 1.50 x 1.05 m at previous scale `s=1`; the old table was hidden in MR. Its fit search allowed s=.35–1.0. `RaidersRoom.previousMRReferenceScale` exposes s in the existing scene and launch prefab, default 1, explicitly labeled calculated. If a previous confirmed s becomes available, set it here and re-confirm placement; do not alter train scale or another parent.
+
+Doubling the old axes gives an ideal rectangular target 3.00 x 2.10 m at s=1. To retain Task 1's square geometry without stretching, adopt the area-equivalent square: usable side `2*sqrt(1.50*1.05)*s = 2.509980*s`. This is a shape compromise: **1.67332x the old width and 2.390457x the old depth**, exactly 4x area and 2x geometric-mean linear size. It is about 16.3% narrower and 19.5% deeper than the doubled rectangular target; it is not exactly 2x each axis.
+
+`B(s) = 2*sqrt(1.50*1.05)/1.05*s = 2.390457*s`. The existing personal presentation owns `B*q`, where q is relative zoom [1,6]. Land/gameplay descendants remain unit scale and each authored engine remains .01; Task 2's train-to-land ratio is unchanged. No MR factor is applied to simulation, tracking, hands, avatars, passthrough or room anchors. Normal VR stays 1.
+
+| Default calculated MR presentation | Normal q=1 | Intermediate q=3 | Maximum q=6 |
+|---|---:|---:|---:|
+| Absolute presentation scale B*q | 2.390457 | 7.171371 | 14.342742 |
+| Outer tray width/depth | 3.107594 m | 9.322783 m | 18.64557 m |
+| Usable land width/depth | 2.509980 m | 7.529940 m | 15.05988 m |
+| Company locomotive length | .353788 m | 1.061363 m | 2.122727 m |
+| Future 1.80 m character height | .043028 m | .129085 m | .258169 m |
+
+Task 2 rail gauge, paths, couplers, wagons, devices, effects and future scenery all multiply by the same B*q. Company length / land side stays .140952. The before image's engine is .054464 m (measured original .00368 effective scale); the larger after engine includes Task 2's miniature correction and Task 5's world factor, applied once each.
+
+**Placement modes:** existing permission and native room-load flow remains. The head must be inside a loaded room. Initial placement seeks a suitable full-size scanned TABLE; otherwise it previews free MR. Both require the existing explicit preview/confirmation. No automatic reduction occurs. Surface mode retains the 49-point footprint/obstruction test, 15 mm edge clearance and underside 6 mm above the physical plane. Its wood rim must remain at least .25 m below the head. A 75 cm table puts the enlarged rim at 1.234091 m: too high for the 1.30 m seated-eye fixture, so free MR is offered even if the table is wide enough. This is a design clearance, not verified comfort.
+
+Free MR is labeled **not attached to furniture**. Recenter puts the near outer rim .30 m forward of current head yaw, centre 1.853797 m forward, and rim .50 m below eyes. Normal underside has at least .06 m floor clearance, which takes precedence for unusually low eye heights. For head y=1.30 and floor y=0: origin y=.405575, terrain y=.764143, wood rim y=.800000, underside y=.321909. Floor comes from the loaded room floor anchor, or room origin if unavailable. Free placement does not claim furniture clearance or whole-board reach.
+
+In the view menu, **Switch to free MR** detaches without changing the accepted view; **Try scanned table** requires a new preview followed by **Confirm on table**. Failure preserves free mode. Leaving the view page or choosing **Recenter table in front** cancels the preview. Free recenter stays free and returns q=1; surface reset returns to confirmed normal placement. Calibration changes, lost room containment or missing surface invalidate confirmation and use the existing recovery route.
+
+Task 3's two-hand grab-anywhere/pivot/arbitration remains unchanged. Free MR allows translation/yaw and q=1–6 with continuous clamp reversal; the physical room is never written. The terrain pivot stays vertically stable during yaw/scale. Free inspection is **not floor/furniture constrained**: enlarging geometry below that fixed pivot can put the virtual tray below the physical floor; manual vertical movement can also do so. Recenter restores normal clearance. Do not label those poses physically anchored or add a floor clamp that silently lifts the terrain pivot. Surface mode keeps its underside plane and rejects unsupported or excessively high proposed views.
+
+MR mode return stores the accepted pose relative to confirmed home and relative q separately, in memory. Restoration requires the same confirmation version, reclamps q, and rechecks surface fit/clearance; no disk persistence was added. VR preference remains separate. Human-seat positions use enlarged normal half-depth (never q), with MR seat feet at the loaded floor; transforms remain unit scale. Local first-person avatar stays under physical trackingSpace, unchanged from Task 4.
+
+Actual-asset fixed-camera **synthetic Edit Mode** comparisons: `Deliverables/DemeoRework/Task5Evidence/mr-before-after.jpg`, `mr-zoom-stages.jpg`, raw PNGs and `measurements.txt`. No passthrough/native scene capture is represented. At q=1/3/6 the selected engine's projected width is 17.22%/66.59%/316.26%; maximum fills/exceeds the frame for mechanical inspection and requires personal translation to inspect other parts. Same camera and 65-degree lens throughout the seated series. These support retaining q<=6, not a headset comfort/performance conclusion.
+
+Validation: 58 new synthetic assertions plus 259 prior assertions (317 total), and existing flow configuration checks pass. Native containment is replaced only in Edit Mode by a private bounded fixture; no native scan or real hand-recognition result is claimed. See `Deliverables/DemeoRework/05-handoff.md` for sources, preservation, tool limits and runtime checks still needed.

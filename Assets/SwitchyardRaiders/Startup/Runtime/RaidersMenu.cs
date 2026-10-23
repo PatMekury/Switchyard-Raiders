@@ -48,6 +48,8 @@ namespace SwitchyardRaiders.Startup
         }
         private void Show(string next,string title)
         {
+            if(page=="view" && next!="view" && table.roomUnderstanding && table.roomUnderstanding.HasPreview)
+            {table.roomUnderstanding.CancelPreview();table.CancelPreview();}
             main.roomMenu.SetGameplayView(session.Phase == RaidersSessionPhase.Playing);
             if(page!=next && main.roomMenu.menuAudio)main.roomMenu.menuAudio.MenuOpened();
             main.Hide();screen.SetActive(true);page=next;heading.text=title;message.text="";detail.text="";
@@ -91,7 +93,7 @@ namespace SwitchyardRaiders.Startup
                 case "avatar":ShowAvatar();break;
                 case "avatar_retry":session.avatars.RetryLocalAvatar();ShowAvatar();break;
                 case "resetview":table.ResetView();ShowView();break;
-                case "explore":table.ToggleExploration();ShowView();break;
+                case "explore":table.ToggleExploration();ShowView();if(!table.roomMenu.IsVirtual && table.Exploration && !table.roomUnderstanding.HasPreview)message.text=table.roomUnderstanding.Status;break;
                 case "comfort":table.manipulation.comfort=Mathf.Repeat(table.manipulation.comfort+.25f,1.25f);ShowView();break;
                 case "leave":session.Leave();break;
                 case "retry":session.Retry();break;
@@ -137,9 +139,13 @@ namespace SwitchyardRaiders.Startup
         private void ShowView()
         {
             Show("view","PERSONAL TABLE VIEW");message.text="Close BOTH hands naturally anywhere to grab your view. Move, turn, or spread your hands to resize. Open either hand to stop. The VR room moves and turns with the table but stays full size.";
-            Set(0,table.roomMenu.IsVirtual?"Recenter table in front":"Return to scanned table","resetview");
+            Set(0,table.roomMenu.IsVirtual||table.Exploration?"Recenter table in front":"Return to scanned table","resetview");
             Set(1,"Avatar status / retry","avatar");
-            Set(2,table.Exploration?"Return to tabletop":"Explore beyond table","explore");
+            Set(2,table.roomMenu.IsVirtual?(table.Exploration?"Return to tabletop":"Explore beyond table"):
+                (table.Exploration?(table.roomUnderstanding.HasPreview?"Confirm on table":"Try scanned table"):"Switch to free MR"),"explore");
+            if(!table.roomMenu.IsVirtual)message.text=table.roomUnderstanding.HasPreview?"Surface preview: the enlarged tray fits. Choose Confirm on table, or Recenter to cancel.":
+                table.PlacementStatus+" Close BOTH hands anywhere to move, turn or resize. Recenter restores normal size. "+
+                (table.Exploration?"Try scanned table never shrinks to fit.":"Free MR removes the table constraint.");
             Set(3,"Comfort: "+Mathf.RoundToInt(table.manipulation.comfort*100)+"%","comfort");Set(4,"Match menu","pause");Set(5,"Train controls","controls");
         }
         private void ShowAvatar()

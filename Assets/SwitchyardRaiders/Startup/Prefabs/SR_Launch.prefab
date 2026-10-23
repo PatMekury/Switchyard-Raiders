@@ -8002,6 +8002,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SwitchyardRaiders.Startup.RaidersRoom
   mruk: {fileID: 3769820823375271851}
+  previousMRReferenceScale: 1
 --- !u!114 &3248026579379177023
 MonoBehaviour:
   m_ObjectHideFlags: 0

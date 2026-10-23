@@ -132,3 +132,9 @@ InitTestScene*.unity*
 !/Deliverables/DemeoRework/04-handoff.md
 !/Deliverables/DemeoRework/validation-task4.txt
 !/Deliverables/DemeoRework/validation-task4-preservation.txt
+
+!/Deliverables/DemeoRework/05-handoff.md
+!/Deliverables/DemeoRework/validation-task5.txt
+!/Deliverables/DemeoRework/validation-task5-preservation.txt
+!/Deliverables/DemeoRework/Task5Evidence/
+!/Deliverables/DemeoRework/compose_task5_evidence.py

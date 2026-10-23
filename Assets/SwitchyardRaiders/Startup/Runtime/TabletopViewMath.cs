@@ -10,13 +10,15 @@ namespace SwitchyardRaiders.Startup
             if(float.IsNaN(scale)||float.IsInfinity(scale))return normal;
             return Mathf.Clamp(scale,normal,normal*TabletopViewContract.MaximumZoom);
         }
-        public static Pose ReachablePose(Transform head)
+        public static Pose ReachablePose(Transform head,float scale=1f,float floor=float.NegativeInfinity)
         {
             var forward = Vector3.ProjectOnPlane(head.forward,Vector3.up).normalized;
             if (forward.sqrMagnitude < .1f) forward = Vector3.ProjectOnPlane(head.up,Vector3.up).normalized;
             if (forward.sqrMagnitude < .1f) forward = Vector3.forward;
-            return new Pose(head.position+forward*TabletopViewContract.PlacementDistance+
-                Vector3.down*(TabletopViewContract.RimBelowEyes+TabletopViewContract.RimHeight),Quaternion.LookRotation(forward));
+            var position=head.position+forward*(TabletopViewContract.OuterSize*.5f*scale+TabletopViewContract.NearEdgeDistance)+
+                Vector3.down*(TabletopViewContract.RimBelowEyes+TabletopViewContract.RimHeight*scale);
+            position.y=Mathf.Max(position.y,floor+.06f-TabletopViewContract.TrayBottom*scale);
+            return new Pose(position,Quaternion.LookRotation(forward));
         }
         public static void Solve(Vector3 startPosition, Quaternion startRotation, float startScale,
             Vector3 startLeft, Vector3 startRight, Vector3 left, Vector3 right,
@@ -55,9 +57,9 @@ namespace SwitchyardRaiders.Startup
         public static Pose RigidMotion(Pose pose,Vector3 pivot,Vector3 translation,Quaternion yaw)=>
             new Pose(pivot+translation+yaw*(pose.position-pivot),yaw*pose.rotation);
 
-        public static Vector3 SeatPosition(int slot, int count)
+        public static Vector3 SeatPosition(int slot, int count,float normalScale=1f)
         {
-            float distance=TabletopViewContract.PlacementDistance;
+            float distance=TabletopViewContract.OuterSize*.5f*normalScale+TabletopViewContract.NearEdgeDistance;
             if (count == 2) return slot == 0 ? new Vector3(0, -.75f, -distance) : new Vector3(0, -.75f, distance);
             return slot switch { 0 => new Vector3(0,-.75f,-distance), 1 => new Vector3(distance,-.75f,0),
                 2 => new Vector3(0,-.75f,distance), _ => new Vector3(-distance,-.75f,0) };

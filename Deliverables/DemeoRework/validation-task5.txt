@@ -1,0 +1,61 @@
+Task 5 synthetic Edit Mode; native room containment replaced by a bounded fixture, not device MR.
+PASS New square land derives from both doubled old axes: 2.509980 m
+PASS Enlargement is four times old land area, not twice area
+PASS Exposed previous-scale calibration applies exactly once
+PASS Invalid calibration uses explicit calculated full-scale baseline
+PASS Small scanned table offers explicit free MR instead of shrinking
+PASS Free preview retains requested baseline and says it is not attached to furniture
+PASS New half-depth leaves near rim 30cm forward of seated head
+PASS Free normal rim remains 50cm below eyes
+PASS Normal tray underside clears synthetic floor
+PASS Cancelled free preview cannot confirm
+PASS Explicit confirmation adopts free placement
+PASS Free confirmed home and baseline round-trip
+PASS Free placement is never reported as surface anchored
+PASS Failed strict-table request preserves current free placement
+PASS Leaving loaded room invalidates free placement for recovery
+PASS Changed calibration requires fresh confirmation instead of compounding saved scale
+PASS Free MR starts at exactly its enlarged normal/minimum
+PASS Both palm grabs acquire in empty air without a jump in enlarged MR
+PASS Off-table two-hand translation works in free MR
+PASS One-hand movement after release cannot move MR board
+PASS Regrab captures fresh MR baseline
+PASS MR maximum is six times enlarged baseline
+PASS MR upper clamp reverses immediately
+PASS MR minimum forbids shrinking below enlarged baseline
+PASS MR lower clamp reverses immediately
+PASS Tracking loss freezes enlarged MR
+PASS MR gesture leaves real-room substitute and VR environment transform unchanged
+PASS Avatar, physical hands and head remain aligned at unit scale
+PASS VR keeps its existing normal baseline
+PASS MR round trip restores accepted free pose and relative zoom without double multiplication
+PASS Below-normal saved MR zoom clamps on restore
+PASS Excessive saved MR zoom clamps on restore
+PASS Free reset follows current seated head yaw, returns to normal, retains free mode
+PASS Free reset does not mislabel placement as anchored
+PASS Wide table still rejected when enlarged rim is too near seated eyes
+PASS Large clear scanned table offers full-size strict surface preview
+PASS Surface confirmation explicitly changes constraint
+PASS Surface placement starts at same enlarged minimum
+PASS Surface tray underside is 6mm above 75cm tabletop
+PASS Full enlarged footprint accepted on large table
+PASS Overhang rejected in surface-constrained mode
+PASS Surface zoom refuses footprint overflow instead of calling it anchored
+PASS Switch to free MR releases constraint without duplicating the board
+PASS Free MR permits full inspection range independently of table fit
+PASS Return to surface shows preview before changing accepted mode
+PASS Recenter cancels pending surface preview and retains free mode
+PASS Nonfinite scale cannot pass strict footprint validation
+PASS Very low eye height retains explicit 6cm free floor clearance
+PASS Human seat 0 uses enlarged normal half-depth, not zoom scale
+PASS Human seat 1 uses enlarged normal half-depth, not zoom scale
+PASS Human seat 2 uses enlarged normal half-depth, not zoom scale
+PASS Human seat 3 uses enlarged normal half-depth, not zoom scale
+normal=2.3904570 outer=3.107594 land=2.509980 engine=0.353788 maximum=14.342740
+PASS Saved scene explicitly exposes full-scale calculated reference
+PASS Corrected miniature proportions have no second MR multiplier
+PASS Physical tracking and both avatar branches remain outside miniature scale
+PASS MR view instructions fit actual menu font/feedback area
+PASS Free-placement confirmation fits existing room status label
+PASS Reusable launch prefab has matching exposed MR calibration
+58 Task5 assertions passed. No native containment, passthrough, account, live gesture or headset comfort validation.

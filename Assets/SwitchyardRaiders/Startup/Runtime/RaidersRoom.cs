@@ -74,22 +74,44 @@ namespace SwitchyardRaiders.Startup
             { if (this) { Availability = RoomAvailability.Unavailable; Status = "Room scan unavailable. Play in VR instead, or try again."; } Debug.LogWarning("[SR Room] " + ex.Message); return false; }
             finally { if (this) loading = null; }
         }
+#if UNITY_EDITOR
+        // Private, nonserialized synthetic room-containment seam. Native room validation is
+        // unavailable in Edit Mode. Never used in Play Mode and absent from player builds.
+        private static Func<MRUKRoom,Vector3,bool> containsFixture;
+#endif
+        private static bool Contains(MRUKRoom room,Vector3 point)
+        {
+#if UNITY_EDITOR
+            if(!Application.isPlaying && containsFixture!=null)return containsFixture(room,point);
+#endif
+            return room.IsPositionInRoom(point,testVerticalBounds:true);
+        }
         public MRUKRoom FindContainingRoom(Transform head)
         {
             if (!mruk || !head) return null;
             // GetCurrentRoom can return a previous/first saved room even when the user is outside it.
             foreach (var room in mruk.Rooms)
-                if (room && room.IsPositionInRoom(head.position, testVerticalBounds: true)) return room;
+                if (room && Contains(room,head.position)) return room;
             return null;
         }
+        [Header("MR baseline calibration (calculated, not headset measured)")]
+        [Range(.35f,1f), Tooltip("Previous rectangular board's confirmed scale, if known. Default 1 is the recorded full-scale calculated reference. Not relative zoom.")]
+        public float previousMRReferenceScale=1f;
+        public float NormalScale=>TabletopViewContract.MRBaselineScale(previousMRReferenceScale);
+        public enum PlacementKind { None, Surface, Free }
+        public PlacementKind PreviewKind { get; private set; }
+        public PlacementKind ConfirmedKind { get; private set; }
+        public bool IsFree=>ConfirmedKind==PlacementKind.Free;
+        public int ConfirmationVersion { get; private set; }
+        private MRUKRoom candidateRoom;
         private MRUKAnchor candidate, confirmed;
         private MRUKRoom confirmedRoom;
         private Pose candidatePose, confirmedLocal;
         private float candidateScale, confirmedScale;
-        public bool HasPreview => candidate;
-        public bool TryPlace(Transform head,out Pose pose)
+        public bool HasPreview => PreviewKind!=PlacementKind.None;
+        public bool TryPlace(Transform head,out Pose pose,bool surfaceOnly=false)
         {
-            pose=default; candidate=null;
+            pose=default; CancelPreview();
             var room=FindContainingRoom(head);
             if(!room){Status="You are outside the loaded room. Return to the scanned room, Retry, or Play in VR.";return false;}
             float best=float.MaxValue;
@@ -107,44 +129,74 @@ namespace SwitchyardRaiders.Startup
                 for(int orientation=0;orientation<2;orientation++)
                 {
                 var rotation=baseRotation*Quaternion.Euler(0,orientation*90,0);
-                for(float scale=1;scale>=.349f;scale-=.05f)
                 {
+                    float scale=NormalScale; // Never shrink to satisfy a scanned table.
                     var pos=hit.point+Vector3.up*(.006f-TabletopViewContract.TrayBottom*scale);
+                    if(!SurfaceClearance(head,pos,scale))continue;
                     if(!FitsSurface(room,anchor,pos,rotation,scale))continue;
-                    float score=Vector3.Distance(pos,head.position)+(1-scale);
-                    if(score<best){best=score;candidate=anchor;candidatePose=new Pose(pos,rotation);candidateScale=scale;}
-                    break;
+                    float score=Vector3.Distance(pos,head.position);
+                    if(score<best){best=score;candidate=anchor;candidatePose=new Pose(pos,rotation);candidateScale=scale;candidateRoom=room;PreviewKind=PlacementKind.Surface;}
                 }
                 }
             }
-            if(!candidate){Status="No scanned tabletop fits the terrain. Scan a clear table, Retry, or Play in VR.";return false;}
-            pose=candidatePose;Status="Preview on your tabletop ("+Mathf.RoundToInt(candidateScale*100)+"%). Choose Use your room again to confirm.";return true;
+            if(!candidate)
+            {
+                if(surfaceOnly){Status="No suitable table at this size and height. Free MR stays full size. Recenter or retry a larger, lower table.";return false;}
+                candidateRoom=room;candidateScale=NormalScale;candidatePose=FreePose(head,room);PreviewKind=PlacementKind.Free;
+            }
+            pose=candidatePose;
+            Status=PreviewKind==PlacementKind.Surface?
+                "Surface preview: full-size tray fits. Choose Use your room again to confirm.":
+                "Free MR preview. Not attached to furniture. Use your room again to confirm.";
+            return true;
         }
+        public static bool SurfaceClearance(Transform head,Vector3 origin,float scale)=>head &&
+            origin.y+TabletopViewContract.RimHeight*scale<=head.position.y-TabletopViewContract.MinimumMRRimBelowEyes;
+        private static float FloorHeight(MRUKRoom room)=>room.FloorAnchors.Count>0?room.FloorAnchors[0].transform.position.y:room.transform.position.y;
+        public bool TryFloorHeight(out float floor)
+        {floor=confirmedRoom?FloorHeight(confirmedRoom):0;return confirmedRoom;}
+        private Pose FreePose(Transform head,MRUKRoom room)=>TabletopViewMath.ReachablePose(head,NormalScale,FloorHeight(room));
         public float PreviewScale => candidateScale;
         public bool Confirm(Transform head)
         {
             var room=FindContainingRoom(head);
-            if(!candidate || !room || !room.Anchors.Contains(candidate) || !FitsSurface(room,candidate,candidatePose.position,candidatePose.rotation,candidateScale))
-            {Status="Table placement changed. Retry to find a suitable surface.";candidate=null;return false;}
-            confirmed=candidate;confirmedRoom=room;confirmedScale=candidateScale;
-            confirmedLocal=new Pose(confirmed.transform.InverseTransformPoint(candidatePose.position),Quaternion.Inverse(confirmed.transform.rotation)*candidatePose.rotation);
-            candidate=null;return true;
+            if(!HasPreview || !room || room!=candidateRoom || !Mathf.Approximately(candidateScale,NormalScale) ||
+                (PreviewKind==PlacementKind.Surface && (!candidate || !room.Anchors.Contains(candidate) || !SurfaceClearance(head,candidatePose.position,candidateScale) || !FitsSurface(room,candidate,candidatePose.position,candidatePose.rotation,candidateScale))))
+            {Status="Placement changed. Retry to preview the enlarged board.";CancelPreview();return false;}
+            confirmed=candidate;confirmedRoom=room;confirmedScale=candidateScale;ConfirmedKind=PreviewKind;
+            var frame=IsFree?room.transform:confirmed.transform;
+            confirmedLocal=new Pose(frame.InverseTransformPoint(candidatePose.position),Quaternion.Inverse(frame.rotation)*candidatePose.rotation);
+            ConfirmationVersion++;CancelPreview();return true;
         }
-        public void CancelPreview()=>candidate=null;
+        public void CancelPreview(){candidate=null;candidateRoom=null;PreviewKind=PlacementKind.None;}
         public bool TryConfirmed(Transform head,out Pose pose,out float scale)
         {
             pose=default;scale=confirmedScale;
-            if(!confirmed || FindContainingRoom(head)!=confirmedRoom){Status="Confirmed tabletop is no longer available. Retry placement or Play in VR.";return false;}
-            pose=new Pose(confirmed.transform.TransformPoint(confirmedLocal.position),confirmed.transform.rotation*confirmedLocal.rotation);
-            return FitsConfirmed(pose.position,pose.rotation,scale);
+            if(ConfirmedKind==PlacementKind.None || !confirmedRoom || FindContainingRoom(head)!=confirmedRoom || !Mathf.Approximately(confirmedScale,NormalScale) ||
+                (!IsFree && (!confirmed || !confirmedRoom.Anchors.Contains(confirmed))))
+            {Status="MR placement is no longer available. Return to the scanned room or retry placement.";return false;}
+            var frame=IsFree?confirmedRoom.transform:confirmed.transform;
+            pose=new Pose(frame.TransformPoint(confirmedLocal.position),frame.rotation*confirmedLocal.rotation);
+            if(IsFree || (SurfaceClearance(head,pose.position,scale) && FitsConfirmed(pose.position,pose.rotation,scale)))return true;
+            Status="Confirmed table no longer fits the enlarged tray. Retry placement or switch to free MR.";return false;
         }
-        public bool FitsConfirmed(Vector3 position,Quaternion rotation,float scale)=>confirmed && confirmedRoom && FitsSurface(confirmedRoom,confirmed,position,rotation,scale);
+        public bool UseFreePlacement(Transform head,Pose pose)
+        {
+            var room=FindContainingRoom(head);if(!room)return false;
+            CancelPreview();confirmed=null;confirmedRoom=room;confirmedScale=NormalScale;ConfirmedKind=PlacementKind.Free;
+            confirmedLocal=new Pose(room.transform.InverseTransformPoint(pose.position),Quaternion.Inverse(room.transform.rotation)*pose.rotation);
+            ConfirmationVersion++;Status="Free MR - not attached to furniture. Grab anywhere with both hands; Recenter returns the near edge to you.";return true;
+        }
+        public bool RecenterFree(Transform head)
+        {var room=FindContainingRoom(head);return room && UseFreePlacement(head,FreePose(head,room));}
+        public bool FitsConfirmed(Vector3 position,Quaternion rotation,float scale)=>!IsFree && confirmed && confirmedRoom && FitsSurface(confirmedRoom,confirmed,position,rotation,scale);
         public static bool FitsAnchor(MRUKAnchor anchor,Vector3 position,Quaternion rotation,float scale)
         {
-            if(!anchor || scale<.2f || scale>1.01f)return false;
+            if(!anchor || float.IsNaN(scale) || float.IsInfinity(scale) || scale<=0 || !TabletopViewMath.Finite(position) || !TabletopViewMath.Finite(rotation*Vector3.forward) || Vector3.Dot(rotation*Vector3.up,Vector3.up)<.999f)return false;
             for(int x=-3;x<=3;x++)for(int z=-3;z<=3;z++)
             {
                 var point=FootprintPoint(position,rotation,scale,x,z);
+                point.y=position.y+TabletopViewContract.TrayBottom*scale-.006f;
                 if(!anchor.Raycast(new Ray(point+Vector3.up*.2f,Vector3.down),.3f,out var hit) ||
                     Vector3.Dot(hit.normal,Vector3.up)<.98f || Mathf.Abs(hit.point.y-(position.y+TabletopViewContract.TrayBottom*scale-.006f))>.015f)return false;
             }
@@ -158,7 +210,7 @@ namespace SwitchyardRaiders.Startup
             for(int x=-3;x<=3;x++)for(int z=-3;z<=3;z++)
             {
                 var point=FootprintPoint(position,rotation,scale,x,z);
-                if(!room.IsPositionInRoom(point,testVerticalBounds:true))return false;
+                if(!Contains(room,point))return false;
                 foreach(var obstruction in room.Anchors)
                 {
                     if(!obstruction || obstruction==anchor || !obstruction.VolumeBounds.HasValue)continue;
