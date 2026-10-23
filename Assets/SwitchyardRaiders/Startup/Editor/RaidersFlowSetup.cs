@@ -56,7 +56,7 @@ namespace SwitchyardRaiders.Editor
             nav.screenGroup=Get<CanvasGroup>(screen.gameObject);
             nav.heading=Label("Heading",screen,"DEPARTURE BOARD",new Vector2(0,190),new Vector2(600,44),29);
             nav.message=Label("Feedback",screen,"",new Vector2(0,112),new Vector2(600,100),20);
-            nav.detail=Label("Player identity",screen,"",new Vector2(0,-214),new Vector2(630,42),17);
+            nav.detail=Label("Player identity",screen,"",new Vector2(0,-210),new Vector2(630,50),17);
             nav.actions=new RaidersMenuAction[6];
             for(int i=0;i<6;i++)nav.actions[i]=Action("Action "+(i+1),screen,nav,new Vector2(i%2==0?-154:154,28-i/2*77),new Vector2(288,62),"",22,room.menuAudio);
             nav.keypad=new RaidersMenuAction[17];
@@ -256,7 +256,7 @@ namespace SwitchyardRaiders.Editor
             foreach(var transform in room.launch.GetComponentsInChildren<Transform>(true))
                 if(GameObjectUtility.GetMonoBehavioursWithMissingScriptCount(transform.gameObject)>0)throw new InvalidOperationException("Missing script: "+transform.name);
             var inputs=nav.session.avatars.managerPrefab.GetComponentsInChildren<Oculus.Avatar2.OvrAvatarInputManager>(true);
-            if(inputs.Length!=1 || !(inputs[0] is RaidersAvatarInput))throw new InvalidOperationException("Avatar manager must use only the native Raiders tracking input.");
+            if(inputs.Length!=1 || !(inputs[0] is RaidersAvatarInput))throw new InvalidOperationException("Avatar manager must use only the ISDK-backed Raiders avatar input.");
             if(!nav.table.launch || !nav.session.avatars.trackingSpace || !nav.session.avatars.remoteSeat)throw new InvalidOperationException("Missing tracking or table anchor.");
             report.AppendLine("Project: "+Application.dataPath);report.AppendLine("Edit Mode only; no runtime, headset, service connection or player build verification.");
             foreach(var action in nav.actions.Concat(nav.keypad))
@@ -271,7 +271,7 @@ namespace SwitchyardRaiders.Editor
             report.AppendLine("Existing room-selector text, transform and follower preserved during setup.");
             report.AppendLine("Editor checkbox: RoomChoiceMenu object / RaidersSession / Solo 1v1 Test — Control Both Players.");
             report.AppendLine("Network: Fusion 2.1.3 Host/Client; custom 1v1 lobby; ready gate; server validates sender slot; cancellation and timeout; no authority bypass.");
-            report.AppendLine("Avatar SDK: 40.0.1; authenticated user and entitlement; invisible local tracked entity; remote pose streaming; explicit fallback marker.");
+            report.AppendLine("Avatar SDK: 40.0.1; entitlement/account gate; first-person local gameplay entity including solo; ISDK OpenXR providers; third-person remote streams; explicit temporary visuals and retry. Configuration validation only, no authenticated runtime claim.");
             foreach(var path in AssetDatabase.FindAssets("t:PhotonAppSettings").Select(AssetDatabase.GUIDToAssetPath))
             {
                 var so=new SerializedObject(AssetDatabase.LoadAssetAtPath<Object>(path));var it=so.GetIterator();

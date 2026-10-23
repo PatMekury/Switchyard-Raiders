@@ -26,5 +26,5 @@ Erase code -> RaidersMenuAction.Invoke; live text; audio connected
 Existing room-selector text, transform and follower preserved during setup.
 Editor checkbox: RoomChoiceMenu object / RaidersSession / Solo 1v1 Test — Control Both Players.
 Network: Fusion 2.1.3 Host/Client; custom 1v1 lobby; ready gate; server validates sender slot; cancellation and timeout; no authority bypass.
-Avatar SDK: 40.0.1; authenticated user and entitlement; invisible local tracked entity; remote pose streaming; explicit fallback marker.
+Avatar SDK: 40.0.1; entitlement/account gate; first-person local gameplay entity including solo; ISDK OpenXR providers; third-person remote streams; explicit temporary visuals and retry. Configuration validation only, no authenticated runtime claim.
 Fusion App ID configured: True

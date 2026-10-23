@@ -28,6 +28,12 @@ namespace SwitchyardRaiders.PlayTable.Editor
         [MenuItem("Switchyard Raiders/Play Table/Build isolated asset prefab")]
         public static void Build()
         {
+            SwitchyardRaiders.Editor.RecessedTableTask1.BuildAssets();
+        }
+
+        // Historical source retained for recovery; current menu uses the shared contract.
+        private static void BuildLegacy()
+        {
             Guard();
             foreach (var dir in new[] {"Materials", "Meshes", "Prefabs", "Validation"})
                 Directory.CreateDirectory(Root + "/" + dir);

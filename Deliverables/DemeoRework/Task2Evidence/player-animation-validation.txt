@@ -1,0 +1,187 @@
+Imported Unity mesh, clip, contact and anchor validation | 6000.6.0b5
+PASS Player01_Adler assigned controller / no root motion
+PASS Player01_Adler clean root scale
+PASS Player01_Adler no inherited steam smoke
+PASS Player01_Adler Front coupler height/spacing (0.00, 1.05, 7.40)
+PASS Player01_Adler Front anchor +Z outward/+Y up
+PASS Player01_Adler Front control ahead of outward-facing seat
+PASS Player01_Adler Rear coupler height/spacing (0.00, 1.05, -7.40)
+PASS Player01_Adler Rear anchor +Z outward/+Y up
+PASS Player01_Adler Rear control ahead of outward-facing seat
+PASS Player01_Adler LOD0 imported vertices=49528 triangles=36688
+PASS Player01_Adler LOD0 geometry envelope
+PASS Player01_Adler Player01_Adler_Glass_LOD0 UV0 present
+PASS Player01_Adler Player01_Adler_Glass_LOD0 single assigned material
+PASS Player01_Adler Player01_Adler_LOD0 UV0 present
+PASS Player01_Adler Player01_Adler_LOD0 single assigned material
+PASS Player01_Adler LOD1 imported vertices=21358 triangles=14720
+PASS Player01_Adler LOD1 geometry envelope
+PASS Player01_Adler Player01_Adler_Glass_LOD1 UV0 present
+PASS Player01_Adler Player01_Adler_Glass_LOD1 single assigned material
+PASS Player01_Adler Player01_Adler_LOD1 UV0 present
+PASS Player01_Adler Player01_Adler_LOD1 single assigned material
+PASS Player01_Adler LOD2 imported vertices=6816 triangles=4524
+PASS Player01_Adler LOD2 geometry envelope
+PASS Player01_Adler Player01_Adler_LOD2 UV0 present
+PASS Player01_Adler Player01_Adler_LOD2 single assigned material
+PASS Player01_Adler Controls all imported bindings resolve (160)
+PASS Player01_Adler Doors_Close all imported bindings resolve (160)
+PASS Player01_Adler Doors_Open all imported bindings resolve (160)
+PASS Player01_Adler Forward all imported bindings resolve (160)
+PASS Player01_Adler Reverse all imported bindings resolve (160)
+PASS Player01_Adler FBX door opening matches outward runtime pivot Door_Front_L
+PASS Player01_Adler FBX door opening matches outward runtime pivot Door_Front_R
+PASS Player01_Adler FBX door opening matches outward runtime pivot Door_Rear_L
+PASS Player01_Adler FBX door opening matches outward runtime pivot Door_Rear_R
+PASS Player01_Adler Wheel_F0 distance contact direction=1 scale=1
+PASS Player01_Adler Wheel_F1 distance contact direction=1 scale=1
+PASS Player01_Adler Wheel_R0 distance contact direction=1 scale=1
+PASS Player01_Adler Wheel_R1 distance contact direction=1 scale=1
+PASS Player01_Adler actual FBX Forward wheel contact scale=1 displacement=-0.0188477
+PASS Player01_Adler Forward no root translation
+PASS Player01_Adler Forward loop seam
+PASS Player01_Adler Wheel_F0 distance contact direction=-1 scale=1
+PASS Player01_Adler Wheel_F1 distance contact direction=-1 scale=1
+PASS Player01_Adler Wheel_R0 distance contact direction=-1 scale=1
+PASS Player01_Adler Wheel_R1 distance contact direction=-1 scale=1
+PASS Player01_Adler actual FBX Reverse wheel contact scale=1 displacement=0.0188458
+PASS Player01_Adler Reverse no root translation
+PASS Player01_Adler Reverse loop seam
+PASS Player01_Adler exact stop scale=1
+PASS Player01_Adler Wheel_F0 distance contact direction=1 scale=0.08
+PASS Player01_Adler Wheel_F1 distance contact direction=1 scale=0.08
+PASS Player01_Adler Wheel_R0 distance contact direction=1 scale=0.08
+PASS Player01_Adler Wheel_R1 distance contact direction=1 scale=0.08
+PASS Player01_Adler actual FBX Forward wheel contact scale=0.08 displacement=-0.01884773
+PASS Player01_Adler Forward no root translation
+PASS Player01_Adler Forward loop seam
+PASS Player01_Adler Wheel_F0 distance contact direction=-1 scale=0.08
+PASS Player01_Adler Wheel_F1 distance contact direction=-1 scale=0.08
+PASS Player01_Adler Wheel_R0 distance contact direction=-1 scale=0.08
+PASS Player01_Adler Wheel_R1 distance contact direction=-1 scale=0.08
+PASS Player01_Adler actual FBX Reverse wheel contact scale=0.08 displacement=0.01884568
+PASS Player01_Adler Reverse no root translation
+PASS Player01_Adler Reverse loop seam
+PASS Player01_Adler exact stop scale=0.08
+PASS Player01_Adler Wheel_F0 distance contact direction=1 scale=0.02
+PASS Player01_Adler Wheel_F1 distance contact direction=1 scale=0.02
+PASS Player01_Adler Wheel_R0 distance contact direction=1 scale=0.02
+PASS Player01_Adler Wheel_R1 distance contact direction=1 scale=0.02
+PASS Player01_Adler actual FBX Forward wheel contact scale=0.02 displacement=-0.01884773
+PASS Player01_Adler Forward no root translation
+PASS Player01_Adler Forward loop seam
+PASS Player01_Adler Wheel_F0 distance contact direction=-1 scale=0.02
+PASS Player01_Adler Wheel_F1 distance contact direction=-1 scale=0.02
+PASS Player01_Adler Wheel_R0 distance contact direction=-1 scale=0.02
+PASS Player01_Adler Wheel_R1 distance contact direction=-1 scale=0.02
+PASS Player01_Adler actual FBX Reverse wheel contact scale=0.02 displacement=0.01884568
+PASS Player01_Adler Reverse no root translation
+PASS Player01_Adler Reverse loop seam
+PASS Player01_Adler exact stop scale=0.02
+PASS Player01_Adler reverse Animator uses positive speed
+PASS Player01_Adler Animator / distance exclusivity
+PASS Player01_Adler independent bogie articulation
+PASS Player01_Adler Front door pivot 78 degrees
+PASS Player01_Adler Rear door pivot 78 degrees
+PASS Player01_Adler fixture attaches at rear
+PASS Player01_Adler crosshead/chassis clearance yaw=-20 end=-1
+PASS Player01_Adler crosshead/chassis clearance yaw=0 end=-1
+PASS Player01_Adler crosshead/chassis clearance yaw=20 end=-1
+PASS Player01_Adler fixture attaches at front
+PASS Player01_Adler crosshead/chassis clearance yaw=-20 end=1
+PASS Player01_Adler crosshead/chassis clearance yaw=0 end=1
+PASS Player01_Adler crosshead/chassis clearance yaw=20 end=1
+PASS Player02_Falke assigned controller / no root motion
+PASS Player02_Falke clean root scale
+PASS Player02_Falke no inherited steam smoke
+PASS Player02_Falke Front coupler height/spacing (0.00, 1.05, 7.40)
+PASS Player02_Falke Front anchor +Z outward/+Y up
+PASS Player02_Falke Front control ahead of outward-facing seat
+PASS Player02_Falke Rear coupler height/spacing (0.00, 1.05, -7.40)
+PASS Player02_Falke Rear anchor +Z outward/+Y up
+PASS Player02_Falke Rear control ahead of outward-facing seat
+PASS Player02_Falke LOD0 imported vertices=49134 triangles=37132
+PASS Player02_Falke LOD0 geometry envelope
+PASS Player02_Falke Player02_Falke_Glass_LOD0 UV0 present
+PASS Player02_Falke Player02_Falke_Glass_LOD0 single assigned material
+PASS Player02_Falke Player02_Falke_LOD0 UV0 present
+PASS Player02_Falke Player02_Falke_LOD0 single assigned material
+PASS Player02_Falke LOD1 imported vertices=21694 triangles=15180
+PASS Player02_Falke LOD1 geometry envelope
+PASS Player02_Falke Player02_Falke_Glass_LOD1 UV0 present
+PASS Player02_Falke Player02_Falke_Glass_LOD1 single assigned material
+PASS Player02_Falke Player02_Falke_LOD1 UV0 present
+PASS Player02_Falke Player02_Falke_LOD1 single assigned material
+PASS Player02_Falke LOD2 imported vertices=6880 triangles=4576
+PASS Player02_Falke LOD2 geometry envelope
+PASS Player02_Falke Player02_Falke_LOD2 UV0 present
+PASS Player02_Falke Player02_Falke_LOD2 single assigned material
+PASS Player02_Falke Controls all imported bindings resolve (160)
+PASS Player02_Falke Doors_Close all imported bindings resolve (160)
+PASS Player02_Falke Doors_Open all imported bindings resolve (160)
+PASS Player02_Falke Forward all imported bindings resolve (160)
+PASS Player02_Falke Reverse all imported bindings resolve (160)
+PASS Player02_Falke FBX door opening matches outward runtime pivot Door_Front_L
+PASS Player02_Falke FBX door opening matches outward runtime pivot Door_Front_R
+PASS Player02_Falke FBX door opening matches outward runtime pivot Door_Rear_L
+PASS Player02_Falke FBX door opening matches outward runtime pivot Door_Rear_R
+PASS Player02_Falke Wheel_F0 distance contact direction=1 scale=1
+PASS Player02_Falke Wheel_F1 distance contact direction=1 scale=1
+PASS Player02_Falke Wheel_R0 distance contact direction=1 scale=1
+PASS Player02_Falke Wheel_R1 distance contact direction=1 scale=1
+PASS Player02_Falke actual FBX Forward wheel contact scale=1 displacement=-0.0188477
+PASS Player02_Falke Forward no root translation
+PASS Player02_Falke Forward loop seam
+PASS Player02_Falke Wheel_F0 distance contact direction=-1 scale=1
+PASS Player02_Falke Wheel_F1 distance contact direction=-1 scale=1
+PASS Player02_Falke Wheel_R0 distance contact direction=-1 scale=1
+PASS Player02_Falke Wheel_R1 distance contact direction=-1 scale=1
+PASS Player02_Falke actual FBX Reverse wheel contact scale=1 displacement=0.0188458
+PASS Player02_Falke Reverse no root translation
+PASS Player02_Falke Reverse loop seam
+PASS Player02_Falke exact stop scale=1
+PASS Player02_Falke Wheel_F0 distance contact direction=1 scale=0.08
+PASS Player02_Falke Wheel_F1 distance contact direction=1 scale=0.08
+PASS Player02_Falke Wheel_R0 distance contact direction=1 scale=0.08
+PASS Player02_Falke Wheel_R1 distance contact direction=1 scale=0.08
+PASS Player02_Falke actual FBX Forward wheel contact scale=0.08 displacement=-0.01884773
+PASS Player02_Falke Forward no root translation
+PASS Player02_Falke Forward loop seam
+PASS Player02_Falke Wheel_F0 distance contact direction=-1 scale=0.08
+PASS Player02_Falke Wheel_F1 distance contact direction=-1 scale=0.08
+PASS Player02_Falke Wheel_R0 distance contact direction=-1 scale=0.08
+PASS Player02_Falke Wheel_R1 distance contact direction=-1 scale=0.08
+PASS Player02_Falke actual FBX Reverse wheel contact scale=0.08 displacement=0.01884568
+PASS Player02_Falke Reverse no root translation
+PASS Player02_Falke Reverse loop seam
+PASS Player02_Falke exact stop scale=0.08
+PASS Player02_Falke Wheel_F0 distance contact direction=1 scale=0.02
+PASS Player02_Falke Wheel_F1 distance contact direction=1 scale=0.02
+PASS Player02_Falke Wheel_R0 distance contact direction=1 scale=0.02
+PASS Player02_Falke Wheel_R1 distance contact direction=1 scale=0.02
+PASS Player02_Falke actual FBX Forward wheel contact scale=0.02 displacement=-0.01884773
+PASS Player02_Falke Forward no root translation
+PASS Player02_Falke Forward loop seam
+PASS Player02_Falke Wheel_F0 distance contact direction=-1 scale=0.02
+PASS Player02_Falke Wheel_F1 distance contact direction=-1 scale=0.02
+PASS Player02_Falke Wheel_R0 distance contact direction=-1 scale=0.02
+PASS Player02_Falke Wheel_R1 distance contact direction=-1 scale=0.02
+PASS Player02_Falke actual FBX Reverse wheel contact scale=0.02 displacement=0.01884568
+PASS Player02_Falke Reverse no root translation
+PASS Player02_Falke Reverse loop seam
+PASS Player02_Falke exact stop scale=0.02
+PASS Player02_Falke reverse Animator uses positive speed
+PASS Player02_Falke Animator / distance exclusivity
+PASS Player02_Falke independent bogie articulation
+PASS Player02_Falke Front door pivot 78 degrees
+PASS Player02_Falke Rear door pivot 78 degrees
+PASS Player02_Falke fixture attaches at rear
+PASS Player02_Falke crosshead/chassis clearance yaw=-20 end=-1
+PASS Player02_Falke crosshead/chassis clearance yaw=0 end=-1
+PASS Player02_Falke crosshead/chassis clearance yaw=20 end=-1
+PASS Player02_Falke fixture attaches at front
+PASS Player02_Falke crosshead/chassis clearance yaw=-20 end=1
+PASS Player02_Falke crosshead/chassis clearance yaw=0 end=1
+PASS Player02_Falke crosshead/chassis clearance yaw=20 end=1
+No headset connected; no 90Hz, five-train GPU/CPU or thermal certification.
+Failures: 0

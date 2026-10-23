@@ -70,6 +70,7 @@ namespace SwitchyardRaiders.Startup
         {screen.SetActive(false);page="";main.roomMenu.SetGameplayView(false);main.Show();}
         public void Invoke(string command)
         {
+            if(table && table.manipulation && table.manipulation.BlocksGameplay)return;
             switch(command)
             {
                 case "players":session.SelectPlayerCount(session.Capacity==2?4:2);if(page=="public")OpenPublic();else OpenFriends();break;
@@ -87,6 +88,8 @@ namespace SwitchyardRaiders.Startup
                 case "voice_retry":session.voice.Retry();break;
                 case "reposition":table.ResetView();OpenYard();break;
                 case "view":ShowView();break;
+                case "avatar":ShowAvatar();break;
+                case "avatar_retry":session.avatars.RetryLocalAvatar();ShowAvatar();break;
                 case "resetview":table.ResetView();ShowView();break;
                 case "explore":table.ToggleExploration();ShowView();break;
                 case "comfort":table.manipulation.comfort=Mathf.Repeat(table.manipulation.comfort+.25f,1.25f);ShowView();break;
@@ -133,10 +136,24 @@ namespace SwitchyardRaiders.Startup
         }
         private void ShowView()
         {
-            Show("view","PERSONAL TABLE VIEW");message.text="Touch the table rim with both hands and close both hands to grab. Move, turn, or spread your hands to resize. Open either hand to stop.";
+            Show("view","PERSONAL TABLE VIEW");message.text="Close BOTH hands naturally anywhere to grab your view. Move, turn, or spread your hands to resize. Open either hand to stop. The VR room moves and turns with the table but stays full size.";
             Set(0,table.roomMenu.IsVirtual?"Recenter table in front":"Return to scanned table","resetview");
+            Set(1,"Avatar status / retry","avatar");
             Set(2,table.Exploration?"Return to tabletop":"Explore beyond table","explore");
             Set(3,"Comfort: "+Mathf.RoundToInt(table.manipulation.comfort*100)+"%","comfort");Set(4,"Match menu","pause");Set(5,"Train controls","controls");
+        }
+        private void ShowAvatar()
+        {
+            Show("avatar","YOUR GAMEPLAY AVATAR");
+            UpdateAvatarStatus();Set(5,"Table view / comfort","view");
+        }
+        private void UpdateAvatarStatus()
+        {
+            var avatar=session.avatars;
+            message.text=avatar?(avatar.CanRetry?"Avatar unavailable. Temporary hand visuals remain.\n"+avatar.Failure:avatar.Status):"Avatar service is unavailable. Temporary hand visuals remain.";
+            detail.text=avatar && avatar.CanRetry?"Retry uses your entitled Meta account.":"";
+            if(avatar && avatar.CanRetry)Set(0,"Retry account avatar","avatar_retry");
+            else actions[0].gameObject.SetActive(false);
         }
         private void Refresh()
         {
@@ -196,6 +213,7 @@ namespace SwitchyardRaiders.Startup
                 detail.text=(page=="session" ? session.RoomCode+"   " : "")+session.voice.Status;
                 VoiceButtons();
             }
+            if(page=="avatar"){UpdateAvatarStatus();return;}
             if(session.Phase!=RaidersSessionPhase.Playing || session.Match==null)return;
             var m=session.Match;int p=session.ControlledSlot;
             detail.text=(session.CanSwitchPlayers?"SIMULATED ":"")+"P"+(p+1)+"   TEAM 1 "+m.teamScores[0]+"/"+m.Target+"   TEAM 2 "+m.teamScores[1]+"/"+m.Target;
@@ -204,9 +222,16 @@ namespace SwitchyardRaiders.Startup
                 message.text="Emplacement "+(site+1)+"   •   "+m.players[p].devices+" devices left\nFiring window: "+Mathf.RoundToInt(m.Window(site)*100)+"%   Aim: "+aim.ToString("0.0");
                 actions[4].GetComponent<Button>().interactable=m.devices[site].owner==p && !m.devices[site].spent && m.Window(site)>=.99f;
             }
-            else if(page=="drive")message.text="Speed "+m.players[p].speed.ToString("0.0")+"   •   "+session.Status+"\n"+(table.manipulation.Dragging?"Both hands grabbed - move, turn, or spread to resize.":table.manipulation.GrabCount==1?"One hand grabbed - grab the rim with your other hand.":"Touch the rim and close BOTH hands to move / resize.");
+            else if(page=="drive")message.text="Speed "+m.players[p].speed.ToString("0.0")+"   •   "+session.Status+"\n"+(table.manipulation.Dragging?"Both hands grabbed - move, turn, or spread to resize.":table.manipulation.GrabCount==1?"Close your other hand to grab the view.":"Close BOTH hands anywhere to move / resize.");
             if(page=="pause" && session.voice)detail.text+="\n"+session.voice.Status;
             if(page=="pause" && session.CanSwitchPlayers)Set(4,"Next simulated slot","switch");
+            if(session.avatars)
+            {
+                // The existing footer fits two lines. Keep voice visible on the match menu
+                // and use its larger feedback area for avatar status instead of adding a third.
+                if(page=="pause")message.text="The shared yard keeps running.\n"+session.avatars.Status;
+                else detail.text+="\n"+session.avatars.Status;
+            }
         }
     }
 }

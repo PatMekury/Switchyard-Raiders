@@ -1,0 +1,62 @@
+Task 3: synthetic Edit Mode inputs, not live hand recognition.
+PASS Off-table acquisition is stable and does not jump, including a 73 degree rig yaw
+PASS One closed hand cannot move the view
+PASS Second hand enters stable acquisition
+PASS Second-hand acquisition captures fresh baseline
+PASS Common deliberate XYZ translation moves table and VR room coherently
+PASS Yaw with asymmetric hand heights produces no vertical drift or zoom
+PASS Scale doubles planar span around fixed terrain point, ignoring unequal hand heights
+PASS Pure scale does not move or rotate the room
+PASS Lifting only one hand cannot cause vertical drift or zoom
+PASS Upper zoom bound is exactly 6
+PASS Stationary upper overshoot cannot drift
+PASS Maximum clamp reverses immediately
+PASS Lower zoom bound is exactly 1
+PASS Minimum clamp reverses immediately
+PASS Release either hand freezes all movement
+PASS Regrab captures fresh hands without jumping
+PASS Tracking/confidence loss suspends
+PASS Tracking recovery while clenched cannot jump or resume
+PASS Focus loss freezes input
+PASS Application pause freezes input
+PASS Mode transition requires both hands open before reacquisition
+PASS VR restoration supports fresh acquisition
+PASS Room scale remains exactly one through combined gestures and clamps
+PASS Reset restores normal table and original room pose
+PASS Physical tracked head never moved, rotated or scaled
+PASS MR moves virtual content without moving the room
+PASS MR retains relative zoom contract
+PASS Unconfirmed/out-of-bounds anchored MR motion is rejected
+PASS Active gesture suppresses commands
+PASS Release cancels old UI presses and guards commands
+PASS Ordinary menus recover after release guard
+PASS Menu and session command routes both reject active-gesture gameplay commands
+PASS UI click begun before release is canceled even after guard expires
+PASS Ordinary menu commands work again after release guard
+PASS Official API thumb/index-only flags cannot substitute a palm grab
+PASS Official palm API three-finger closure recognized
+PASS Opening Middle releases palm
+PASS Opening Ring releases palm
+PASS Opening Pinky releases palm
+PASS Missing hand data is invalid, never a fabricated pose
+PASS Adapter consumes injected official IHand and palm API data
+PASS System gesture invalidates adapter input immediately
+PASS ISDK low confidence invalidates input
+PASS Disconnected ISDK hand invalidates input
+PASS OVR low confidence invalidates input
+PASS OVR tracking loss invalidates input
+PASS Nonfinite input rejected
+PASS 720 yaw/zoom samples preserve terrain height within 0.1mm
+Maximum measured terrain-height drift: 7.74860382E-07 m
+PASS Simultaneous XYZ translation, yaw and zoom match independent analytic solution
+PASS Room receives exactly common translation/yaw with scale omitted
+PASS Near-coincident hands cannot flip yaw or divide scale by tiny span
+PASS Scene binds existing room as environment motion root
+PASS Scene binds distinct existing palm classifiers
+PASS Scene classifier handedness comes from correct authored tracked nodes
+PASS Obsolete collider/grabbable proxy removed
+PASS Tracking and scalable content are separate from rigid room
+PASS Room is outside all zoom ancestry
+PASS No competing ISDK transformer writes view
+PASS Reusable launch prefab matches new scene bindings
+59 assertions passed. No Play Mode, device session, or player build.

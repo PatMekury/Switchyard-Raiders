@@ -1,0 +1,66 @@
+PASS Four players, six team deliveries
+PASS Teammates share homes
+PASS Four independent train states
+PASS No full cargo chain appears at reset
+PASS First freight arrives alone
+PASS Freight waits for its arrival interval
+PASS Freight arrives gradually
+PASS Delivered freight slot replenishes
+PASS Slot 0 can drive
+PASS Slot 1 can drive
+PASS Slot 2 can drive
+PASS Slot 3 can drive
+PASS All four trains advance in the same simulation tick
+PASS P3 owns a decoupler
+PASS Teammate cannot fire another player's device
+PASS Three team deliveries do not win 2v2
+PASS Teammate deliveries combine to win at six
+PASS Rematch resets scores and gradual supply
+PASS Four-player snapshot serialization round trip
+PASS New sessions default developer testing off
+PASS Developer route creates four simulated slots
+PASS Test slots are explicitly simulated
+PASS One tester can ready all slots
+PASS Countdown activates match
+PASS Switching controls preserves commands for every slot
+PASS Slot switching preserves simultaneous simulation
+PASS Winner activates results phase
+PASS Local rematch returns through readiness
+PASS Leave removes local session state
+PASS Two-slot retry starts cleanly
+PASS Disabled developer checkbox blocks test route
+PASS Two-hand acquisition does not jump
+PASS Moving both hands translates presentation
+PASS Scale stays centered on hand midpoint
+PASS Rotation is horizontal with tilt locked
+PASS Exploration scale cap is enforced
+PASS Four seats do not overlap
+PASS Two seats face opposite sides
+PASS Whole tray fits a tabletop with edge clearance
+PASS Overhanging tray rejected
+PASS Floating placement rejected
+PASS Square tray fits after a quarter turn
+PASS Diagonal overhang rejected
+PASS Reduced rotated footprint fits with tray underside on table
+PASS Anchored state rejects exploration scale
+PASS VR menu shows table with terrain and manipulation off
+PASS Match start activates terrain and manipulation eligibility
+PASS Returning to VR restores personal placement and scale
+PASS Reset restores normal tabletop after a mode round trip
+PASS View changes leave tracked head transform untouched
+PASS MR retains the modeled tray while hiding table supports
+PASS Anchored scale keeps the tray underside on its original plane
+PASS Normal VR restores the existing table supports
+PASS Launch scene binds real table and terrain
+PASS Gameplay sits above terrain top
+PASS Terrain bottom sits on mounting surface
+PASS Terrain and gameplay start inactive
+PASS Four trains and seat references wired
+PASS Tracked hand input and vignette wired
+PASS Session, mode and avatar wiring agree
+PASS Exactly one session owner
+PASS Exactly one XR rig
+PASS MR confirmation and cancellation presentation wired
+PASS Avatar streaming buffer remains non-null
+64 integration assertions plus original rules checks passed. Android is the active compilation target.
+Edit Mode only: no Play Mode, device launch, network authentication, remote streaming, voice, native room query, or performance measurement.

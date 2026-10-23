@@ -1,0 +1,14 @@
+{
+    "passed": true,
+    "exclusiveAnimationDrivers": true,
+    "rootMotion": false,
+    "controller": "Assets/SwitchyardRaiders/CompanyLocomotive/Animations/CompanyLocomotive.controller",
+    "clip": "Locomotive_Forward",
+    "comparedPoses": 10,
+    "clipSeconds": 40.0,
+    "maximumLocalPositionDifference": 0.0007081031799316406,
+    "maximumRotationDifferenceDegrees": 0.0,
+    "forwardStepDegrees": 17.99980926513672,
+    "reverseSymmetryErrorDegrees": 0.0,
+    "pauseDriftDegrees": 0.0
+}

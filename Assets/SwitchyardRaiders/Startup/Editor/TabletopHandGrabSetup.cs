@@ -1,77 +1,65 @@
 using System;
 using System.Linq;
-using Oculus.Interaction;
-using Oculus.Interaction.Editor.QuickActions;
-using Oculus.Interaction.Grab;
 using Oculus.Interaction.GrabAPI;
-using Oculus.Interaction.HandGrab;
 using Oculus.Interaction.Input;
 using SwitchyardRaiders.Startup;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
-using Object = UnityEngine.Object;
+using Object=UnityEngine.Object;
 
 namespace SwitchyardRaiders.Editor
 {
+    // Kept under its existing type/name so old setup entry points migrate, never reinstall contact-only input.
     public static class TabletopHandGrabSetup
     {
-        private static T Get<T>(GameObject go) where T:Component => go.GetComponent<T>() ?? go.AddComponent<T>();
-
-        [MenuItem("Switchyard Raiders/Tabletop/Install contact hand grabbing")]
+        [MenuItem("Switchyard Raiders/Tabletop/Install two-hand grab anywhere")]
         public static void Apply()
         {
             if(EditorApplication.isPlayingOrWillChangePlaymode || !Application.dataPath.EndsWith("Switchyard Raiders/Assets"))
                 throw new InvalidOperationException("Switchyard Raiders in Edit Mode required.");
             var table=Object.FindAnyObjectByType<RaidersTable>(FindObjectsInactive.Include);
-            if(!table || table.gameObject.scene.path!=LaunchSequenceTools.ScenePath)throw new InvalidOperationException("Open SR_Launch first.");
+            if(!table || table.gameObject.scene.path!=LaunchSequenceTools.ScenePath || table.gameObject.scene.isDirty)
+                throw new InvalidOperationException("Open clean SR_Launch first; preserve unsaved work.");
             Configure(table);
-            PrefabUtility.SaveAsPrefabAsset(table.launch.gameObject,"Assets/SwitchyardRaiders/Startup/Prefabs/SR_Launch.prefab");
+            // Edit each asset in place; exporting the scene root would replace prefab-specific
+            // data and regenerate unrelated object IDs in this shared checkout.
+            const string path="Assets/SwitchyardRaiders/Startup/Prefabs/SR_Launch.prefab";
+            var prefab=PrefabUtility.LoadPrefabContents(path);
+            try{Configure(prefab.GetComponentInChildren<RaidersTable>(true));PrefabUtility.SaveAsPrefabAsset(prefab,path);}
+            finally{PrefabUtility.UnloadPrefabContents(prefab);}
             EditorSceneManager.MarkSceneDirty(table.gameObject.scene);
             EditorSceneManager.SaveScene(table.gameObject.scene);
             AssetDatabase.SaveAssets();
-            Debug.Log("Table contact palm grabbing installed on the existing two-hand rig. Developer testing setting preserved.");
+            Debug.Log("Two-hand palm classification bound to existing tracked hands; obsolete table contact proxy removed.");
         }
-
         public static void Configure(RaidersTable table)
         {
             var hands=table.launch.xrRigRoot.GetComponentsInChildren<Hand>(true)
                 .Where(h=>h.transform.parent && h.transform.parent.name=="OVRHands").ToArray();
-            if(hands.Length!=2)throw new InvalidOperationException("Expected the existing left and right ISDK hands.");
+            if(hands.Length!=2)throw new InvalidOperationException("Expected existing left and right ISDK hands.");
             foreach(var hand in hands)
-                if(!hand.GetComponentInChildren<HandGrabInteractor>(true))
-                    QuickActionsAPI.AddHandInteractors(hand.gameObject,QuickActionInteractorTypes.Grab);
-
-            var found=table.launch.transform.Find("Table rim hand grab");
-            var proxy=found?found.gameObject:new GameObject("Table rim hand grab");
-            proxy.transform.SetParent(table.launch.transform,false);
-            proxy.transform.localScale=Vector3.one;
-            var body=Get<Rigidbody>(proxy);body.isKinematic=true;body.useGravity=false;
-            var grab=Get<Grabbable>(proxy);
-            grab.MaxGrabPoints=2;
-            grab.InjectOptionalTargetTransform(table.presentation);
-            grab.InjectOptionalRigidbody(body);
-            grab.InjectOptionalThrowWhenUnselected(false);
-            grab.InjectOptionalOneGrabTransformer(table.manipulation);
-            grab.InjectOptionalTwoGrabTransformer(table.manipulation);
-            var contact=Get<HandGrabInteractable>(proxy);
-            contact.InjectAllHandGrabInteractable(GrabTypeFlags.Palm,body,GrabbingRule.DefaultPinchRule,GrabbingRule.DefaultPalmRule);
-            contact.InjectOptionalPointableElement(grab);
-            contact.InjectOptionalMovementProvider(Get<MoveFromTargetProvider>(proxy));
-            contact.HandAlignment=HandAlignType.None;
-            contact.MaxSelectingInteractors=2;
-            contact.ResetGrabOnGrabsUpdated=false;
-            contact.enabled=false;
-            var edges=proxy.GetComponents<BoxCollider>().ToList();
-            while(edges.Count<4)edges.Add(proxy.AddComponent<BoxCollider>());
-            if(edges.Count!=4)throw new InvalidOperationException("Expected exactly four table rim colliders.");
-            foreach(var edge in edges)edge.isTrigger=true;
-            table.manipulation.handGrab=contact;
-            table.manipulation.grabbable=grab;
-            table.manipulation.grabEdges=edges.ToArray();
-            table.manipulation.SyncGrabSurface();
-            EditorUtility.SetDirty(table.manipulation);
-            foreach(var component in proxy.GetComponents<Component>())EditorUtility.SetDirty(component);
+            {
+                var api=hand.GetComponentInChildren<HandGrabAPI>(true);
+                if(!api)throw new InvalidOperationException("Existing HandGrabAPI missing; do not create another rig.");
+                // Dedicated reference to unmodified tracked hand data, not a synthetic hand pose.
+                api.InjectHand(hand);
+                // Hand.Handedness reads live data, which defaults to Left in inactive prefab
+                // contents. Bind the verified authored rig nodes, not uninitialized tracking data.
+                if(hand.name=="LeftHand")table.manipulation.leftPalm=api;
+                else if(hand.name=="RightHand")table.manipulation.rightPalm=api;
+                else throw new InvalidOperationException("Unexpected authored hand node: "+hand.name);
+                EditorUtility.SetDirty(api);PrefabUtility.RecordPrefabInstancePropertyModifications(api);
+            }
+            if(!table.manipulation.leftPalm || !table.manipulation.rightPalm)throw new InvalidOperationException("Both palm APIs required.");
+            var obsolete=table.launch.transform.Find("Table rim hand grab");
+            if(obsolete)Object.DestroyImmediate(obsolete.gameObject);
+            table.environmentMotion=table.roomMenu.virtualRoom.transform;
+            if(table.environmentMotion.IsChildOf(table.presentation) || table.launch.xrRigRoot.transform.IsChildOf(table.environmentMotion) ||
+                table.environmentMotion.lossyScale!=Vector3.one)throw new InvalidOperationException("Room must be a unit-scale sibling, outside tracking and table.");
+            EditorUtility.SetDirty(table);EditorUtility.SetDirty(table.manipulation);
+            PrefabUtility.RecordPrefabInstancePropertyModifications(table);
+            PrefabUtility.RecordPrefabInstancePropertyModifications(table.manipulation);
         }
     }
 }

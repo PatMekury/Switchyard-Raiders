@@ -50,7 +50,9 @@ namespace SwitchyardRaiders.Editor
             var go=new GameObject("Edit Mode local session fixture");go.SetActive(false);
             try
             {
-                var session=go.AddComponent<RaidersSession>();Field(session,"developerTesting",true);session.SelectPlayerCount(4);session.StartEditorTest();
+                var session=go.AddComponent<RaidersSession>();
+                Check(!new SerializedObject(session).FindProperty("developerTesting").boolValue,"New sessions default developer testing off");
+                Field(session,"developerTesting",true);session.SelectPlayerCount(4);session.StartEditorTest();
                 Check(session.Phase==RaidersSessionPhase.Ready && session.PlayerCount==4,"Developer route creates four simulated slots");
                 Check(session.IsLocal && session.SlotLabel(3).Contains("SIMULATED"),"Test slots are explicitly simulated");
                 session.ToggleReady();Check(session.Phase==RaidersSessionPhase.Countdown && Enumerable.Range(0,4).All(session.IsReady),"One tester can ready all slots");
@@ -67,30 +69,33 @@ namespace SwitchyardRaiders.Editor
             }
             finally{Object.DestroyImmediate(go);}
             var left=new Vector3(-.2f,1,0);var right=new Vector3(.2f,1,0);var initial=new Vector3(0,.75f,1);
-            TabletopViewMath.Solve(initial,Quaternion.identity,1,left,right,left,right,.2f,12,out var pos,out var rot,out var scale);
+            TabletopViewMath.Solve(initial,Quaternion.identity,1,left,right,left,right,1,TabletopViewContract.MaximumZoom,out var pos,out var rot,out var scale);
             Check(Vector3.Distance(pos,initial)<.00001f && scale==1,"Two-hand acquisition does not jump");
             var move=new Vector3(.3f,.1f,.2f);
-            TabletopViewMath.Solve(initial,Quaternion.identity,1,left,right,left+move,right+move,.2f,12,out pos,out rot,out scale);
+            TabletopViewMath.Solve(initial,Quaternion.identity,1,left,right,left+move,right+move,1,TabletopViewContract.MaximumZoom,out pos,out rot,out scale);
             Check(Vector3.Distance(pos,initial+move)<.00001f,"Moving both hands translates presentation");
             var midpoint=(left+right)/2;
-            TabletopViewMath.Solve(initial,Quaternion.identity,1,left,right,midpoint+(left-midpoint)*2,midpoint+(right-midpoint)*2,.2f,12,out pos,out rot,out scale);
-            Check(scale==2 && Vector3.Distance(pos,midpoint+(initial-midpoint)*2)<.00001f,"Scale stays centered on hand midpoint");
+            TabletopViewMath.Solve(initial,Quaternion.identity,1,left,right,midpoint+(left-midpoint)*2,midpoint+(right-midpoint)*2,1,TabletopViewContract.MaximumZoom,out pos,out rot,out scale);
+            var pivot=TabletopViewMath.Pivot(initial,Quaternion.identity,1,midpoint);
+            Check(scale==2 && Vector3.Distance(pos,pivot+(initial-pivot)*2)<.00001f,"Scale stays centered on terrain pivot");
             var yaw=Quaternion.Euler(0,90,0);
-            TabletopViewMath.Solve(initial,Quaternion.identity,1,left,right,midpoint+yaw*(left-midpoint),midpoint+yaw*(right-midpoint),.2f,12,out pos,out rot,out scale);
+            TabletopViewMath.Solve(initial,Quaternion.identity,1,left,right,midpoint+yaw*(left-midpoint),midpoint+yaw*(right-midpoint),1,TabletopViewContract.MaximumZoom,out pos,out rot,out scale);
             Check(Quaternion.Angle(rot,yaw)<.01f && Vector3.Angle(rot*Vector3.up,Vector3.up)<.01f,"Rotation is horizontal with tilt locked");
-            TabletopViewMath.Solve(initial,Quaternion.identity,1,left,right,left*100,right*100,.2f,12,out pos,out rot,out scale);Check(scale==12,"Exploration scale cap is enforced");
+            TabletopViewMath.Solve(initial,Quaternion.identity,1,left,right,left*100,right*100,1,TabletopViewContract.MaximumZoom,out pos,out rot,out scale);Check(scale==TabletopViewContract.MaximumZoom,"Exploration scale cap is enforced");
             Check(Enumerable.Range(0,4).Select(i=>TabletopViewMath.SeatPosition(i,4)).Distinct().Count()==4,"Four seats do not overlap");
             Check(TabletopViewMath.SeatPosition(0,2).z==-TabletopViewMath.SeatPosition(1,2).z,"Two seats face opposite sides");
             var surface=new GameObject("Synthetic tabletop footprint fixture");surface.SetActive(false);
             try
             {
-                var anchor=surface.AddComponent<MRUKAnchor>();typeof(MRUKAnchor).GetProperty("VolumeBounds").SetValue(anchor,(Bounds?)new Bounds(new Vector3(0,.375f,0),new Vector3(1.6f,.75f,1.2f)));
-                Check(RaidersRoom.FitsAnchor(anchor,new Vector3(0,.756f,0),Quaternion.identity,1),"Terrain fits a tabletop with edge clearance");
-                Check(!RaidersRoom.FitsAnchor(anchor,new Vector3(.2f,.756f,0),Quaternion.identity,1),"Overhanging terrain rejected");
+                var anchor=surface.AddComponent<MRUKAnchor>();typeof(MRUKAnchor).GetProperty("VolumeBounds").SetValue(anchor,(Bounds?)new Bounds(new Vector3(0,.375f,0),new Vector3(1.4f,.75f,1.4f)));
+                float fullHeight=.756f-TabletopViewContract.TrayBottom;
+                Check(RaidersRoom.FitsAnchor(anchor,new Vector3(0,fullHeight,0),Quaternion.identity,1),"Whole tray fits a tabletop with edge clearance");
+                Check(!RaidersRoom.FitsAnchor(anchor,new Vector3(.2f,fullHeight,0),Quaternion.identity,1),"Overhanging tray rejected");
                 Check(!RaidersRoom.FitsAnchor(anchor,new Vector3(0,1,0),Quaternion.identity,1),"Floating placement rejected");
-                Check(!RaidersRoom.FitsAnchor(anchor,new Vector3(0,.756f,0),Quaternion.Euler(0,90,0),1),"Rotated footprint exceeding table rejected");
-                Check(RaidersRoom.FitsAnchor(anchor,new Vector3(0,.756f,0),Quaternion.Euler(0,90,0),.6f),"Reduced rotated footprint fits");
-                Check(!RaidersRoom.FitsAnchor(anchor,new Vector3(0,.756f,0),Quaternion.identity,2),"Anchored state rejects exploration scale");
+                Check(RaidersRoom.FitsAnchor(anchor,new Vector3(0,fullHeight,0),Quaternion.Euler(0,90,0),1),"Square tray fits after a quarter turn");
+                Check(!RaidersRoom.FitsAnchor(anchor,new Vector3(0,fullHeight,0),Quaternion.Euler(0,45,0),1),"Diagonal overhang rejected");
+                Check(RaidersRoom.FitsAnchor(anchor,new Vector3(0,.756f-TabletopViewContract.TrayBottom*.6f,0),Quaternion.Euler(0,90,0),.6f),"Reduced rotated footprint fits with tray underside on table");
+                Check(!RaidersRoom.FitsAnchor(anchor,new Vector3(0,fullHeight,0),Quaternion.identity,2),"Anchored state rejects exploration scale");
             }
             finally{Object.DestroyImmediate(surface);}
             var viewFixture=new GameObject("Edit Mode view lifecycle fixture");viewFixture.SetActive(false);
@@ -107,6 +112,12 @@ namespace SwitchyardRaiders.Editor
                 Check(view.presentation.localScale.x==3 && Vector3.Distance(view.presentation.position,normal+Vector3.right)<.001f,"Returning to VR restores personal placement and scale");
                 view.ResetView();Check(view.presentation.localScale.x==1 && Vector3.Distance(view.presentation.position,normal)<.001f,"Reset restores normal tabletop after a mode round trip");
                 Check(launch.headset.position==new Vector3(0,1.3f,0),"View changes leave tracked head transform untouched");
+                var supports=Node("Supports");supports.SetParent(view.virtualTable.transform,false);
+                Field(mode,"<IsVirtual>k__BackingField",false);view.UpdateTableVisibility();
+                Check(view.virtualTable.activeSelf && !supports.gameObject.activeSelf,"MR retains the modeled tray while hiding table supports");
+                Check(Mathf.Abs(view.AnchoredOriginHeight(.6f)+TabletopViewContract.TrayBottom*.6f-(normal.y+TabletopViewContract.TrayBottom))<.0001f,"Anchored scale keeps the tray underside on its original plane");
+                Field(mode,"<IsVirtual>k__BackingField",true);view.UpdateTableVisibility();
+                Check(supports.gameObject.activeSelf,"Normal VR restores the existing table supports");
             }
             finally{Object.DestroyImmediate(viewFixture);}
             var table=Object.FindAnyObjectByType<RaidersTable>(FindObjectsInactive.Include);
@@ -117,7 +128,6 @@ namespace SwitchyardRaiders.Editor
             Check(table.locomotives.Length==4 && table.seats.Length==4,"Four trains and seat references wired");
             Check(table.manipulation.leftHand && table.manipulation.rightHand && table.manipulation.vignette,"Tracked hand input and vignette wired");
             Check(table.session.table==table && table.roomMenu.table==table && table.session.avatars.playerSeats.Length==4,"Session, mode and avatar wiring agree");
-            Check(!new SerializedObject(table.session).FindProperty("developerTesting").boolValue,"Developer testing defaults off");
             Check(Object.FindObjectsByType<RaidersSession>(FindObjectsInactive.Include).Length==1,"Exactly one session owner");
             Check(Object.FindObjectsByType<OVRCameraRig>(FindObjectsInactive.Include).Length==1,"Exactly one XR rig");
             Check(table.roomMenu.cancelModeButton && table.placementPreview,"MR confirmation and cancellation presentation wired");

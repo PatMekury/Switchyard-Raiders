@@ -1,0 +1,63 @@
+Task 4 synthetic Edit Mode tests. No account authentication, native avatar rendering, Photon session or live tracking.
+PASS Local entity loads first-person-only representation
+PASS Local load excludes head, face, eyes, hair and head accessories
+PASS Remote entity remains third-person
+PASS No SDK default/preset can be presented as authenticated account avatar
+PASS Avatar swap hides renderer only, preserving enabled tracking/input parent
+PASS UI cursor is not hidden with outline hands
+PASS Menu restores the prior outline rendering state
+PASS Visual restoration preserves a pre-existing render suppression flag
+PASS Menu/readiness/countdown do not replace menu hands
+PASS Solo gameplay requests legitimate identity path and local presentation independently of transport
+PASS Solo avatar lifecycle creates no Photon runner
+PASS Repeated session events cannot create duplicate local avatars
+PASS Gameplay exit restores menu representation
+PASS Online gameplay shares local presentation path
+PASS Identity failure exposes explicit fallback status and retry
+PASS Failure never silently labels outline hands as an authenticated avatar
+PASS Retry restarts local loading without a network route
+PASS Pending identity retains temporary visuals with explicit loading status
+PASS Exit invalidates delayed identity completion before avatar creation
+PASS Cleanup preserves non-null empty stream buffer
+PASS Valid ISDK head and both full joint sets permit avatar visuals
+PASS Existing ISDK providers feed all avatar tracking inputs
+PASS World poses convert once into rotated tracking-local space
+PASS Hand delegate supplies both tracked hands
+PASS OpenXR wrist uses tracking-local metres with official avatar root Z conversion
+PASS OpenXR absent thumb-base joints map to identity for both hands
+PASS OpenXR finger rotations use official per-hand coordinate bases
+PASS Physical hand scale is independent of tabletop zoom
+PASS Confidence loss suppresses avatar readiness without disabling providers
+PASS Missing hand joints cannot trigger successful visual replacement
+PASS Head tracking loss suppresses avatar visuals
+PASS Table/room motion at 1x does not alter physical avatar space
+PASS Table/room motion at 3x does not alter physical avatar space
+PASS Table/room motion at 6x does not alter physical avatar space
+PASS Only account-loaded callback plus valid tracking switches visual ownership
+PASS Tracking loss restores temporary hand visuals with visible status
+PASS Tracking recovery restores avatar visuals without rebuilding rig
+PASS Native-load failure path restores fallback and retry
+PASS Disable clears local avatar and restores visuals
+PASS Disable never nulls stream buffer
+PASS Solo rejects remote-avatar packets; simulated slots stay simulated
+PASS Own slot, zero identity, empty stream and invalid slot cannot create remote entities
+PASS Remote entity belongs to its human seat and has no local input driver
+PASS Remote origin/yaw normalization preserves human metres
+PASS Repeated same-user stream reuses remote entity
+PASS Slot ownership change releases previous remote entity
+PASS Vacated slot releases remote entity
+PASS Match cleanup removes remote entities while retaining borrowed service
+PASS Scene binds existing ISDK hands and HMD
+PASS Correct authored handedness bound
+PASS Exactly four OVR/OpenXR hand mesh renderers gated, excluding UI and vignette
+PASS Existing reusable service has one avatar manager and one input manager
+PASS Local avatar tracking root is human scale outside table and room motion
+PASS Remote avatars remain in unit-scale human seats
+PASS Two-hand palm classifiers retained
+PASS Scene still has exactly one XR rig
+PASS Scene still has exactly one session owner
+PASS No avatar manager instantiated during Edit Mode validation
+PASS Actual menu font fits score and explicit fallback status in footer (45 px)
+PASS Account failure explanation fits existing feedback area (78 px)
+PASS Reusable launch prefab matches scene avatar bindings
+61 Task4 assertions passed. Native first-person appearance, account/CDN success and live interaction remain unverified.

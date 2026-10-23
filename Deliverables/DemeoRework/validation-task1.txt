@@ -1,0 +1,185 @@
+LOD0 table bounds Center: (0.000000, 0.526500, 0.000000), Extents: (0.650000, 0.526500, 0.650000) land bounds Center: (0.000000, 0.960000, 0.000000), Extents: (0.529000, 0.075000, 0.529000)
+PASS LOD0 square exterior matches contract
+PASS LOD0 reauthored closed land bounds
+PASS LOD0 terrain datum below returned lip with 2mm clearance
+PASS Normals, UVs and tangents present: Supports_Leg_BL_MountingBracket_LOD0
+PASS Valid materials: Supports_Leg_BL_MountingBracket_LOD0
+PASS Finite vertices and UVs: Supports_Leg_BL_MountingBracket_LOD0
+PASS Normals, UVs and tangents present: Supports_Leg_BL_AdjustmentCollar_LOD0
+PASS Valid materials: Supports_Leg_BL_AdjustmentCollar_LOD0
+PASS Finite vertices and UVs: Supports_Leg_BL_AdjustmentCollar_LOD0
+PASS Normals, UVs and tangents present: Supports_Leg_BL_Extension_LOD0
+PASS Valid materials: Supports_Leg_BL_Extension_LOD0
+PASS Finite vertices and UVs: Supports_Leg_BL_Extension_LOD0
+PASS Normals, UVs and tangents present: Supports_Leg_BL_LevellingFoot_LOD0
+PASS Valid materials: Supports_Leg_BL_LevellingFoot_LOD0
+PASS Finite vertices and UVs: Supports_Leg_BL_LevellingFoot_LOD0
+PASS Normals, UVs and tangents present: Supports_Leg_BL_WoodLeg_LOD0
+PASS Valid materials: Supports_Leg_BL_WoodLeg_LOD0
+PASS Finite vertices and UVs: Supports_Leg_BL_WoodLeg_LOD0
+PASS Normals, UVs and tangents present: Supports_Leg_BR_MountingBracket_LOD0
+PASS Valid materials: Supports_Leg_BR_MountingBracket_LOD0
+PASS Finite vertices and UVs: Supports_Leg_BR_MountingBracket_LOD0
+PASS Normals, UVs and tangents present: Supports_Leg_BR_AdjustmentCollar_LOD0
+PASS Valid materials: Supports_Leg_BR_AdjustmentCollar_LOD0
+PASS Finite vertices and UVs: Supports_Leg_BR_AdjustmentCollar_LOD0
+PASS Normals, UVs and tangents present: Supports_Leg_BR_Extension_LOD0
+PASS Valid materials: Supports_Leg_BR_Extension_LOD0
+PASS Finite vertices and UVs: Supports_Leg_BR_Extension_LOD0
+PASS Normals, UVs and tangents present: Supports_Leg_BR_LevellingFoot_LOD0
+PASS Valid materials: Supports_Leg_BR_LevellingFoot_LOD0
+PASS Finite vertices and UVs: Supports_Leg_BR_LevellingFoot_LOD0
+PASS Normals, UVs and tangents present: Supports_Leg_BR_WoodLeg_LOD0
+PASS Valid materials: Supports_Leg_BR_WoodLeg_LOD0
+PASS Finite vertices and UVs: Supports_Leg_BR_WoodLeg_LOD0
+PASS Normals, UVs and tangents present: Supports_Leg_FL_MountingBracket_LOD0
+PASS Valid materials: Supports_Leg_FL_MountingBracket_LOD0
+PASS Finite vertices and UVs: Supports_Leg_FL_MountingBracket_LOD0
+PASS Normals, UVs and tangents present: Supports_Leg_FL_AdjustmentCollar_LOD0
+PASS Valid materials: Supports_Leg_FL_AdjustmentCollar_LOD0
+PASS Finite vertices and UVs: Supports_Leg_FL_AdjustmentCollar_LOD0
+PASS Normals, UVs and tangents present: Supports_Leg_FL_Extension_LOD0
+PASS Valid materials: Supports_Leg_FL_Extension_LOD0
+PASS Finite vertices and UVs: Supports_Leg_FL_Extension_LOD0
+PASS Normals, UVs and tangents present: Supports_Leg_FL_LevellingFoot_LOD0
+PASS Valid materials: Supports_Leg_FL_LevellingFoot_LOD0
+PASS Finite vertices and UVs: Supports_Leg_FL_LevellingFoot_LOD0
+PASS Normals, UVs and tangents present: Supports_Leg_FL_WoodLeg_LOD0
+PASS Valid materials: Supports_Leg_FL_WoodLeg_LOD0
+PASS Finite vertices and UVs: Supports_Leg_FL_WoodLeg_LOD0
+PASS Normals, UVs and tangents present: Supports_Leg_FR_MountingBracket_LOD0
+PASS Valid materials: Supports_Leg_FR_MountingBracket_LOD0
+PASS Finite vertices and UVs: Supports_Leg_FR_MountingBracket_LOD0
+PASS Normals, UVs and tangents present: Supports_Leg_FR_AdjustmentCollar_LOD0
+PASS Valid materials: Supports_Leg_FR_AdjustmentCollar_LOD0
+PASS Finite vertices and UVs: Supports_Leg_FR_AdjustmentCollar_LOD0
+PASS Normals, UVs and tangents present: Supports_Leg_FR_Extension_LOD0
+PASS Valid materials: Supports_Leg_FR_Extension_LOD0
+PASS Finite vertices and UVs: Supports_Leg_FR_Extension_LOD0
+PASS Normals, UVs and tangents present: Supports_Leg_FR_LevellingFoot_LOD0
+PASS Valid materials: Supports_Leg_FR_LevellingFoot_LOD0
+PASS Finite vertices and UVs: Supports_Leg_FR_LevellingFoot_LOD0
+PASS Normals, UVs and tangents present: Supports_Leg_FR_WoodLeg_LOD0
+PASS Valid materials: Supports_Leg_FR_WoodLeg_LOD0
+PASS Finite vertices and UVs: Supports_Leg_FR_WoodLeg_LOD0
+PASS Normals, UVs and tangents present: TabletopPivot_WoodSurroundAndAprons_LOD0
+PASS Valid materials: TabletopPivot_WoodSurroundAndAprons_LOD0
+PASS Finite vertices and UVs: TabletopPivot_WoodSurroundAndAprons_LOD0
+PASS Normals, UVs and tangents present: TabletopPivot_StainlessCupInserts_LOD0
+PASS Valid materials: TabletopPivot_StainlessCupInserts_LOD0
+PASS Finite vertices and UVs: TabletopPivot_StainlessCupInserts_LOD0
+PASS Normals, UVs and tangents present: TabletopPivot_FeltInset_LOD0
+PASS Valid materials: TabletopPivot_FeltInset_LOD0
+PASS Finite vertices and UVs: TabletopPivot_FeltInset_LOD0
+PASS Normals, UVs and tangents present: TabletopPivot_InsetFoundation_LOD0
+PASS Valid materials: TabletopPivot_InsetFoundation_LOD0
+PASS Finite vertices and UVs: TabletopPivot_InsetFoundation_LOD0
+SR_PlayTable LOD0: 20552 triangles, 27692 imported vertices, 0 reversed normals, 0 degenerate triangles
+PASS SR_PlayTable LOD0 coherent topology and normals
+PASS Normals, UVs and tangents present: LandGrid_LOD0
+PASS Valid materials: LandGrid_LOD0
+PASS Finite vertices and UVs: LandGrid_LOD0
+SR_TerrainBase LOD0: 1438 triangles, 921 imported vertices, 0 reversed normals, 0 degenerate triangles
+PASS SR_TerrainBase LOD0 coherent topology and normals
+LOD1 table bounds Center: (0.000000, 0.526500, 0.000000), Extents: (0.650000, 0.526500, 0.650000) land bounds Center: (0.000000, 0.960000, 0.000000), Extents: (0.529000, 0.075000, 0.529000)
+PASS LOD1 square exterior matches contract
+PASS LOD1 reauthored closed land bounds
+PASS LOD1 terrain datum below returned lip with 2mm clearance
+PASS Normals, UVs and tangents present: Supports_Leg_BL_MountingBracket_LOD1
+PASS Valid materials: Supports_Leg_BL_MountingBracket_LOD1
+PASS Finite vertices and UVs: Supports_Leg_BL_MountingBracket_LOD1
+PASS Normals, UVs and tangents present: Supports_Leg_BL_AdjustmentCollar_LOD1
+PASS Valid materials: Supports_Leg_BL_AdjustmentCollar_LOD1
+PASS Finite vertices and UVs: Supports_Leg_BL_AdjustmentCollar_LOD1
+PASS Normals, UVs and tangents present: Supports_Leg_BL_Extension_LOD1
+PASS Valid materials: Supports_Leg_BL_Extension_LOD1
+PASS Finite vertices and UVs: Supports_Leg_BL_Extension_LOD1
+PASS Normals, UVs and tangents present: Supports_Leg_BL_LevellingFoot_LOD1
+PASS Valid materials: Supports_Leg_BL_LevellingFoot_LOD1
+PASS Finite vertices and UVs: Supports_Leg_BL_LevellingFoot_LOD1
+PASS Normals, UVs and tangents present: Supports_Leg_BL_WoodLeg_LOD1
+PASS Valid materials: Supports_Leg_BL_WoodLeg_LOD1
+PASS Finite vertices and UVs: Supports_Leg_BL_WoodLeg_LOD1
+PASS Normals, UVs and tangents present: Supports_Leg_BR_MountingBracket_LOD1
+PASS Valid materials: Supports_Leg_BR_MountingBracket_LOD1
+PASS Finite vertices and UVs: Supports_Leg_BR_MountingBracket_LOD1
+PASS Normals, UVs and tangents present: Supports_Leg_BR_AdjustmentCollar_LOD1
+PASS Valid materials: Supports_Leg_BR_AdjustmentCollar_LOD1
+PASS Finite vertices and UVs: Supports_Leg_BR_AdjustmentCollar_LOD1
+PASS Normals, UVs and tangents present: Supports_Leg_BR_Extension_LOD1
+PASS Valid materials: Supports_Leg_BR_Extension_LOD1
+PASS Finite vertices and UVs: Supports_Leg_BR_Extension_LOD1
+PASS Normals, UVs and tangents present: Supports_Leg_BR_LevellingFoot_LOD1
+PASS Valid materials: Supports_Leg_BR_LevellingFoot_LOD1
+PASS Finite vertices and UVs: Supports_Leg_BR_LevellingFoot_LOD1
+PASS Normals, UVs and tangents present: Supports_Leg_BR_WoodLeg_LOD1
+PASS Valid materials: Supports_Leg_BR_WoodLeg_LOD1
+PASS Finite vertices and UVs: Supports_Leg_BR_WoodLeg_LOD1
+PASS Normals, UVs and tangents present: Supports_Leg_FL_MountingBracket_LOD1
+PASS Valid materials: Supports_Leg_FL_MountingBracket_LOD1
+PASS Finite vertices and UVs: Supports_Leg_FL_MountingBracket_LOD1
+PASS Normals, UVs and tangents present: Supports_Leg_FL_AdjustmentCollar_LOD1
+PASS Valid materials: Supports_Leg_FL_AdjustmentCollar_LOD1
+PASS Finite vertices and UVs: Supports_Leg_FL_AdjustmentCollar_LOD1
+PASS Normals, UVs and tangents present: Supports_Leg_FL_Extension_LOD1
+PASS Valid materials: Supports_Leg_FL_Extension_LOD1
+PASS Finite vertices and UVs: Supports_Leg_FL_Extension_LOD1
+PASS Normals, UVs and tangents present: Supports_Leg_FL_LevellingFoot_LOD1
+PASS Valid materials: Supports_Leg_FL_LevellingFoot_LOD1
+PASS Finite vertices and UVs: Supports_Leg_FL_LevellingFoot_LOD1
+PASS Normals, UVs and tangents present: Supports_Leg_FL_WoodLeg_LOD1
+PASS Valid materials: Supports_Leg_FL_WoodLeg_LOD1
+PASS Finite vertices and UVs: Supports_Leg_FL_WoodLeg_LOD1
+PASS Normals, UVs and tangents present: Supports_Leg_FR_MountingBracket_LOD1
+PASS Valid materials: Supports_Leg_FR_MountingBracket_LOD1
+PASS Finite vertices and UVs: Supports_Leg_FR_MountingBracket_LOD1
+PASS Normals, UVs and tangents present: Supports_Leg_FR_AdjustmentCollar_LOD1
+PASS Valid materials: Supports_Leg_FR_AdjustmentCollar_LOD1
+PASS Finite vertices and UVs: Supports_Leg_FR_AdjustmentCollar_LOD1
+PASS Normals, UVs and tangents present: Supports_Leg_FR_Extension_LOD1
+PASS Valid materials: Supports_Leg_FR_Extension_LOD1
+PASS Finite vertices and UVs: Supports_Leg_FR_Extension_LOD1
+PASS Normals, UVs and tangents present: Supports_Leg_FR_LevellingFoot_LOD1
+PASS Valid materials: Supports_Leg_FR_LevellingFoot_LOD1
+PASS Finite vertices and UVs: Supports_Leg_FR_LevellingFoot_LOD1
+PASS Normals, UVs and tangents present: Supports_Leg_FR_WoodLeg_LOD1
+PASS Valid materials: Supports_Leg_FR_WoodLeg_LOD1
+PASS Finite vertices and UVs: Supports_Leg_FR_WoodLeg_LOD1
+PASS Normals, UVs and tangents present: TabletopPivot_WoodSurroundAndAprons_LOD1
+PASS Valid materials: TabletopPivot_WoodSurroundAndAprons_LOD1
+PASS Finite vertices and UVs: TabletopPivot_WoodSurroundAndAprons_LOD1
+PASS Normals, UVs and tangents present: TabletopPivot_StainlessCupInserts_LOD1
+PASS Valid materials: TabletopPivot_StainlessCupInserts_LOD1
+PASS Finite vertices and UVs: TabletopPivot_StainlessCupInserts_LOD1
+PASS Normals, UVs and tangents present: TabletopPivot_FeltInset_LOD1
+PASS Valid materials: TabletopPivot_FeltInset_LOD1
+PASS Finite vertices and UVs: TabletopPivot_FeltInset_LOD1
+PASS Normals, UVs and tangents present: TabletopPivot_InsetFoundation_LOD1
+PASS Valid materials: TabletopPivot_InsetFoundation_LOD1
+PASS Finite vertices and UVs: TabletopPivot_InsetFoundation_LOD1
+SR_PlayTable LOD1: 10384 triangles, 11128 imported vertices, 0 reversed normals, 0 degenerate triangles
+PASS SR_PlayTable LOD1 coherent topology and normals
+PASS Normals, UVs and tangents present: LandGrid_LOD1
+PASS Valid materials: LandGrid_LOD1
+PASS Finite vertices and UVs: LandGrid_LOD1
+SR_TerrainBase LOD1: 222 triangles, 185 imported vertices, 0 reversed normals, 0 degenerate triangles
+PASS SR_TerrainBase LOD1 coherent topology and normals
+PASS Table has unit scales; no nonuniform mesh stretching
+PASS TownMount and land bottom coincide
+PASS 468 horizontal side samples hit the structural tray before the slab
+PASS 121 top samples remain open for playable land and future scenery
+PASS Assets/SwitchyardRaiders/Startup/Prefabs/SR_Launch.prefab internal references retained
+PASS Assets/SwitchyardRaiders/Startup/Prefabs/SR_Launch.prefab table mount correction
+PASS Assets/SwitchyardRaiders/Startup/Prefabs/SR_Launch.prefab temporary railway fits land
+PASS Assets/SwitchyardRaiders/Startup/Prefabs/SR_Launch.prefab train display scale preserved
+PASS Assets/SwitchyardRaiders/Startup/Prefabs/SR_Launch.prefab train display scale preserved
+PASS Assets/SwitchyardRaiders/Startup/Prefabs/SR_Launch.prefab train display scale preserved
+PASS Assets/SwitchyardRaiders/Startup/Prefabs/SR_Launch.prefab train display scale preserved
+PASS Assets/SwitchyardRaiders/Startup/Prefabs/SR_TabletopPresentation.prefab internal references retained
+PASS Assets/SwitchyardRaiders/Startup/Prefabs/SR_TabletopPresentation.prefab table mount correction
+PASS Assets/SwitchyardRaiders/Startup/Prefabs/SR_TabletopPresentation.prefab temporary railway fits land
+PASS Assets/SwitchyardRaiders/Startup/Prefabs/SR_TabletopPresentation.prefab train display scale preserved
+PASS Assets/SwitchyardRaiders/Startup/Prefabs/SR_TabletopPresentation.prefab train display scale preserved
+PASS Assets/SwitchyardRaiders/Startup/Prefabs/SR_TabletopPresentation.prefab train display scale preserved
+PASS Assets/SwitchyardRaiders/Startup/Prefabs/SR_TabletopPresentation.prefab train display scale preserved
+178 checks passed. Edit Mode asset renders, not headset observations. No Play Mode, build, installation or PreviewRenderUtility.

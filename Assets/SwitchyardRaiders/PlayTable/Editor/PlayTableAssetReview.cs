@@ -18,6 +18,11 @@ namespace SwitchyardRaiders.PlayTable.Editor
         [MenuItem("Switchyard Raiders/Play Table/Validate openings and render isolated previews")]
         public static void Review()
         {
+            SwitchyardRaiders.Editor.RecessedTableTask1.Review();
+        }
+
+        private static void ReviewLegacy()
+        {
             if(EditorApplication.isPlayingOrWillChangePlaymode || !Application.dataPath.Replace('\\','/').EndsWith("/Switchyard Raiders/Assets"))throw new Exception("Requires target project in edit mode");
             var root=PrefabUtility.LoadPrefabContents(Prefab);
             try

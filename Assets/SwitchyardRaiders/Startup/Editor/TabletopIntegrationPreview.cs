@@ -18,7 +18,7 @@ namespace SwitchyardRaiders.Editor
             var root=PrefabUtility.LoadPrefabContents(TabletopIntegrationSetup.Prefab);
             try
             {
-                root.SetActive(true);root.transform.SetPositionAndRotation(new Vector3(0,1.018f,0),Quaternion.identity);
+                root.SetActive(true);root.transform.SetPositionAndRotation(new Vector3(0,TabletopViewContract.TerrainMountHeight,0),Quaternion.identity);
                 var bindings=root.GetComponent<RaidersTabletopBindings>();bindings.virtualTable.SetActive(true);bindings.terrainAssembly.SetActive(true);bindings.gameplay.gameObject.SetActive(true);bindings.manipulationHandles.SetActive(false);
                 foreach(var lod in root.GetComponentsInChildren<LODGroup>(true))
                 {
@@ -30,13 +30,13 @@ namespace SwitchyardRaiders.Editor
                 for(int i=0;i<4;i++)
                 {
                     var train=bindings.playerLocomotives[i];train.gameObject.SetActive(true);float d=i*8+1;
-                    train.localPosition=RaidersMatch.Point(d);train.localRotation=Quaternion.LookRotation(RaidersMatch.Point(d+.02f)-RaidersMatch.Point(d));
+                    TabletopRailway.Place(train,d,true,.0415f);
                 }
-                var company=bindings.gameplay.Find("Company authored locomotive");company.localRotation=Quaternion.LookRotation(RaidersMatch.Point(8.02f)-RaidersMatch.Point(8));
+                var company=bindings.gameplay.Find("Company authored locomotive");TabletopRailway.Place(company,8,true,.0185f);
                 for(int i=0;i<6;i++)
                 {
                     var wagon=bindings.gameplay.Find("Cargo wagon "+(i+1));wagon.gameObject.SetActive(i<3);float d=8-(i+1)*RaidersMatch.Spacing;
-                    wagon.localPosition=RaidersMatch.Point(d);wagon.localRotation=Quaternion.LookRotation(RaidersMatch.Point(d+.02f)-RaidersMatch.Point(d));
+                    TabletopRailway.Place(wagon,d,false,.016f);
                 }
                 var camGo=new GameObject("Isolated review camera");SceneManager.MoveGameObjectToScene(camGo,root.scene);var camera=camGo.AddComponent<Camera>();camera.scene=root.scene;camera.enabled=false;camera.clearFlags=CameraClearFlags.SolidColor;camera.backgroundColor=new Color(.13f,.17f,.16f);camera.nearClipPlane=.01f;camera.farClipPlane=30;camera.fieldOfView=48;
                 var data=camera.GetUniversalAdditionalCameraData();data.renderPostProcessing=false;data.renderShadows=false;data.requiresColorOption=CameraOverrideOption.Off;data.requiresDepthOption=CameraOverrideOption.Off;

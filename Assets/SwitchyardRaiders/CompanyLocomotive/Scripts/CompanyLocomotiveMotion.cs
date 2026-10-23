@@ -22,6 +22,7 @@ namespace SwitchyardRaiders.CompanyTrain
         private Animator trainAnimator;
         private static readonly int PlaybackSpeed = Animator.StringToHash("PlaybackSpeed");
         private readonly Dictionary<string, Rest> parts = new Dictionary<string, Rest>();
+        private readonly Pose[] pilotTrackPoses = { Pose.identity, Pose.identity, Pose.identity, Pose.identity };
         private struct Rest { public Transform transform; public Vector3 position; public Quaternion rotation; }
         public double TravelledMetres => travelledMetres;
 
@@ -86,6 +87,12 @@ namespace SwitchyardRaiders.CompanyTrain
 
         public void AddTravelDistance(double signedForwardMetres) => SetTravelDistance(travelledMetres + signedForwardMetres);
 
+        // Track adapter supplies steering in authored root metres. Wheel phase still has one owner.
+        public void SetPilotTrackPose(int index, Vector3 offset, Quaternion rotation)
+        {
+            if(index>=0 && index<pilotTrackPoses.Length)pilotTrackPoses[index]=new Pose(offset,rotation);
+        }
+
         private void Evaluate()
         {
             if (parts.Count == 0) return;
@@ -122,6 +129,14 @@ namespace SwitchyardRaiders.CompanyTrain
                 }
                 rest.transform.localPosition = rest.position + shift;
                 rest.transform.localRotation = Quaternion.AngleAxis((float)(angle * Mathf.Rad2Deg) * handedness, by.normalized) * rest.rotation;
+                if(name.StartsWith("Pilot"))
+                {
+                    var pose=pilotTrackPoses[name[name.Length-1]-'0'];
+                    rest.transform.localPosition+=body.InverseTransformVector(transform.TransformVector(pose.position));
+                    var worldTurn=transform.rotation*pose.rotation*Quaternion.Inverse(transform.rotation);
+                    var localTurn=Quaternion.Inverse(body.rotation)*worldTurn*body.rotation;
+                    rest.transform.localRotation=localTurn*rest.transform.localRotation;
+                }
             }
         }
 

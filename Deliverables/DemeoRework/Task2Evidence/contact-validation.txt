@@ -1,0 +1,29 @@
+PASS VR centre follows new half-depth plus near-edge clearance
+PASS Rim placed 0.5m below eyes
+PASS Near rim within 30cm horizontal reach
+PASS Match start recenters after player turns during menus
+PASS One grabbed hand cannot move the table
+PASS A held table contact blocks gameplay commands
+PASS Second grab starts without a jump
+PASS Two palm contacts translate the personal table
+PASS Spreading the two contacts enlarges the table
+PASS Turning the two contacts rotates horizontally
+PASS Table tilt remains locked
+PASS Releasing either hand freezes the table
+PASS Regrabbing the second hand rebases without a jump
+PASS Suspending a grab prevents stale input from moving the table
+PASS Recenter uses current view and restores normal scale
+PASS Manipulation never moves the tracked head
+PASS Closing both palms cannot zoom below normal view
+PASS Table cannot move before gameplay
+PASS Scene has a real ISDK contact interactable and grabbable
+PASS Table accepts palm closure rather than pinch grabs
+PASS Both hands can hold the same table simultaneously
+PASS All four table edges have contact colliders
+PASS Grab body stays unscaled and cannot fall or be thrown
+PASS Existing rig has exactly one contact grab interactor per hand
+PASS Contact palm grab takes priority over menu rays for Switchyard Raiders — Launch / HandInteractorsLeft
+PASS Contact palm grab takes priority over menu rays for Switchyard Raiders — Launch / HandInteractorsRight
+PASS Both ISDK grab paths use the two-hand-only table transformer
+PASS Release never throws the table
+28 contact grab and placement assertions passed in Edit Mode. Live palm recognition still requires a two-hand runtime test.

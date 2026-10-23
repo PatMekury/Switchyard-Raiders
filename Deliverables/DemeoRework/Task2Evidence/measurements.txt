@@ -1,0 +1,5 @@
+Actual production meshes; fixed camera, lens, lighting and selected focus. Edit Mode only. LOD0 forced equally for comparison.
+camera (0.0000, 0.6650, -0.9500) rotation (43.4227, 354.8963, 0.0000) FOV=65 focus=(-0.0458, 0.1778, -0.4372)
+1x outer=1.300m land=1.050m company size=(0.0378, 0.0436, 0.1480)m projected envelope width=9.5% height=8.8%
+3x outer=3.900m land=3.150m company size=(0.1134, 0.1308, 0.4440)m projected envelope width=30.2% height=26.5%
+6x outer=7.800m land=6.300m company size=(0.2268, 0.2615, 0.8880)m projected envelope width=70.5% height=53.2%

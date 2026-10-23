@@ -1,0 +1,7 @@
+Project=C:/Users/patmekury/Documents/Unity/Switchyard Raiders/Assets
+Unity=6000.6.0b5
+Play=False
+Compiling=False
+CompilationFailed=False
+Scene=Assets/SwitchyardRaiders/Startup/Scenes/SR_Launch.unity
+SceneDirty=False

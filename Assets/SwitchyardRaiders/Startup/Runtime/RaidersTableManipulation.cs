@@ -1,100 +1,123 @@
-using Oculus.Interaction;
-using Oculus.Interaction.HandGrab;
+using Oculus.Interaction.GrabAPI;
+using Oculus.Interaction.Input;
 using UnityEngine;
 
 namespace SwitchyardRaiders.Startup
 {
-    // ISDK recognizes contact and palm closure. This transformer controls only the personal view.
-    public sealed class RaidersTableManipulation : MonoBehaviour, ITransformer
+    // Personal presentation only. No interactable, contact volume, network command or rig writer.
+    public sealed class RaidersTableManipulation : MonoBehaviour
     {
+        public enum GrabState { Ready, OneHand, Acquiring, Moving, AwaitOpen }
+        public struct HandSample
+        {
+            public bool valid, closed;
+            public Vector3 palm;
+            public HandSample(bool valid,bool closed,Vector3 palm){this.valid=valid;this.closed=closed;this.palm=palm;}
+        }
         public RaidersTable table;
         public OVRHand leftHand, rightHand;
+        public HandGrabAPI leftPalm, rightPalm;
         public OVRVignette vignette;
-        public HandGrabInteractable handGrab;
-        public Grabbable grabbable;
-        public BoxCollider[] grabEdges;
-        [Range(0,1)] public float comfort = .5f;
-        public bool Dragging { get; private set; }
-        public int GrabCount => source == null ? 0 : source.GrabPoints.Count;
-        public bool BlocksGameplay => GrabCount > 0 || Dragging || Time.unscaledTime < releaseUntil;
-        private IGrabbable source;
-        private bool focused = true, paused;
-        private float releaseUntil, startScale;
-        private Vector3 startLeft, startRight, startPosition;
-        private Quaternion startRotation;
+        [Range(0,1)] public float comfort=.5f;
+        public GrabState State { get; private set; } = GrabState.AwaitOpen;
+        public bool Dragging => State==GrabState.Moving;
+        public int GrabCount { get; private set; }
+        public int InteractionEpoch { get; private set; }
+        public const float AcquisitionSeconds=.10f, ReleaseGuardSeconds=.25f;
+        private bool focused=true, paused;
+        private float acquireAt, releaseUntil;
+        private Vector3 previousLeft, previousRight, localPivot;
 
-        public void Initialize(IGrabbable value) => source = value;
-        public void BeginTransform()
+        // Query the classifier at the command boundary too: UI callbacks can precede LateUpdate.
+        // One hand/pinch alone never locks menus. A candidate pair, active move and release guard
+        // consume commands. Epochs cancel button presses begun before a table gesture.
+        public bool BlocksGameplay => State==GrabState.Acquiring || Dragging || Time.unscaledTime<releaseUntil || PairIntent();
+        private bool PairIntent()
         {
-            EndTransform();
-            HoldTray(GrabCount > 0);
-            // One closed hand holds its contact, but never moves the table.
-            if (!table || !table.CanManipulate || GrabCount != 2 || !focused || paused) return;
-            startLeft = source.GrabPoints[0].position;
-            startRight = source.GrabPoints[1].position;
-            if (Vector3.Distance(startLeft,startRight) < .08f) return;
-            startPosition = table.presentation.position;
-            startRotation = table.presentation.rotation;
-            startScale = table.presentation.localScale.x;
-            Dragging = true;
+            if(!table || !table.CanManipulate || !focused || paused || State==GrabState.AwaitOpen ||
+                (Application.isPlaying && (!OVRManager.hasInputFocus || !OVRManager.hasVrFocus)))return false;
+            var l=Read(leftPalm,leftHand);var r=Read(rightPalm,rightHand);
+            return l.valid && r.valid && l.closed && r.closed;
         }
-        public void UpdateTransform()
+        public static HandSample Read(HandGrabAPI api,OVRHand tracked)
         {
-            if (!Dragging || GrabCount != 2 || !table.CanManipulate || !focused || paused) { EndTransform(); return; }
-            TabletopViewMath.Solve(startPosition,startRotation,startScale,startLeft,startRight,
-                source.GrabPoints[0].position,source.GrabPoints[1].position,.2f,12f,out var pos,out var rot,out float scale);
-            if (!table.roomMenu.IsVirtual && !table.Exploration) pos.y = table.SurfaceHeight;
-            if (table.AcceptView(pos,rot,scale))
-            {
-                bool moving = Vector3.Distance(pos,table.presentation.position) > .0005f ||
-                    Quaternion.Angle(rot,table.presentation.rotation) > .05f || Mathf.Abs(scale-table.presentation.localScale.x) > .0005f;
-                table.presentation.SetPositionAndRotation(pos,rot);
-                table.presentation.localScale = Vector3.one*scale;
-                SyncGrabSurface();
-                if (vignette) { vignette.VignetteFieldOfView = Mathf.Lerp(110,65,comfort); vignette.enabled = moving && table.roomMenu.IsVirtual && comfort > 0; }
-            }
-            else if (vignette) vignette.enabled = false;
+            var hand=api?api.Hand:null;
+            if(!tracked || !tracked.IsTracked || tracked.IsSystemGestureInProgress ||
+                tracked.HandConfidence!=OVRHand.TrackingConfidence.High || hand==null ||
+                !hand.IsConnected || !hand.IsTrackedDataValid || !hand.IsHighConfidence ||
+                !hand.GetRootPose(out _) || !hand.GetFingerIsHighConfidence(HandFinger.Middle) ||
+                !hand.GetFingerIsHighConfidence(HandFinger.Ring) || !hand.GetFingerIsHighConfidence(HandFinger.Pinky))return default;
+            // Official palm classifier (with curl hysteresis), never pinch strength.
+            // Requiring all three ulnar fingers rejects thumb/index pinches. Opening any ends it.
+            var fingers=api.HandPalmGrabbingFingers();
+            return new HandSample(true,PalmClosed(fingers),api.GetPalmCenter());
         }
-        public void EndTransform()
+        public static bool PalmClosed(HandFingerFlags fingers)
         {
-            if (Dragging) releaseUntil = Time.unscaledTime+.25f;
-            Dragging = false;
-            if (vignette) vignette.enabled = false;
-            HoldTray(false);
-        }
-        private void HoldTray(bool hold)
-        {
-            if (table && table.roomMenu && table.roomMenu.follower) table.roomMenu.follower.HoldFor(this,hold);
-        }
-        public void Suspend()
-        {
-            if (handGrab) handGrab.enabled = false;
-            EndTransform();
-        }
-        public void SyncGrabSurface()
-        {
-            if (!table || !handGrab || grabEdges == null || grabEdges.Length != 4) return;
-            var target = table.presentation;
-            handGrab.transform.SetPositionAndRotation(target.position,target.rotation);
-            // Keep the SDK Rigidbody at unit scale and resize its contact colliders with the view.
-            float scale = target.lossyScale.x;
-            bool rail = table.roomMenu.IsVirtual && target.localScale.x < 1.6f;
-            float x = rail ? .95f : .75f, z = rail ? .7f : .525f, y = rail ? .015f : .15f;
-            for (int i=0;i<4;i++)
-            {
-                bool side = i < 2;
-                grabEdges[i].center = new Vector3(side ? (i==0?-x:x) : 0,y,side ? 0 : (i==2?-z:z))*scale;
-                grabEdges[i].size = new Vector3(side ? .08f : x*2,.10f,side ? z*2 : .08f)*scale;
-            }
+            var required=HandFingerFlags.Middle|HandFingerFlags.Ring|HandFingerFlags.Pinky;
+            return (fingers&required)==required;
         }
         private void LateUpdate()
         {
-            SyncGrabSurface();
-            if (handGrab) handGrab.enabled = table && table.CanManipulate && focused && !paused;
-            HoldTray(GrabCount > 0);
+            if(!OVRManager.hasInputFocus || !OVRManager.hasVrFocus){Suspend();return;}
+            ProcessHands(Read(leftPalm,leftHand),Read(rightPalm,rightHand),Time.unscaledTime);
         }
-        private void OnApplicationFocus(bool focus) { focused=focus; if(!focus)Suspend(); }
-        private void OnApplicationPause(bool pause) { paused=pause; if(pause)Suspend(); }
-        private void OnDisable() => Suspend();
+
+        // Same path is exercised by deterministic Edit Mode fixtures. This does not simulate
+        // tracking on the actual rig and is not evidence of live hand recognition.
+        public void ProcessHands(HandSample left,HandSample right,float now)
+        {
+            bool allowed=table && table.CanManipulate && focused && !paused;
+            if(!allowed || !left.valid || !right.valid || !TabletopViewMath.Finite(left.palm) || !TabletopViewMath.Finite(right.palm))
+            {Stop(now,true);return;}
+            GrabCount=(left.closed?1:0)+(right.closed?1:0);
+            if(State==GrabState.AwaitOpen)
+            {
+                if(GrabCount==0)State=GrabState.Ready;
+                return; // Both open after a tracking/focus/mode interruption prevents stale reentry.
+            }
+            if(GrabCount!=2)
+            {
+                Stop(now,false);State=GrabCount==1?GrabState.OneHand:GrabState.Ready;return;
+            }
+            if(State!=GrabState.Acquiring && !Dragging)
+            {State=GrabState.Acquiring;InteractionEpoch++;acquireAt=now;previousLeft=left.palm;previousRight=right.palm;HoldTray(true);return;}
+            if(State==GrabState.Acquiring)
+            {
+                if(Vector3.Distance(previousLeft,left.palm)>.025f || Vector3.Distance(previousRight,right.palm)>.025f ||
+                    TabletopViewMath.PlanarSpan(left.palm,right.palm)<.08f)acquireAt=now;
+                previousLeft=left.palm;previousRight=right.palm;
+                if(now-acquireAt<AcquisitionSeconds)return;
+                table.EnforceViewBounds();
+                localPivot=table.presentation.InverseTransformPoint(TabletopViewMath.Pivot(table.presentation.position,
+                    table.presentation.rotation,table.presentation.localScale.x,(left.palm+right.palm)*.5f));
+                State=GrabState.Moving;return;
+            }
+            var view=table.presentation;
+            var pivot=view.TransformPoint(localPivot);
+            TabletopViewMath.SolveAtPivot(view.position,view.rotation,view.localScale.x,pivot,
+                previousLeft,previousRight,left.palm,right.palm,table.NormalViewScale,table.MaximumViewScale,
+                out var position,out var rotation,out float scale,out var translation,out var yaw);
+            if(!table.roomMenu.IsVirtual && !table.Exploration)position.y=table.AnchoredOriginHeight(scale);
+            bool accepted=table.AcceptView(position,rotation,scale);
+            bool moving=accepted && (Vector3.Distance(view.position,position)>.0005f || Quaternion.Angle(view.rotation,rotation)>.05f || Mathf.Abs(view.localScale.x-scale)>.0005f);
+            if(accepted)table.ApplyPersonalView(position,rotation,scale,pivot,translation,yaw);
+            if(vignette){vignette.VignetteFieldOfView=Mathf.Lerp(110,65,comfort);vignette.enabled=moving && table.roomMenu.IsVirtual && comfort>0;}
+            // Rebase at clamps, invalid span and rejected MR bounds. No overshoot dead travel.
+            previousLeft=left.palm;previousRight=right.palm;
+        }
+        private void Stop(float now,bool requireOpen)
+        {
+            if(Dragging || State==GrabState.Acquiring){releaseUntil=now+ReleaseGuardSeconds;InteractionEpoch++;}
+            State=requireOpen?GrabState.AwaitOpen:GrabState.Ready;
+            if(requireOpen)GrabCount=0;
+            if(vignette)vignette.enabled=false;
+            HoldTray(false);
+        }
+        private void HoldTray(bool hold){if(table && table.roomMenu && table.roomMenu.follower)table.roomMenu.follower.HoldFor(this,hold);}
+        public void Suspend()=>Stop(Time.unscaledTime,true);
+        private void OnApplicationFocus(bool focus){focused=focus;if(!focus)Suspend();}
+        private void OnApplicationPause(bool pause){paused=pause;if(pause)Suspend();}
+        private void OnDisable()=>Suspend();
     }
 }

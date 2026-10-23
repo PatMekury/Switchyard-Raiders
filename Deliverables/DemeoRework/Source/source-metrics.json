@@ -1,0 +1,20 @@
+{
+  "table_LOD0": {
+    "triangles": 20552,
+    "author_vertices": 10922,
+    "mesh_objects": 59
+  },
+  "table_LOD1": {
+    "triangles": 10384,
+    "author_vertices": 5676,
+    "mesh_objects": 59
+  },
+  "land_LOD0": {
+    "quads": 576,
+    "vertices": 721
+  },
+  "land_LOD1": {
+    "quads": 64,
+    "vertices": 113
+  }
+}

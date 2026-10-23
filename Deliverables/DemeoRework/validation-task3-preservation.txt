@@ -1,0 +1,32 @@
+PASS byte-identical Runtime/RaidersMatch.cs SHA256=22915760348d33ab84f3951118cf69ff677f8f24452c3e84b518b0ad68fa5c56
+PASS byte-identical Runtime/RaidersSession.cs SHA256=070cc6b451f10878043c41cdfa0dd1ecc92f093bee64c3f29351c062f821a813
+PASS byte-identical Runtime/RaidersVoice.cs SHA256=570bd252468040f172330d085085f4e471e3ecf2eadacb2e6c26a7ac41a52f67
+PASS byte-identical Runtime/RaidersAvatars.cs SHA256=220279463dd0745bf6265e805eea6ac1d5a597ca5a949b759eddac1d009caa5a
+PASS byte-identical Runtime/RaidersAvatarEntity.cs SHA256=aedcacf2b37b0ce622dbe1e76f4efefed6918b555f4f8a28e7162a697a214646
+PASS byte-identical Runtime/RoomChoiceMenu.cs SHA256=a8a3b525b091dcebd9550715241014ef336c2470e98e0f66fac6f363089942b4
+PASS byte-identical Runtime/CompanyTableFollower.cs SHA256=3c073d206faa489cf6fb07fffc9f46822e86ed975c657b1c549bfde6b05b164c
+PASS byte-identical Runtime/TabletopRailway.cs SHA256=ff9cb4a941fd0ed861d7db57d677924bf9f5f91ae7bad88f244dfd82a1d1a813
+PASS byte-identical Runtime/TabletopViewContract.cs SHA256=ffe4cbaa14a362c7595d2d99c5b51183c12e83d8317919866ec8ef0611335dc0
+Prefabs/SR_Launch.prefab: added IDs=0, removed obsolete proxy components=10, changed existing blocks=5, preserved blocks=1841
+  changed block 7957835552728832033 type=114
+  changed block 3854007118242469665 type=114
+  changed block 1879302554566374038 type=4
+  changed block 3337748426051272232 type=114
+  changed block 7888302704988852322 type=114
+PASS unchanged serialized RaidersSession in Prefabs/SR_Launch.prefab
+PASS unchanged serialized RaidersVoice in Prefabs/SR_Launch.prefab
+PASS unchanged serialized RaidersAvatars in Prefabs/SR_Launch.prefab
+PASS unchanged serialized LaunchSequence in Prefabs/SR_Launch.prefab
+PASS unchanged serialized RoomChoiceMenu in Prefabs/SR_Launch.prefab
+Scenes/SR_Launch.unity: added IDs=0, removed obsolete proxy components=10, changed existing blocks=5, preserved blocks=1846
+  changed block 1154070996 type=114
+  changed block 739218234 type=4
+  changed block 1019508389 type=114
+  changed block 659547839 type=114
+  changed block 1019508383 type=114
+PASS unchanged serialized RaidersSession in Scenes/SR_Launch.unity
+PASS unchanged serialized RaidersVoice in Scenes/SR_Launch.unity
+PASS unchanged serialized RaidersAvatars in Scenes/SR_Launch.unity
+PASS unchanged serialized LaunchSequence in Scenes/SR_Launch.unity
+PASS unchanged serialized RoomChoiceMenu in Scenes/SR_Launch.unity
+No scene/prefab object IDs added; existing room/rig/session/runner ownership preserved. Removed IDs belong to obsolete table contact proxy. No Play Mode/build/device launch.

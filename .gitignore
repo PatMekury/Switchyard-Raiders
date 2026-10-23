@@ -108,4 +108,27 @@ InitTestScene*.unity*
 /[Aa]ssets/[Ii]nit[Tt]est[Ss]cene*.unity*
 
 # Generated deliverables
-/Deliverables/
+/Deliverables/*
+!/Deliverables/DemeoRework/
+/Deliverables/DemeoRework/*
+!/Deliverables/DemeoRework/01-handoff.md
+!/Deliverables/DemeoRework/BASELINE_BEFORE_REWORK.md
+!/Deliverables/DemeoRework/build_recessed_assets.py
+!/Deliverables/DemeoRework/validation-task1.txt
+!/Deliverables/DemeoRework/validation-regression.txt
+!/Deliverables/DemeoRework/Evidence/
+!/Deliverables/DemeoRework/Source/
+/Deliverables/DemeoRework/Source/*.blend1
+
+!/Deliverables/DemeoRework/02-handoff.md
+!/Deliverables/DemeoRework/02-baseline.md
+!/Deliverables/DemeoRework/validation-task2.txt
+!/Deliverables/DemeoRework/Task2Evidence/
+
+!/Deliverables/DemeoRework/03-handoff.md
+!/Deliverables/DemeoRework/validation-task3.txt
+!/Deliverables/DemeoRework/validation-task3-preservation.txt
+
+!/Deliverables/DemeoRework/04-handoff.md
+!/Deliverables/DemeoRework/validation-task4.txt
+!/Deliverables/DemeoRework/validation-task4-preservation.txt

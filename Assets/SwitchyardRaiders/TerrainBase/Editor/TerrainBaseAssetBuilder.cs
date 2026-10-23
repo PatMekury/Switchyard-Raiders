@@ -31,6 +31,11 @@ namespace SwitchyardRaiders.TerrainBase.Editor
         [MenuItem("Switchyard Raiders/Terrain Base/Build isolated prefab")]
         public static void Build()
         {
+            SwitchyardRaiders.Editor.RecessedTableTask1.BuildAssets();
+        }
+
+        private static void BuildLegacy()
+        {
             Guard();foreach(string dir in new[]{"Materials","Meshes","Prefabs"})Directory.CreateDirectory(Root+"/"+dir);
             AssetDatabase.Refresh();var materials=MakeMaterials();
             var scene=EditorSceneManager.NewPreviewScene();
@@ -109,6 +114,11 @@ namespace SwitchyardRaiders.TerrainBase.Editor
         }
         [MenuItem("Switchyard Raiders/Terrain Base/Validate and render isolated previews")]
         public static void Review()
+        {
+            SwitchyardRaiders.Editor.RecessedTableTask1.Review();
+        }
+
+        private static void ReviewLegacy()
         {
             Guard();var root=PrefabUtility.LoadPrefabContents(Prefab);
             try

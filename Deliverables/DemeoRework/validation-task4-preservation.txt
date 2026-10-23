@@ -1,0 +1,13 @@
+Task 4 preservation audit versus pre-edit Task4Baseline (not versus HEAD).
+Changed existing Startup files: Editor\RaidersFlowSetup.cs, Editor\TabletopIntegrationSetup.cs, Prefabs\SR_Launch.prefab, Runtime\RaidersAvatarEntity.cs, Runtime\RaidersAvatarInput.cs, Runtime\RaidersAvatars.cs, Runtime\RaidersMenu.cs, Scenes\SR_Launch.unity
+PASS all other pre-existing Startup files byte-identical, including session/auth transport, voice, simulation, table/room/view manipulation and railway.
+PASS Prefabs/SR_Launch.prefab: 1846 previous object IDs preserved; 5 added stripped references (existing HMD + four renderers), no new GameObjects; 2 substantive changed blocks (avatar bindings, footer RectTransform).
+Changed block IDs: 6884668306492447612, 3290312550844882723; 0 whitespace-only serialization changes.
+PASS Scenes/SR_Launch.unity: 1851 previous object IDs preserved; 5 added stripped references (existing HMD + four renderers), no new GameObjects; 2 substantive changed blocks (avatar bindings, footer RectTransform).
+Changed block IDs: 1019508385, 739396704; 0 whitespace-only serialization changes.
+SHA256 Runtime/RaidersSession.cs 070cc6b451f10878043c41cdfa0dd1ecc92f093bee64c3f29351c062f821a813
+SHA256 Runtime/RaidersVoice.cs 570bd252468040f172330d085085f4e471e3ecf2eadacb2e6c26a7ac41a52f67
+SHA256 Runtime/RaidersTableManipulation.cs 10521bda7409748fedc5385ce51f002730e4b8f5c5427732586646926d6939b4
+SHA256 Runtime/TabletopViewMath.cs e46a596a0b75a6e7da106886ecffced13df1dd54b8d882b8c6d9cf3fe1a80b66
+SHA256 Runtime/RaidersTable.cs 7185b26cf4e46d18c3d2a835a8e49b065d93e4349df4c75e7564d8899576eb7b
+Task4Baseline retained for local recovery; no commit, reset, stash or branch switch performed.

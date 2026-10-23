@@ -1,0 +1,73 @@
+PASS Upper bound clamps huge overshoot to 6x
+PASS Stationary overshoot does not drift pivot
+PASS Immediate reverse from maximum
+PASS Lower bound is exactly normal
+PASS Immediate reverse from minimum
+PASS Regrab retains accepted view
+PASS Reset restores exactly the lower bound
+PASS Legacy below-normal saved VR state is clamped on mode restoration
+PASS Legacy excessive saved VR state is clamped on restoration
+PASS Nonfinite external scale is sanitized before transform assignment
+PASS View acceptance rejects both out-of-range requests
+PASS MR minimum is 1x relative to confirmed placement
+PASS MR maximum is relative, not absolute 6 world metres
+PASS Returning from MR preserves the valid personal VR inspection scale
+PASS Head and human seats retain human scale through mode/zoom changes
+PASS Gameplay branch has no compensating parent scale
+PASS All remote avatar seats are outside the miniature scale branch
+PASS Tracked rig remains outside scale ownership
+PASS Gauge-correct railway replaces the recoverable ribbon
+PASS Player 1 authored locomotive common 1:100 scale
+Player 1 authored locomotive authored bounds=(3.82000, 4.24500, 14.79500) normal displayed=(0.03820, 0.04245, 0.14795)
+PASS Player 1 authored locomotive measured length ~148mm
+PASS Player 1 authored locomotive authored LOD hierarchy retained
+PASS Player 2 authored locomotive common 1:100 scale
+Player 2 authored locomotive authored bounds=(3.82000, 4.12672, 14.79500) normal displayed=(0.03820, 0.04127, 0.14795)
+PASS Player 2 authored locomotive measured length ~148mm
+PASS Player 2 authored locomotive authored LOD hierarchy retained
+PASS Player 3 authored locomotive common 1:100 scale
+Player 3 authored locomotive authored bounds=(3.82000, 4.24500, 14.79500) normal displayed=(0.03820, 0.04245, 0.14795)
+PASS Player 3 authored locomotive measured length ~148mm
+PASS Player 3 authored locomotive authored LOD hierarchy retained
+PASS Player 4 authored locomotive common 1:100 scale
+Player 4 authored locomotive authored bounds=(3.82000, 4.12672, 14.79500) normal displayed=(0.03820, 0.04127, 0.14795)
+PASS Player 4 authored locomotive measured length ~148mm
+PASS Player 4 authored locomotive authored LOD hierarchy retained
+PASS Company authored locomotive common 1:100 scale
+Company authored locomotive authored bounds=(3.78001, 4.35888, 14.80001) normal displayed=(0.03780, 0.04359, 0.14800)
+PASS Company authored locomotive measured length ~148mm
+PASS Company authored locomotive authored LOD hierarchy retained
+PASS All five oriented engine envelopes clear the land boundary through 256 samples
+PASS Steam pilot axles follow track radius and railhead height through full loop
+PASS Articulated player wheelsets stay within 1mm of rail center and height
+PASS Coupling bridges remain below 9mm through curve and grade
+PASS First freight body clears complete engine length throughout the curve
+PASS Adjacent wagon body spacing retains at least 6mm clearance
+Sweep: maximum engine x/z envelope 0.464738m; pilot radial/height errors 0.0000001/0.0000000m; player axle errors 0.0001908/0.0003123m; maximum coupling link 0.005576m; minimum engine/wagon envelope clearance 0.003271m.
+PASS Both actual adapters integrate signed reverse travel
+PASS View translation/yaw/zoom adds zero wheel travel while stopped
+PASS Rail-distance drivers exclusively own animation
+PASS Player wheel rotates with distance
+PASS Player reverse returns wheel phase
+PASS Steam main rod continues its articulated motion
+PASS Smoke simulation and size inherit the common board branch
+PASS Changing presentation leaves authoritative match snapshot byte-identical
+PASS Saved launch retains exactly one rig and session
+PASS Saved launch has no missing scripts
+PASS Freight chassis_LOD0 nondegenerate triangles, normals and UVs
+Freight chassis_LOD0 triangles=316 vertices=760
+PASS Freight chassis_LOD1 nondegenerate triangles, normals and UVs
+Freight chassis_LOD1 triangles=188 vertices=440
+PASS Rails_LOD0 nondegenerate triangles, normals and UVs
+Rails_LOD0 triangles=21504 vertices=43008
+PASS Rails_LOD1 nondegenerate triangles, normals and UVs
+Rails_LOD1 triangles=10752 vertices=21504
+PASS Raised formation_LOD0 nondegenerate triangles, normals and UVs
+Raised formation_LOD0 triangles=2400 vertices=4800
+PASS Raised formation_LOD1 nondegenerate triangles, normals and UVs
+Raised formation_LOD1 triangles=1248 vertices=2496
+PASS Sleepers_LOD0 nondegenerate triangles, normals and UVs
+Sleepers_LOD0 triangles=4608 vertices=9216
+PASS Sleepers_LOD1 nondegenerate triangles, normals and UVs
+Sleepers_LOD1 triangles=2304 vertices=4608
+58 Task2 assertions passed. Edit Mode only; no headset, Play Mode, network or performance claim.

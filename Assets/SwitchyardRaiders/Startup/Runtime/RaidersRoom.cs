@@ -109,7 +109,7 @@ namespace SwitchyardRaiders.Startup
                 var rotation=baseRotation*Quaternion.Euler(0,orientation*90,0);
                 for(float scale=1;scale>=.349f;scale-=.05f)
                 {
-                    var pos=hit.point+Vector3.up*.006f;
+                    var pos=hit.point+Vector3.up*(.006f-TabletopViewContract.TrayBottom*scale);
                     if(!FitsSurface(room,anchor,pos,rotation,scale))continue;
                     float score=Vector3.Distance(pos,head.position)+(1-scale);
                     if(score<best){best=score;candidate=anchor;candidatePose=new Pose(pos,rotation);candidateScale=scale;}
@@ -146,12 +146,12 @@ namespace SwitchyardRaiders.Startup
             {
                 var point=FootprintPoint(position,rotation,scale,x,z);
                 if(!anchor.Raycast(new Ray(point+Vector3.up*.2f,Vector3.down),.3f,out var hit) ||
-                    Vector3.Dot(hit.normal,Vector3.up)<.98f || Mathf.Abs(hit.point.y-(position.y-.006f))>.015f)return false;
+                    Vector3.Dot(hit.normal,Vector3.up)<.98f || Mathf.Abs(hit.point.y-(position.y+TabletopViewContract.TrayBottom*scale-.006f))>.015f)return false;
             }
             return true;
         }
         private static Vector3 FootprintPoint(Vector3 position,Quaternion rotation,float scale,int x,int z) =>
-            position+rotation*new Vector3(x/3f*(.75f*scale+.015f),0,z/3f*(.525f*scale+.015f));
+            position+rotation*new Vector3(x/3f*(TabletopViewContract.OuterSize*.5f*scale+.015f),0,z/3f*(TabletopViewContract.OuterSize*.5f*scale+.015f));
         public static bool FitsSurface(MRUKRoom room,MRUKAnchor anchor,Vector3 position,Quaternion rotation,float scale)
         {
             if(!room || !FitsAnchor(anchor,position,rotation,scale))return false;
